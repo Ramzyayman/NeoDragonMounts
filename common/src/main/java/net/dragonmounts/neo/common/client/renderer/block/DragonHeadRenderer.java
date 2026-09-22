@@ -1,5 +1,6 @@
 package net.dragonmounts.neo.common.client.renderer.block;
 
+import net.minecraft.world.phys.Vec3;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -50,7 +51,7 @@ public enum DragonHeadRenderer implements BlockEntityRenderer<DragonHeadBlockEnt
     }
 
     @Override
-    public void render(DragonHeadBlockEntity entity, float partialTick, PoseStack matrices, MultiBufferSource buffers, int light, int overlay) {
+    public void render(DragonHeadBlockEntity entity, float partialTick, PoseStack matrices, MultiBufferSource buffers, int light, int overlay, Vec3 cameraPos) {
         var state = entity.getBlockState();
         if (state.getBlock() instanceof DragonHeadBlock head) {
             var appearance = head.variant.appearance;

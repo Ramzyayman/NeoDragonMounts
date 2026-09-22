@@ -4,6 +4,7 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import net.dragonmounts.neo.common.api.DynamicAttributeEntity;
 import net.dragonmounts.neo.common.entity.dragon.ServerDragonEntity;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.player.Player;
@@ -15,13 +16,19 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LivingEntity.class)
-public class LivingEntityMixin {
+public abstract class LivingEntityMixin {
+    /// 1.21.5 renamed `lastHurtByPlayerTime` to `lastHurtByPlayerMemoryTime` and changed
+    /// `lastHurtByPlayer` from a `Player` to an `EntityReference<Player>`. Both shadows
+    /// resolved to nothing beforehand, which mixin reports only as a warning.
     @Shadow
-    protected int lastHurtByPlayerTime;
+    protected int lastHurtByPlayerMemoryTime;
 
     @Shadow
     @Nullable
-    protected Player lastHurtByPlayer;
+    protected EntityReference<Player> lastHurtByPlayer;
+
+    @Shadow
+    public abstract void setLastHurtByPlayer(Player player, int memoryTime);
 
     @ModifyExpressionValue(method = "<init>", at = @At(
             value = "INVOKE",
@@ -31,12 +38,20 @@ public class LivingEntityMixin {
         return this instanceof DynamicAttributeEntity ? ((DynamicAttributeEntity) this).getDynamicAttributes() : original;
     }
 
+    /// Mirrors how vanilla now handles the equivalent tamed-wolf case in
+    /// `LivingEntity#resolvePlayerResponsibleForDamage`: assign through the setter when an
+    /// owner is present, otherwise clear the reference and its memory timer directly.
     @Inject(method = "resolvePlayerResponsibleForDamage", at = @At("HEAD"), cancellable = true)
     public void appendDragonTypifiedText(DamageSource source, CallbackInfoReturnable<Player> info) {
         if (source.getEntity() instanceof ServerDragonEntity dragon && dragon.isTame()) {
-            this.lastHurtByPlayerTime = 100;
-            this.lastHurtByPlayer = dragon.getOwner() instanceof Player player ? player : null;
-            info.setReturnValue(this.lastHurtByPlayer);
+            if (dragon.getOwner() instanceof Player player) {
+                this.setLastHurtByPlayer(player, 100);
+                info.setReturnValue(player);
+            } else {
+                this.lastHurtByPlayer = null;
+                this.lastHurtByPlayerMemoryTime = 0;
+                info.setReturnValue(null);
+            }
         }
     }
 }

@@ -91,7 +91,6 @@ public abstract class TameableDragonEntity extends TamableAnimal implements
         ConditionalShearable,
         AutoJumpRideable,
         FlyingAnimal,
-        Saddleable,
         DynamicAttributeEntity,
         DragonTypified.Mutable {
     public static TameableDragonEntity construct(EntityType<? extends TameableDragonEntity> type, Level level) {
@@ -274,18 +273,20 @@ public abstract class TameableDragonEntity extends TamableAnimal implements
     @Override
     public void readAdditionalSaveData(CompoundTag tag) {
         if (tag.contains(DragonLifeStage.SERIALIZATION_KEY)) {
-            this.setLifeStage(DragonLifeStage.byName(tag.getString(DragonLifeStage.SERIALIZATION_KEY)), false, false);
+            this.setLifeStage(DragonLifeStage.byName(tag.getStringOr(DragonLifeStage.SERIALIZATION_KEY, "")), false, false);
         }
         if (tag.contains(DragonVariant.SERIALIZATION_KEY)) {
-            this.setVariant(DragonVariant.REGISTRY.getValue(tryParse(tag.getString(DragonVariant.SERIALIZATION_KEY))));
+            this.setVariant(DragonVariant.REGISTRY.getValue(tryParse(tag.getStringOr(DragonVariant.SERIALIZATION_KEY, ""))));
         } else if (tag.contains(DragonType.SERIALIZATION_KEY)) {
-            this.overrideType(DragonType.REGISTRY.getValue(tryParse(tag.getString(DragonType.SERIALIZATION_KEY))), false);
+            this.overrideType(DragonType.REGISTRY.getValue(tryParse(tag.getStringOr(DragonType.SERIALIZATION_KEY, ""))), false);
         } else {
             this.applyType(this.getDragonType());
         }
         /// to skip {@link OldUsersConverter#convertMobOwnerIfNecessary} and prevent error when invoked on client side
+        /// 1.21.5 routes owner loading through EntityReference#readWithOldOwnerConversion, which still
+        /// calls the converter with level.getServer() - null on the client - so this guard is still required.
         Tag owner = tag.get("Owner");
-        tag.putUUID("Owner", Util.NIL_UUID);
+        tag.store("Owner", UUIDUtil.CODEC, Util.NIL_UUID);
         super.readAdditionalSaveData(tag);
         UUID uuid;
         if (owner == null) {
@@ -293,25 +294,26 @@ public abstract class TameableDragonEntity extends TamableAnimal implements
             uuid = null;
         } else if (owner.getType() == IntArrayTag.TYPE && ((IntArrayTag) owner).getAsIntArray().length == 4) {
             tag.put("Owner", owner);
-            uuid = NbtUtils.loadUUID(owner);
+            uuid = UUIDUtil.uuidFromIntArray(((IntArrayTag) owner).getAsIntArray());
         } else {
             tag.put("Owner", owner);
             var server = this.getServer();
+            var name = owner.asString().orElse("");
             try {
                 uuid = server == null
-                        ? UUIDUtil.createOfflinePlayerUUID(owner.getAsString())
-                        : OldUsersConverter.convertMobOwnerIfNecessary(server, owner.getAsString());
+                        ? UUIDUtil.createOfflinePlayerUUID(name)
+                        : OldUsersConverter.convertMobOwnerIfNecessary(server, name);
             } catch (Throwable throwable) {
                 uuid = null;
                 LOGGER.warn("Failed to resolve owner by uuid", throwable);
             }
         }
         if (uuid == null) {
-            this.setOwnerUUID(null);
+            this.setOwnerReference(null);
             this.setTame(false, true);
         } else {
             try {
-                this.setOwnerUUID(uuid);
+                this.setOwnerReference(new EntityReference<>(uuid));
                 this.setTame(true, false);
             } catch (Throwable throwable) {
                 this.setTame(false, true);
@@ -400,10 +402,10 @@ public abstract class TameableDragonEntity extends TamableAnimal implements
     }
 
     @Override
-    protected int calculateFallDamage(float distance, float damageMultiplier) {return 0;}
+    protected int calculateFallDamage(double distance, float damageMultiplier) {return 0;}
 
     @Override
-    public boolean causeFallDamage(float distance, float multiplier, DamageSource source) {return false;}
+    public boolean causeFallDamage(double distance, float multiplier, DamageSource source) {return false;}
 
     @Override
     protected void checkFallDamage(double y, boolean onGround, BlockState state, BlockPos pos) {}
@@ -632,12 +634,18 @@ public abstract class TameableDragonEntity extends TamableAnimal implements
         return true;
     }
 
-    @Override
+    /// ponytail: 1.21.5 deleted the `Saddleable` interface and moved saddling onto
+    /// `EquipmentSlot.SADDLE` + the `Equippable` component. These two were its
+    /// implementations and now have no caller, but they are kept rather than deleted
+    /// because dropping the interface silently dropped the vanilla-driven saddle paths
+    /// with it — notably dispensers, which used to saddle via `equipSaddle`.
+    /// The dragon's own inventory UI is unaffected. To restore dispenser saddling,
+    /// override `canDispenserEquipIntoSlot`/`canUseSlot` for `EquipmentSlot.SADDLE`
+    /// the way 1.21.5 `Pig` now does.
     public boolean isSaddleable() {
         return !this.isBaby() && this.isTame();
     }
 
-    @Override
     public void equipSaddle(ItemStack stack, @Nullable SoundSource source) {
         this.inventory.saddle.set(stack);
     }
@@ -751,7 +759,7 @@ public abstract class TameableDragonEntity extends TamableAnimal implements
 
     private void setSaddled(boolean saddled) {
         if (!this.firstTick && saddled) {
-            this.playSound(SoundEvents.HORSE_SADDLE, 0.5F, 1.0F);
+            this.playSound(SoundEvents.HORSE_SADDLE.value(), 0.5F, 1.0F);
         }
         this.isSaddled = saddled;
     }

@@ -1,5 +1,7 @@
 package net.dragonmounts.neo.common.item;
 
+import net.minecraft.world.item.component.TooltipDisplay;
+import java.util.function.Consumer;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import net.dragonmounts.neo.common.api.DragonTypified;
@@ -41,23 +43,23 @@ public class DragonAmuletItem extends AmuletItem<TameableDragonEntity> implement
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltips, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltips, TooltipFlag flag) {
         var data = stack.get(DataComponents.ENTITY_DATA);
         if (data == null) {
-            tooltips.add(Component.translatable("tooltip.neodragonmounts.missing").withStyle(ChatFormatting.RED));
+            tooltips.accept(Component.translatable("tooltip.neodragonmounts.missing").withStyle(ChatFormatting.RED));
         } else {
-            tooltips.add(Component.translatable("tooltip.neodragonmounts.type", this.type.getName()).withStyle(ChatFormatting.GRAY));
-            data.read(HEALTH_CODEC).ifSuccess(health -> tooltips.add(
+            tooltips.accept(Component.translatable("tooltip.neodragonmounts.type", this.type.getName()).withStyle(ChatFormatting.GRAY));
+            data.read(HEALTH_CODEC).ifSuccess(health -> tooltips.accept(
                     Component.translatable("tooltip.neodragonmounts.health",
                             Component.literal(Float.toString(health)).withStyle(ChatFormatting.GREEN)
                     ).withStyle(ChatFormatting.GRAY))
             );
-            data.read(NAME_CODEC).ifSuccess(name -> tooltips.add(
+            data.read(NAME_CODEC).ifSuccess(name -> tooltips.accept(
                     Component.translatable("tooltip.neodragonmounts.custom_name", name).withStyle(ChatFormatting.GRAY))
             );
             var player = stack.get(DMDataComponents.PLAYER_NAME);
             if (player != null) {
-                tooltips.add(Component.translatable("tooltip.neodragonmounts.owner_name", player).withStyle(ChatFormatting.GRAY));
+                tooltips.accept(Component.translatable("tooltip.neodragonmounts.owner_name", player).withStyle(ChatFormatting.GRAY));
             }
         }
     }

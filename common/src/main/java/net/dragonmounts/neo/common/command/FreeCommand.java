@@ -36,9 +36,10 @@ public class FreeCommand {
         int count = 0;
         for (var target : targets) {
             if (target instanceof TamableAnimal entity) {
-                if (forced || (owner != null && owner.equals(entity.getOwnerUUID()))) {
+                var ref = entity.getOwnerReference();
+                if (forced || (owner != null && ref != null && owner.equals(ref.getUUID()))) {
                     entity.setTame(false, false);
-                    entity.setOwnerUUID(null);
+                    entity.setOwnerReference(null);
                     entity.setOrderedToSit(false);
                     ++count;
                 }

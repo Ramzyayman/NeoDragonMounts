@@ -1,5 +1,7 @@
 package net.dragonmounts.neo.common.item;
 
+import net.minecraft.world.item.component.TooltipDisplay;
+import java.util.function.Consumer;
 import net.dragonmounts.neo.common.api.DragonTypified;
 import net.dragonmounts.neo.common.entity.dragon.DragonLifeStage;
 import net.dragonmounts.neo.common.entity.dragon.ServerDragonEntity;
@@ -96,8 +98,8 @@ public class DragonEssenceItem extends Item implements DragonTypified, EntityCon
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltips, TooltipFlag flag) {
-        tooltips.add(this.type.getName());
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltips, TooltipFlag flag) {
+        tooltips.accept(this.type.getName());
     }
 
     @Override

@@ -51,7 +51,7 @@ public class BooleanEntry extends ConfigEntry<Boolean> {
 
     @Override
     public Boolean load(@Nullable Tag data) {
-        return data instanceof NumericTag ? ((NumericTag) data).getAsByte() != 0 : this.fallback;
+        return data instanceof NumericTag ? ((NumericTag) data).byteValue() != 0 : this.fallback;
     }
 
     @Override

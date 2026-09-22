@@ -230,8 +230,8 @@ public class DragonInventory implements Container, StackedContentsCompatible {
         ItemStack[] stacks = this.stacks;
         Arrays.fill(stacks, empty);
         for (int i = 0, j, n = list.size(), m = stacks.length; i < n; ++i) {
-            var tag = list.getCompound(i);
-            if ((j = tag.getByte("Slot") & 255) == SLOT_ARMOR_INDEX || j >= m) continue;
+            var tag = list.getCompoundOrEmpty(i);
+            if ((j = tag.getByteOr("Slot", (byte) 0) & 255) == SLOT_ARMOR_INDEX || j >= m) continue;
             var stack = stacks[j] = ItemStack.parse(registry, tag).orElse(empty);
             stack.limitSize(this.getMaxStackSize(stack));
         }

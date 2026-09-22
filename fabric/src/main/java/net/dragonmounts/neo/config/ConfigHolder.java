@@ -31,7 +31,7 @@ public abstract class ConfigHolder<S> {
         var source = this.source;
         if (Files.isRegularFile(source)) {
             try (BufferedReader reader = Files.newBufferedReader(source, Charsets.UTF_8)) {
-                var root = TagParser.parseTag(IOUtils.toString(reader));
+                var root = TagParser.parseCompoundFully(IOUtils.toString(reader));
                 for (var entry : this.getEntries()) {
                     read(entry, root.get(entry.key));
                 }
@@ -47,7 +47,7 @@ public abstract class ConfigHolder<S> {
         if (Files.isRegularFile(source)) {
             CompoundTag existing;
             try (BufferedReader reader = Files.newBufferedReader(source, Charsets.UTF_8)) {
-                existing = TagParser.parseTag(IOUtils.toString(reader));
+                existing = TagParser.parseCompoundFully(IOUtils.toString(reader));
             } catch (Exception exception) {
                 existing = null;
                 LOGGER.error("Exception reading {}", source, exception);

@@ -3,6 +3,7 @@ package net.dragonmounts.neo.common.block;
 import com.mojang.serialization.MapCodec;
 import net.dragonmounts.neo.common.block.entity.DragonCoreBlockEntity;
 import net.dragonmounts.neo.common.init.DMBlockEntities;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -90,17 +91,23 @@ public class DragonCoreBlock extends BaseEntityBlock {
         builder.add(HORIZONTAL_FACING);
     }
 
+    /// 1.21.5 replaced `onRemove` with `affectNeighborsAfterRemoval`, but it is NOT a
+    /// drop-in rename: LevelChunk#setBlockState removes the block entity *before* calling
+    /// it, so `getBlockEntity(pos)` here is always null and dropping contents from this
+    /// method would silently void the core's inventory.
+    ///
+    /// Contents are now dropped by BlockEntity#preRemoveSideEffects, which runs while the
+    /// block entity is still alive and already handles any Container - which
+    /// DragonCoreBlockEntity is, via RandomizableContainerBlockEntity/WorldlyContainer.
+    /// So dropping is inherited and must NOT be repeated here, or items would duplicate.
+    ///
+    /// The old `!old.is(neo.getBlock())` guard is now implicit: vanilla only invokes this
+    /// when the block actually changed.
     @Override
-    protected void onRemove(BlockState old, Level level, BlockPos pos, BlockState neo, boolean bl) {
-        if (!old.is(neo.getBlock())) {
-            level.playSound(null, pos, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.BLOCKS, 0.3F, level.random.nextFloat() * 0.1F + 0.3F);
-            level.playSound(null, pos, SoundEvents.ENDER_EYE_DEATH, SoundSource.BLOCKS, 2.0F, level.random.nextFloat() * 0.1F + 0.3F);
-            if (level.getBlockEntity(pos) instanceof DragonCoreBlockEntity core) {
-                Containers.dropContents(level, pos, core);
-                level.updateNeighbourForOutputSignal(pos, old.getBlock());
-            }
-            super.onRemove(old, level, pos, neo, bl);
-        }
+    protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
+        level.playSound(null, pos, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.BLOCKS, 0.3F, level.random.nextFloat() * 0.1F + 0.3F);
+        level.playSound(null, pos, SoundEvents.ENDER_EYE_DEATH, SoundSource.BLOCKS, 2.0F, level.random.nextFloat() * 0.1F + 0.3F);
+        Containers.updateNeighboursAfterDestroy(state, level, pos);
     }
 
     @Override

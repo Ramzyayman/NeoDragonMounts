@@ -53,7 +53,7 @@ public abstract class EntityUtil extends /*to access protected methods*/ EntityT
         } else {
             offset = 0.0D;
         }
-        entity.moveTo(x, y + offset, z, Mth.wrapDegrees(level.random.nextFloat() * 360.0F), 0.0F);
+        entity.snapTo(x, y + offset, z, Mth.wrapDegrees(level.random.nextFloat() * 360.0F), 0.0F);
         if (entity instanceof Mob mob) {
             mob.yHeadRot = mob.getYRot();
             mob.yBodyRot = mob.getYRot();
@@ -154,7 +154,7 @@ public abstract class EntityUtil extends /*to access protected methods*/ EntityT
                         centerY + random.nextIntBetweenInclusive(-1, 1),
                         centerZ + offsetZ
                 ))) {
-                    entity.moveTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, entity.getYRot(), entity.getXRot());
+                    entity.snapTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, entity.getYRot(), entity.getXRot());
                     entity.getNavigation().stop();
                     return true;
                 }

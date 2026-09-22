@@ -24,8 +24,7 @@ public abstract class ConfigEntry<T> {
 
     public final MutableComponent getDisplayName() {
         return ComponentUtils.wrapInSquareBrackets(Component.translatable(this.name)).withStyle(style ->
-                style.withHoverEvent(new HoverEvent(
-                        HoverEvent.Action.SHOW_TEXT, Component.translatable(this.tooltip))
+                style.withHoverEvent(new HoverEvent.ShowText(Component.translatable(this.tooltip))
                 ).withColor(ChatFormatting.GREEN)
         );
     }

@@ -21,7 +21,7 @@ public class StormType extends WaterType {
     @Override
     public <T extends LivingEntity & DragonTypified.Mutable> void onThunderHit(T entity, LightningBolt bolt) {
         if (entity instanceof HatchableDragonEggEntity) return;
-        addOrMergeEffect(entity, MobEffects.DAMAGE_BOOST, 1200, 1, false, true, true);//35s
+        addOrMergeEffect(entity, MobEffects.STRENGTH, 1200, 1, false, true, true);//35s
     }
 
     @Override

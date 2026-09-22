@@ -110,16 +110,16 @@ public class ServerDragonEntity extends TameableDragonEntity {
         super.readAdditionalSaveData(tag);
         this.setInSittingPose(this.isOrderedToSit() && this.onGround());
         if (tag.contains(SERIALIZATION_KEY_SADDLE)) {
-            this.inventory.saddle.setLocal(ItemStack.parseOptional(this.registryAccess(), tag.getCompound(SERIALIZATION_KEY_SADDLE)), true);
+            this.inventory.saddle.setLocal(ItemStack.parse(this.registryAccess(), tag.getCompoundOrEmpty(SERIALIZATION_KEY_SADDLE)).orElse(ItemStack.EMPTY), true);
         }
         if (tag.contains(SERIALIZATION_KEY_SHEARED)) {
-            this.setSheared(tag.getInt(SERIALIZATION_KEY_SHEARED));
+            this.setSheared(tag.getIntOr(SERIALIZATION_KEY_SHEARED, 0));
         }
         if (tag.contains(SERIALIZATION_KEY_AGE_LOCKED)) {
-            this.setAgeLocked(tag.getBoolean(SERIALIZATION_KEY_AGE_LOCKED));
+            this.setAgeLocked(tag.getBooleanOr(SERIALIZATION_KEY_AGE_LOCKED, false));
         }
         if (tag.contains(DragonInventory.SERIALIZATION_KEY)) {
-            this.inventory.loadItems(tag.getList(DragonInventory.SERIALIZATION_KEY, 10), this.registryAccess());
+            this.inventory.loadItems(tag.getListOrEmpty(DragonInventory.SERIALIZATION_KEY), this.registryAccess());
         }
     }
 
@@ -143,7 +143,7 @@ public class ServerDragonEntity extends TameableDragonEntity {
             if (++this.crystalTicks > 0 && this.getHealth() < this.getMaxHealth()) {
                 this.crystalTicks = -10;
                 this.heal(1.0F);
-                addOrResetEffect(this, MobEffects.DAMAGE_BOOST, 300, 0, false, true, true, 101);//15s
+                addOrResetEffect(this, MobEffects.STRENGTH, 300, 0, false, true, true, 101);//15s
             }
             if (this.random.nextInt(20) == 0) {
                 this.nearestCrystal = this.findCrystal();
@@ -413,7 +413,7 @@ public class ServerDragonEntity extends TameableDragonEntity {
         var egg = new HatchableDragonEggEntity(level);
         egg.overrideType(this.getDragonType(), true);
         var pos = this.position();
-        egg.moveTo(pos.x, pos.y, pos.z, 0.0F, 0.0F);
+        egg.snapTo(pos.x, pos.y, pos.z, 0.0F, 0.0F);
         var cause = this.getLoveCause();
         if (cause == null) {
             cause = mate.getLoveCause();

@@ -51,6 +51,6 @@ public record FluteSound(
                 Optional.of(dragon.getLifeStage())
         ));
         stack.set(DMDataComponents.PLAYER_NAME, player.getName());
-        stack.set(DataComponents.DYED_COLOR, new DyedItemColor(dragon.getDragonType().color, false));
+        stack.set(DataComponents.DYED_COLOR, new DyedItemColor(dragon.getDragonType().color));
     }
 }

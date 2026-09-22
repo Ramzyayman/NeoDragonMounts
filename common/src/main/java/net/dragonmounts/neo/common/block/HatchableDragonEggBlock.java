@@ -19,7 +19,7 @@ public class HatchableDragonEggBlock extends DragonEggBlock implements DragonTyp
         level.removeBlock(pos, false);
         var entity = new HatchableDragonEggEntity(level);
         entity.overrideType(type, true);
-        entity.moveTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
+        entity.snapTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
         entity.setVanilla(isVanilla);
         level.addFreshEntity(entity);
         return InteractionResult.CONSUME;

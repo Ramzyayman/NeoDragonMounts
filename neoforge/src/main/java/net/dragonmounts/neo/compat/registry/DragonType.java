@@ -1,5 +1,6 @@
 package net.dragonmounts.neo.compat.registry;
 
+import net.minecraft.core.component.DataComponentGetter;
 import com.google.common.collect.ImmutableMultimap;
 import com.mojang.serialization.Codec;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
@@ -144,7 +145,7 @@ public class DragonType implements TooltipProvider, DragonTypified {
 
     public <T extends LivingEntity & DragonTypified.Mutable> void onThunderHit(T entity, LightningBolt bolt) {
         if (entity instanceof HatchableDragonEggEntity) return;
-        addOrMergeEffect(entity, MobEffects.DAMAGE_BOOST, 700, 0, false, true, true);//35s
+        addOrMergeEffect(entity, MobEffects.STRENGTH, 700, 0, false, true, true);//35s
     }
 
     public boolean isInHabitat(LivingEntity entity) {
@@ -212,7 +213,7 @@ public class DragonType implements TooltipProvider, DragonTypified {
     }
 
     @Override
-    public void addToTooltip(@NotNull Item.TooltipContext context, Consumer<Component> consumer, @NotNull TooltipFlag flag) {
+    public void addToTooltip(@NotNull Item.TooltipContext context, Consumer<Component> consumer, @NotNull TooltipFlag flag, @NotNull DataComponentGetter getter) {
         consumer.accept(this.getName());
     }
 

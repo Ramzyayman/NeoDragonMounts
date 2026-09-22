@@ -19,7 +19,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Shearable;
 import net.minecraft.world.entity.animal.Bee;
-import net.minecraft.world.entity.animal.Wolf;
+import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -50,7 +50,7 @@ public class TieredShearsItem extends ShearsItem {
         for (var rule : vanilla) {
             list.add(new Tool.Rule(rule.blocks(), rule.speed().map(speed -> speed * factor), rule.correctForDrops()));
         }
-        return new Tool(list.build(), props.defaultMiningSpeed(), props.damagePerBlock());
+        return new Tool(list.build(), props.defaultMiningSpeed(), props.damagePerBlock(), props.canDestroyBlocksInCreative());
     }
 
     protected final ToolMaterial tier;

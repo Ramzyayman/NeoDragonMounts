@@ -63,7 +63,7 @@ public class DoubleEntry extends ConfigEntry<Double> {
 
     @Override
     public Double load(@Nullable Tag data) {
-        return data instanceof NumericTag ? ((NumericTag) data).getAsDouble() : this.host.getDefault();
+        return data instanceof NumericTag ? ((NumericTag) data).doubleValue() : this.host.getDefault();
     }
 
     @Override

@@ -31,8 +31,8 @@ import org.jetbrains.annotations.NotNullByDefault;
 public class DragonNestPiece extends TemplateStructurePiece {
     private static StructurePlaceSettings makeSettings(StructureTemplateManager manager, CompoundTag tag, ResourceLocation structure) {
         return makeSettings(
-                Mirror.valueOf(tag.getString("Mirror")),
-                Rotation.valueOf(tag.getString("Rotation")),
+                Mirror.valueOf(tag.getStringOr("Mirror", "")),
+                Rotation.valueOf(tag.getStringOr("Rotation", "")),
                 getPivot(manager.getOrCreate(structure).getSize())
         );
     }

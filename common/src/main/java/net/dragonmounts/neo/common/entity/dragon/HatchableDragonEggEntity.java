@@ -116,7 +116,7 @@ public class HatchableDragonEggEntity extends LivingEntity implements DynamicAtt
         tag.putInt(SERIALIZATION_KEY_AGE, this.age);
         tag.putBoolean(SERIALIZATION_KEY_VANILLA, this.isVanilla);
         if (this.owner != null) {
-            tag.putUUID("Owner", this.owner);
+            tag.store("Owner", UUIDUtil.CODEC, this.owner);
         }
         if (this.variant != null) {
             tag.putString(DragonVariant.SERIALIZATION_KEY, this.variant);
@@ -127,21 +127,22 @@ public class HatchableDragonEggEntity extends LivingEntity implements DynamicAtt
     public void readAdditionalSaveData(CompoundTag tag) {
         super.readAdditionalSaveData(tag);
         if (tag.contains(DragonType.SERIALIZATION_KEY)) {
-            this.overrideType(DragonType.REGISTRY.getValue(tryParse(tag.getString(DragonType.SERIALIZATION_KEY))), false);
+            this.overrideType(DragonType.REGISTRY.getValue(tryParse(tag.getStringOr(DragonType.SERIALIZATION_KEY, ""))), false);
         }
         if (tag.contains(DragonVariant.SERIALIZATION_KEY)) {
-            this.variant = tag.getString(DragonVariant.SERIALIZATION_KEY);
+            this.variant = tag.getStringOr(DragonVariant.SERIALIZATION_KEY, "");
         }
         if (tag.contains(SERIALIZATION_KEY_AGE)) {
-            this.setAge(tag.getInt(SERIALIZATION_KEY_AGE), !this.firstTick);
+            this.setAge(tag.getIntOr(SERIALIZATION_KEY_AGE, 0), !this.firstTick);
         }
         if (tag.contains(SERIALIZATION_KEY_VANILLA)) {
-            this.setVanilla(tag.getBoolean(SERIALIZATION_KEY_VANILLA));
+            this.setVanilla(tag.getBooleanOr(SERIALIZATION_KEY_VANILLA, false));
         }
-        if (tag.hasUUID("Owner")) {
-            this.owner = tag.getUUID("Owner");
+        var storedOwner = tag.read("Owner", UUIDUtil.CODEC);
+        if (storedOwner.isPresent()) {
+            this.owner = storedOwner.get();
         } else if (tag.contains("Owner")) {
-            var name = tag.getString("Owner");
+            var name = tag.getStringOr("Owner", "");
             var server = this.getServer();
             this.owner = server == null
                     ? UUIDUtil.createOfflinePlayerUUID(name)
@@ -149,7 +150,7 @@ public class HatchableDragonEggEntity extends LivingEntity implements DynamicAtt
         } else {
             this.owner = null;
         }
-        if (tag.getBoolean(SERIALIZATION_KEY_SPAWNER)) {
+        if (tag.getBooleanOr(SERIALIZATION_KEY_SPAWNER, false)) {
             this.hatched = true;
         }
     }
@@ -188,11 +189,6 @@ public class HatchableDragonEggEntity extends LivingEntity implements DynamicAtt
             this.shatter = shatter;
         }
         this.discard();
-    }
-
-    @Override
-    public Iterable<ItemStack> getArmorSlots() {
-        return Collections.singleton(ItemStack.EMPTY);
     }
 
     @Override

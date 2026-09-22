@@ -175,7 +175,7 @@ public class DragonCoreBlockEntity extends RandomizableContainerBlockEntity impl
     public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
         super.loadAdditional(tag, provider);
         this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
-        if (!this.tryLoadLootTable(tag) && tag.contains("Items", 9)) {
+        if (!this.tryLoadLootTable(tag) && tag.getList("Items").isPresent()) {
             ContainerHelper.loadAllItems(tag, this.items, provider);
         }
     }

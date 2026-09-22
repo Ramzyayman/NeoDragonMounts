@@ -5,19 +5,19 @@ import net.dragonmounts.neo.common.api.DragonTypified;
 import net.dragonmounts.neo.common.init.DMDataComponents;
 import net.dragonmounts.neo.compat.registry.DragonType;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
-import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.equipment.ArmorType;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-public class DragonScaleArmorItem extends ArmorItem implements DragonTypified {
+public class DragonScaleArmorItem extends Item implements DragonTypified {
     public final DragonType type;
     public final @Nullable DescribedArmorEffect effect;
 
     public DragonScaleArmorItem(DragonType type, @Nullable DescribedArmorEffect effect, ArmorType slot, Properties props) {
-        super(type.material, slot, props.component(DMDataComponents.DRAGON_TYPE, type));
+        super(props.humanoidArmor(type.material, slot).component(DMDataComponents.DRAGON_TYPE, type));
         this.type = type;
         this.effect = effect;
     }

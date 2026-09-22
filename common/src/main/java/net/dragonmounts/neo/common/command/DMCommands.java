@@ -47,7 +47,7 @@ public class DMCommands {
     public static Component createClassCastException(Entity entity, Class<?> clazz) {
         return Component.literal("java.lang.ClassCastException: ").append(Component.literal(entity.getClass().getName())
                 .setStyle(Style.EMPTY.withInsertion(entity.getStringUUID()).withHoverEvent(
-                        new HoverEvent(SHOW_ENTITY, new HoverEvent.EntityTooltipInfo(entity.getType(), entity.getUUID(), entity.getName()))
+                        new HoverEvent.ShowEntity(new HoverEvent.EntityTooltipInfo(entity.getType(), entity.getUUID(), entity.getName()))
                 ))
         ).append(" cannot be cast to " + clazz.getName());
     }

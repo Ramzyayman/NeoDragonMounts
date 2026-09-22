@@ -27,7 +27,7 @@ public class DMDataComponents {
     public static final DataComponentType<Component> PLAYER_NAME = registerComponent(
             "player_name",
             builder -> builder.cacheEncoding()
-                    .persistent(ComponentSerialization.FLAT_CODEC)
+                    .persistent(ComponentSerialization.CODEC)
                     .networkSynchronized(ComponentSerialization.STREAM_CODEC)
     );
     public static final DataComponentType<ScoreboardInfo> SCORES = registerComponent(

@@ -3,7 +3,7 @@ package net.dragonmounts.neo.common.util;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.random.SimpleWeightedRandomList;
+import net.minecraft.util.random.WeightedList;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.SpawnData;
 import net.minecraft.world.level.block.entity.trialspawner.TrialSpawnerConfig;
@@ -25,7 +25,7 @@ public class BlockUtil {
                 config.totalMobsAddedPerPlayer(),
                 config.simultaneousMobsAddedPerPlayer(),
                 config.ticksBetweenSpawn(),
-                SimpleWeightedRandomList.single(new SpawnData(entity, Optional.empty(), Optional.empty())),
+                WeightedList.of(new SpawnData(entity, Optional.empty(), Optional.empty())),
                 config.lootTablesToEject(),
                 config.itemsToDropWhenOminous()
         );

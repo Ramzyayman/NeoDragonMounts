@@ -203,7 +203,7 @@ public class ClientDragonEntity extends TameableDragonEntity {
     @Override
     protected void tickRidden(Player player, Vec3 input) {
         super.tickRidden(player, input);
-        if (this.onGround() && this.isControlledByLocalInstance()) {
+        if (this.onGround() && this.isLocalInstanceAuthoritative()) {
             // handle jump
             float power = this.pendingJumpPower;
             this.pendingJumpPower = 0.0F;

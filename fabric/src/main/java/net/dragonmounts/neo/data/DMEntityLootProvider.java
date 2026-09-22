@@ -7,8 +7,9 @@ import net.dragonmounts.neo.common.item.DragonScalesItem;
 import net.dragonmounts.neo.compat.registry.DragonType;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableProvider;
+import net.minecraft.advancements.critereon.DataComponentMatchers;
 import net.minecraft.advancements.critereon.EnchantmentPredicate;
-import net.minecraft.advancements.critereon.ItemSubPredicates;
+import net.minecraft.core.component.predicates.DataComponentPredicates;
 import net.minecraft.advancements.critereon.MinMaxBounds;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
@@ -28,7 +29,7 @@ import java.util.function.Consumer;
 import static net.minecraft.advancements.critereon.EntityEquipmentPredicate.Builder.equipment;
 import static net.minecraft.advancements.critereon.EntityFlagsPredicate.Builder.flags;
 import static net.minecraft.advancements.critereon.EntityPredicate.Builder.entity;
-import static net.minecraft.advancements.critereon.ItemEnchantmentsPredicate.enchantments;
+import static net.minecraft.core.component.predicates.EnchantmentsPredicate.enchantments;
 import static net.minecraft.advancements.critereon.ItemPredicate.Builder.item;
 import static net.minecraft.world.level.storage.loot.LootPool.lootPool;
 import static net.minecraft.world.level.storage.loot.LootTable.lootTable;
@@ -52,10 +53,12 @@ public class DMEntityLootProvider extends SimpleFabricLootTableProvider {
         return AnyOfCondition.anyOf(
                 hasProperties(LootContext.EntityTarget.THIS, entity().flags(flags().setOnFire(true))),
                 hasProperties(LootContext.EntityTarget.DIRECT_ATTACKER, entity().equipment(equipment().mainhand(
-                        item().withSubPredicate(ItemSubPredicates.ENCHANTMENTS, enchantments(List.of(new EnchantmentPredicate(
-                                registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(EnchantmentTags.SMELTS_LOOT),
-                                MinMaxBounds.Ints.ANY
-                        ))))
+                        item().withComponents(DataComponentMatchers.Builder.components()
+                                .partial(DataComponentPredicates.ENCHANTMENTS, enchantments(List.of(new EnchantmentPredicate(
+                                        registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(EnchantmentTags.SMELTS_LOOT),
+                                        MinMaxBounds.Ints.ANY
+                                ))))
+                                .build())
                 )))
         );
     }

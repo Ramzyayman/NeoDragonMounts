@@ -83,7 +83,7 @@ public class DragonArmorUpgradeRecipe implements SmithingRecipe {
     }
 
     private final Optional<Ingredient> template = Optional.of(Ingredient.of(Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE));
-    private final Optional<Ingredient> base = Optional.of(Ingredient.of(DMItems.DIAMOND_DRAGON_ARMOR));
+    private final Ingredient base = Ingredient.of(DMItems.DIAMOND_DRAGON_ARMOR);
     private final Optional<Ingredient> addition;
     private @Nullable PlacementInfo placementInfo;
 
@@ -114,7 +114,7 @@ public class DragonArmorUpgradeRecipe implements SmithingRecipe {
                         result.set(DataComponents.ATTRIBUTE_MODIFIERS, new ItemAttributeModifiers(merge(
                                 component.modifiers(),
                                 DMItems.NETHERITE_DRAGON_ARMOR
-                        ), component.showInTooltip()));
+                        )));
                         return result;
                     }
                 }
@@ -125,7 +125,7 @@ public class DragonArmorUpgradeRecipe implements SmithingRecipe {
         result.set(DataComponents.ATTRIBUTE_MODIFIERS, new ItemAttributeModifiers(found ? builder.build() : merge(
                 component.modifiers(),
                 DMItems.DIAMOND_DRAGON_ARMOR
-        ), component.showInTooltip()));
+        )));
         return result;
     }
 
@@ -135,7 +135,7 @@ public class DragonArmorUpgradeRecipe implements SmithingRecipe {
     }
 
     @Override
-    public Optional<Ingredient> baseIngredient() {
+    public Ingredient baseIngredient() {
         return this.base;
     }
 
@@ -152,7 +152,7 @@ public class DragonArmorUpgradeRecipe implements SmithingRecipe {
     @Override
     public PlacementInfo placementInfo() {
         if (this.placementInfo == null) {
-            this.placementInfo = PlacementInfo.createFromOptionals(List.of(this.template, this.base, this.addition));
+            this.placementInfo = PlacementInfo.createFromOptionals(List.of(this.template, Optional.of(this.base), this.addition));
         }
         return this.placementInfo;
     }
@@ -161,7 +161,7 @@ public class DragonArmorUpgradeRecipe implements SmithingRecipe {
     public List<RecipeDisplay> display() {
         return Collections.singletonList(new SmithingRecipeDisplay(
                 Ingredient.optionalIngredientToDisplay(this.template),
-                Ingredient.optionalIngredientToDisplay(this.base),
+                this.base.display(),
                 Ingredient.optionalIngredientToDisplay(this.addition),
                 new SlotDisplay.ItemStackSlotDisplay(new ItemStack(DMItems.NETHERITE_DRAGON_ARMOR)),
                 new SlotDisplay.ItemSlotDisplay(Items.SMITHING_TABLE)

@@ -1,6 +1,7 @@
 package net.dragonmounts.neo.common.entity.ai.behavior;
 
 import net.dragonmounts.neo.common.init.DMMemories;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
@@ -8,7 +9,7 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 public class SitWhenOrderedTo extends GoalBehavior<TamableAnimal> {
     @Override
     protected boolean canUse(ServerLevel level, TamableAnimal entity) {
-        if (!entity.isTame() || entity.isInWaterOrBubble() || !entity.onGround()) return false;
+        if (!entity.isTame() || (entity.isInWater() || entity.getInBlockState().is(Blocks.BUBBLE_COLUMN)) || !entity.onGround()) return false;
         var owner = entity.getOwner();
         return owner == null || entity.isOrderedToSit() && (
                 entity.distanceToSqr(owner) >= 144.0 || owner.getLastHurtByMob() == null

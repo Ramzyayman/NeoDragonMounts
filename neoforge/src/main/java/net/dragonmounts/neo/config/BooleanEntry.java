@@ -41,7 +41,7 @@ public class BooleanEntry extends ConfigEntry<Boolean> {
 
     @Override
     public Boolean load(@Nullable Tag data) {
-        return data instanceof NumericTag ? ((NumericTag) data).getAsByte() != 0 : this.host.getDefault();
+        return data instanceof NumericTag ? ((NumericTag) data).byteValue() != 0 : this.host.getDefault();
     }
 
     @Override

@@ -30,7 +30,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.common.util.TriState;
+import net.minecraft.util.TriState;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
@@ -167,7 +167,7 @@ public class DragonMounts {
             if (entity instanceof LivingEntity target) {
                 target.knockback(0.4F, 1, 1);
                 if (iceFlag) {
-                    addOrMergeEffect(target, MobEffects.MOVEMENT_SLOWDOWN, 200, 1, false, true, true);
+                    addOrMergeEffect(target, MobEffects.SLOWNESS, 200, 1, false, true, true);
                     entity.invulnerableTime = 0;
                     entity.hurtServer(level, freeze, 1F);
                 }

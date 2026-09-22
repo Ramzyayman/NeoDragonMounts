@@ -47,7 +47,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements Provider
 
     @Inject(method = "readAdditionalSaveData", at = @At("TAIL"))
     public void readCooldown(CompoundTag tag, CallbackInfo info) {
-        this.neodragonmounts$manager.readNBT(tag.getCompound(SERIALIZATION_KEY));
+        this.neodragonmounts$manager.readNBT(tag.getCompoundOrEmpty(SERIALIZATION_KEY));
     }
 
     @Inject(method = "hurtServer", at = @At(

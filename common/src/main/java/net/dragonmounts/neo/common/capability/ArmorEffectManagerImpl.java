@@ -6,6 +6,7 @@ import net.dragonmounts.neo.common.network.s2c.SyncCooldownPayload;
 import net.dragonmounts.neo.compat.platform.ServerNetworkHandler;
 import net.dragonmounts.neo.compat.registry.ArmorEffect;
 import net.dragonmounts.neo.compat.registry.CooldownCategory;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -179,7 +180,7 @@ public final class ArmorEffectManagerImpl implements ArmorEffectManager {
         for (var category : CooldownCategory.REGISTRY) {
             var name = category.identifier.toString();
             if (tag.contains(name)) {
-                this.setCooldown(category.getId(), tag.getInt(name));
+                this.setCooldown(category.getId(), tag.getIntOr(name, 0));
             }
         }
     }
@@ -323,7 +324,8 @@ public final class ArmorEffectManagerImpl implements ArmorEffectManager {
             }
         }
         int sum = this.activeN = this.lvlN = 0;
-        for (var stack : player.getArmorSlots()) {
+        for (var slot : EquipmentSlotGroup.ARMOR) {
+            var stack = player.getItemBySlot(slot);
             var source = stack.get(DMDataComponents.ARMOR_EFFECT_SOURCE);
             if (source != null) {
                 source.affect(this, player, stack);

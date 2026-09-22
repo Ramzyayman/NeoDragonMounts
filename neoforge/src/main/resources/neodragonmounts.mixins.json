@@ -4,9 +4,7 @@
   "package": "net.dragonmounts.neo.mixin",
   "compatibilityLevel": "JAVA_21",
   "refmap": "neodragonmounts.refmap.json",
-  "mixins": [
-    "AxeItemMixin",
-    "BredAnimalsTriggerMixin",
+  "mixins": [    "BredAnimalsTriggerMixin",
     "CameraMixin",
     "ClientTooltipComponentManagerMixin",
     "DebugPacketsMixin",

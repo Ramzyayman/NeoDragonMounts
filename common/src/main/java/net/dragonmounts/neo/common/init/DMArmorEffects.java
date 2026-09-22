@@ -51,7 +51,7 @@ public class DMArmorEffects {
         public boolean activate(ArmorEffectManager manager, Player player, int level) {
             boolean flag = level > 3;
             Level world = player.level();
-            if (flag && !world.isClientSide && manager.getCooldown(this) <= 0 && player.isSprinting() && addOrMergeEffect(player, MobEffects.MOVEMENT_SPEED, 100, 1, true, true, true)) {
+            if (flag && !world.isClientSide && manager.getCooldown(this) <= 0 && player.isSprinting() && addOrMergeEffect(player, MobEffects.SPEED, 100, 1, true, true, true)) {
                 world.playSound(null, player, SoundEvents.GUARDIAN_HURT, SoundSource.NEUTRAL, 1.0F, 1.0F);
                 manager.setCooldown(this, this.cooldown);
             }
@@ -155,7 +155,7 @@ public class DMArmorEffects {
                 return level > 3;
             }
             // use `|` instead of `||` to avoid short-circuit evaluation when trying to add both of these two effects
-            if (level > 3 && manager.getCooldown(this) <= 0 && player.getHealth() < 10 && (addOrMergeEffect(player, MobEffects.DAMAGE_RESISTANCE, 600, 2, true, true, true) | addOrMergeEffect(player, MobEffects.DAMAGE_BOOST, 300, 1, true, true, true))) {
+            if (level > 3 && manager.getCooldown(this) <= 0 && player.getHealth() < 10 && (addOrMergeEffect(player, MobEffects.RESISTANCE, 600, 2, true, true, true) | addOrMergeEffect(player, MobEffects.STRENGTH, 300, 1, true, true, true))) {
                 world.levelEvent(2003, player.blockPosition(), 0);
                 world.playSound(null, player, SoundEvents.END_PORTAL_SPAWN, SoundSource.HOSTILE, 0.05F, 1.0F);
                 manager.setCooldown(this, this.cooldown);
@@ -338,7 +338,7 @@ public class DMArmorEffects {
         public boolean activate(ArmorEffectManager manager, Player player, int level) {
             boolean flag = level > 3;
             if (flag && !player.level().isClientSide) {
-                addOrResetEffect(player, MobEffects.DIG_SPEED, 600, 0, true, true, true, 201);
+                addOrResetEffect(player, MobEffects.HASTE, 600, 0, true, true, true, 201);
             }
             return flag;
         }
@@ -392,7 +392,7 @@ public class DMArmorEffects {
         @Override
         public boolean activate(ArmorEffectManager manager, Player player, int level) {
             boolean flag = level > 3;
-            if (flag && !player.level().isClientSide && !player.level().isDay() && manager.getCooldown(this) <= 0 && addOrMergeEffect(player, MobEffects.DAMAGE_BOOST, 300, 0, true, true, true)) {
+            if (flag && !player.level().isClientSide && !player.level().isBrightOutside() && manager.getCooldown(this) <= 0 && addOrMergeEffect(player, MobEffects.STRENGTH, 300, 0, true, true, true)) {
                 manager.setCooldown(this, this.cooldown);
             }
             return flag;

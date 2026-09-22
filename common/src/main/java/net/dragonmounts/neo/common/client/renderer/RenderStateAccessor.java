@@ -1,53 +1,27 @@
 package net.dragonmounts.neo.common.client.renderer;
 
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormat;
-import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 
-import static net.dragonmounts.neo.common.client.renderer.DMCoreShaders.RENDERTYPE_ENTITY_CUTOUT_DECAL;
-import static net.dragonmounts.neo.common.client.renderer.DMCoreShaders.RENDERTYPE_ENTITY_TRANSLUCENT_EMISSIVE_DECAL;
-
-public abstract class RenderStateAccessor extends RenderStateShard {
-    public static final ShaderStateShard RENDERTYPE_ENTITY_CUTOUT_DECAL_SHADER = new ShaderStateShard(RENDERTYPE_ENTITY_CUTOUT_DECAL);
-    public static final ShaderStateShard RENDERTYPE_ENTITY_TRANSLUCENT_EMISSIVE_DECAL_SHADER = new ShaderStateShard(RENDERTYPE_ENTITY_TRANSLUCENT_EMISSIVE_DECAL);
+/// ponytail: the masked dissolve pipeline is stubbed out for the duration of the
+/// 1.21.4 -> 26.1 port. Rendering was rewritten in 1.21.5, again in 1.21.11 and again
+/// in 26.1, so implementing it at each hop would mean writing the hardest code in the
+/// mod four times. These fall back to vanilla render types instead: a dying dragon
+/// simply disappears rather than eroding away. Everything else renders normally.
+///
+/// Rebuild the real pipeline ONCE, at 26.1. The full behavioural spec — data flow,
+/// shader logic and acceptance criteria — is in porting/dissolve-effect-spec.md.
+///
+/// The `mask` parameter is deliberately retained and ignored so call sites stay
+/// untouched and the restored signature is already in place.
+public final class RenderStateAccessor {
+    private RenderStateAccessor() {}
 
     public static RenderType entityCutoutDecal(ResourceLocation texture, ResourceLocation mask) {
-        return RenderType.create(
-                "entity_cutout_decal",
-                DefaultVertexFormat.NEW_ENTITY,
-                VertexFormat.Mode.QUADS,
-                1536,
-                RenderType.CompositeState.builder()
-                        .setShaderState(RenderStateAccessor.RENDERTYPE_ENTITY_CUTOUT_DECAL_SHADER)
-                        .setTextureState(new MaskedTextureStateShard(texture, mask))
-                        .setTransparencyState(NO_TRANSPARENCY)
-                        .setCullState(NO_CULL)
-                        .setLightmapState(LIGHTMAP)
-                        .setOverlayState(OVERLAY)
-                        .createCompositeState(true)
-        );
+        return RenderType.entityCutoutNoCull(texture);
     }
 
     public static RenderType entityTranslucentEmissiveDecal(ResourceLocation texture, ResourceLocation mask) {
-        return RenderType.create(
-                "entity_translucent_emissive_decal",
-                DefaultVertexFormat.NEW_ENTITY,
-                VertexFormat.Mode.QUADS,
-                1536,
-                RenderType.CompositeState.builder()
-                        .setShaderState(RenderStateAccessor.RENDERTYPE_ENTITY_TRANSLUCENT_EMISSIVE_DECAL_SHADER)
-                        .setTextureState(new MaskedTextureStateShard(texture, mask))
-                        .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-                        .setCullState(NO_CULL)
-                        .setWriteMaskState(COLOR_WRITE)
-                        .setOverlayState(OVERLAY)
-                        .createCompositeState(false)
-        );
-    }
-
-    private RenderStateAccessor(String a, Runnable b, Runnable c) {
-        super(a, b, c);
+        return RenderType.entityTranslucentEmissive(texture);
     }
 }

@@ -57,12 +57,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements Provider
 
     @Inject(method = "readAdditionalSaveData", at = @At("TAIL"))
     public void readCooldown(CompoundTag tag, CallbackInfo info) {
-        this.neodragonmounts$manager.readNBT(tag.getCompound(SERIALIZATION_KEY));
-    }
-
-    @ModifyExpressionValue(method = "hurtCurrentlyUsedShield", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;is(Lnet/minecraft/world/item/Item;)Z"))
-    public boolean isShield(boolean original) {
-        return original || this.useItem.getItem() instanceof DragonScaleShieldItem;
+        this.neodragonmounts$manager.readNBT(tag.getCompoundOrEmpty(SERIALIZATION_KEY));
     }
 
     @Inject(method = "hurtServer", at = @At(
@@ -118,7 +113,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements Provider
             if (entity instanceof LivingEntity target) {
                 target.knockback(0.4F, 1, 1);
                 if (iceFlag) {
-                    addOrMergeEffect(target, MobEffects.MOVEMENT_SLOWDOWN, 200, 1, false, true, true);
+                    addOrMergeEffect(target, MobEffects.SLOWNESS, 200, 1, false, true, true);
                     entity.invulnerableTime = 0;
                     entity.hurtServer(level, freeze, 1F);
                 }

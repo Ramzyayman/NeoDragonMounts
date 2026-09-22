@@ -61,7 +61,7 @@ public class IntEntry extends ConfigEntry<Integer> implements IntSupplier {
 
     @Override
     public Integer load(@Nullable Tag data) {
-        return data instanceof NumericTag ? ((NumericTag) data).getAsInt() : this.host.getDefault();
+        return data instanceof NumericTag ? ((NumericTag) data).intValue() : this.host.getDefault();
     }
 
     @Override

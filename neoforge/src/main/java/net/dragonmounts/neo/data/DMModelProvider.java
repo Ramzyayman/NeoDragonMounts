@@ -10,6 +10,7 @@ import net.dragonmounts.neo.common.item.*;
 import net.dragonmounts.neo.compat.registry.*;
 import net.minecraft.client.color.item.Dye;
 import net.minecraft.client.color.item.ItemTintSource;
+import net.minecraft.client.data.models.model.ModelLocationUtils;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.ModelProvider;
@@ -28,7 +29,9 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 
 import static net.dragonmounts.neo.common.DragonMountsShared.makeId;
+import static net.minecraft.client.data.models.BlockModelGenerators.plainVariant;
 import static net.minecraft.client.data.models.BlockModelGenerators.createSimpleBlock;
+import static net.minecraft.client.data.models.ItemModelGenerators.*;
 import static net.minecraft.client.data.models.model.ItemModelUtils.*;
 import static net.minecraft.client.data.models.model.ModelLocationUtils.getModelLocation;
 import static net.minecraft.client.data.models.model.TextureMapping.getItemTexture;
@@ -63,7 +66,7 @@ public class DMModelProvider extends ModelProvider {
         {
             var particle = TextureMapping.particle(makeId("block/dragon_core_break"));
             var block = DMBlocks.DRAGON_CORE.get();
-            blocks.blockStateOutput.accept(createSimpleBlock(block, ModelTemplates.PARTICLE_ONLY.create(block, particle, blocks.modelOutput)));
+            blocks.blockStateOutput.accept(createSimpleBlock(block, plainVariant(ModelTemplates.PARTICLE_ONLY.create(block, particle, blocks.modelOutput))));
             var item = block.asItem();
             blocks.itemModelOutput.accept(item, ItemModelUtils.specialModel(
                     ModelTemplates.SHULKER_BOX_INVENTORY.create(item, particle, blocks.modelOutput),
@@ -124,7 +127,11 @@ public class DMModelProvider extends ModelProvider {
     }
 
     public static void generateSpawnEgg(ItemModelGenerators gen, ItemHolder<?> item, int primaryColor, int secondaryColor) {
-        gen.generateSpawnEgg(item.get(), primaryColor, secondaryColor);
+        gen.itemModelOutput.accept(item.get(), tintedModel(
+                ModelLocationUtils.decorateItemModelLocation("template_spawn_egg"),
+                constantTint(primaryColor),
+                constantTint(secondaryColor)
+        ));
     }
 
     public static void generateFlute(ItemModelGenerators gen, Item flute) {
@@ -173,10 +180,10 @@ public class DMModelProvider extends ModelProvider {
         var suit = type.getInstance(DragonScaleArmorSuit.class, null);
         if (suit == null) return;
         var assets = suit.type.material.assetId();
-        gen.generateTrimmableItem(suit.getHelmet(), assets, "helmet", false);
-        gen.generateTrimmableItem(suit.getChestplate(), assets, "chestplate", false);
-        gen.generateTrimmableItem(suit.getLeggings(), assets, "leggings", false);
-        gen.generateTrimmableItem(suit.getBoots(), assets, "boots", false);
+        gen.generateTrimmableItem(suit.getHelmet(), assets, TRIM_PREFIX_HELMET, false);
+        gen.generateTrimmableItem(suit.getChestplate(), assets, TRIM_PREFIX_CHESTPLATE, false);
+        gen.generateTrimmableItem(suit.getLeggings(), assets, TRIM_PREFIX_LEGGINGS, false);
+        gen.generateTrimmableItem(suit.getBoots(), assets, TRIM_PREFIX_BOOTS, false);
     }
 
     public static void generateDragonHeads(BlockModelGenerators gen, Collection<DragonVariant> variants) {
@@ -184,8 +191,8 @@ public class DMModelProvider extends ModelProvider {
         var item = gen.itemModelOutput;
         for (DragonVariant variant : variants) {
             var head = variant.head;
-            state.accept(createSimpleBlock(head.standing.get(), VANILLA_SKULL));
-            state.accept(createSimpleBlock(head.wall.get(), VANILLA_SKULL));
+            state.accept(createSimpleBlock(head.standing.get(), plainVariant(VANILLA_SKULL)));
+            state.accept(createSimpleBlock(head.wall.get(), plainVariant(VANILLA_SKULL)));
             item.accept(head.item.get(), specialModel(VANILLA_DRAGON_HEAD, new DragonHeadRenderer.Unbaked(variant, 0.0F)));
         }
     }

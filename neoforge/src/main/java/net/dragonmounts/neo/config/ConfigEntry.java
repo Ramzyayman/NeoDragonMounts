@@ -23,8 +23,7 @@ public abstract class ConfigEntry<T> {
     public final MutableComponent getDisplayName() {
         var name = this.host.getSpec().getTranslationKey();
         if (name == null) return ComponentUtils.wrapInSquareBrackets(Component.literal(formatName(this.host)));
-        return ComponentUtils.wrapInSquareBrackets(Component.translatable(name)).withStyle(Style.EMPTY.withHoverEvent(new HoverEvent(
-                HoverEvent.Action.SHOW_TEXT, Component.translatable(name + ".tooltip"))
+        return ComponentUtils.wrapInSquareBrackets(Component.translatable(name)).withStyle(Style.EMPTY.withHoverEvent(new HoverEvent.ShowText(Component.translatable(name + ".tooltip"))
         ).withColor(ChatFormatting.GREEN));
     }
 

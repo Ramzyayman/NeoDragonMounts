@@ -1,5 +1,6 @@
 package net.dragonmounts.neo.common.client.renderer.block;
 
+import net.minecraft.world.phys.Vec3;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import com.mojang.serialization.Codec;
@@ -40,7 +41,7 @@ public class DragonCoreRenderer implements BlockEntityRenderer<DragonCoreBlockEn
     }
 
     @Override
-    public void render(DragonCoreBlockEntity core, float ticks, PoseStack matrices, MultiBufferSource buffers, int light, int overlay) {
+    public void render(DragonCoreBlockEntity core, float ticks, PoseStack matrices, MultiBufferSource buffers, int light, int overlay, Vec3 cameraPos) {
         this.render(matrices, buffers, light, overlay, core.getBlockState().getValueOrElse(HORIZONTAL_FACING, Direction.SOUTH), core.getProgress(ticks));
     }
 

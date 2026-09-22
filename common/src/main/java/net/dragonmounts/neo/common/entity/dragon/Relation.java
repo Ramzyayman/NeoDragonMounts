@@ -23,7 +23,8 @@ public enum Relation {
     }
 
     public static boolean isOwner(TameableDragonEntity dragon, Player player) {
-        return player.getUUID().equals(dragon.getOwnerUUID());
+        var owner = dragon.getOwnerReference();
+        return owner != null && player.getUUID().equals(owner.getUUID());
     }
 
     public final void onDeny(Player player) {

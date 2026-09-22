@@ -182,7 +182,7 @@ public class DragonSpawnEggItem extends SpawnEggItem implements EntityContainer<
         if (neo == null) return Optional.empty();
         neo.setBaby(true);
         if (!neo.isBaby()) return Optional.empty();
-        neo.moveTo(pos.x(), pos.y(), pos.z(), 0.0F, 0.0F);
+        neo.snapTo(pos.x(), pos.y(), pos.z(), 0.0F, 0.0F);
         level.addFreshEntityWithPassengers(neo);
         neo.setCustomName(stack.get(DataComponents.CUSTOM_NAME));
         applyScores(level.getScoreboard(), stack, neo);

@@ -1,5 +1,6 @@
 package net.dragonmounts.neo.compat.registry;
 
+import net.minecraft.core.component.DataComponentGetter;
 import com.google.common.collect.ImmutableMultimap;
 import com.mojang.serialization.Codec;
 import net.dragonmounts.neo.common.api.DragonTypified;
@@ -162,7 +163,7 @@ public class DragonType implements TooltipProvider, DragonTypified {
     }
 
     @Override
-    public void addToTooltip(@NotNull Item.TooltipContext context, @NotNull Consumer<Component> consumer, @NotNull TooltipFlag flag) {}
+    public void addToTooltip(@NotNull Item.TooltipContext context, @NotNull Consumer<Component> consumer, @NotNull TooltipFlag flag, @NotNull DataComponentGetter getter) {}
 
     @Override
     public final DragonType getDragonType() {

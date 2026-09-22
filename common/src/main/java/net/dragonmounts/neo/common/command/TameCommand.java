@@ -4,6 +4,7 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -45,9 +46,9 @@ public class TameCommand {
         if (player == null) {
             for (var target : targets) {
                 if (target instanceof TamableAnimal entity) {
-                    if (forced || entity.getOwnerUUID() == null) {
+                    if (forced || entity.getOwnerReference() == null) {
                         entity.setTame(true, true);
-                        entity.setOwnerUUID(uuid);
+                        entity.setOwnerReference(new EntityReference<>(uuid));
                         ++count;
                     }
                     flag = false;
@@ -57,7 +58,7 @@ public class TameCommand {
         } else {
             for (var target : targets) {
                 if (target instanceof TamableAnimal entity) {
-                    if (forced || entity.getOwnerUUID() == null) {
+                    if (forced || entity.getOwnerReference() == null) {
                         entity.tame(player);
                         ++count;
                     }
