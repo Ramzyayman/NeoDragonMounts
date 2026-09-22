@@ -24,7 +24,7 @@ public class DarkBreath extends DragonBreath {
         if (!state.isAir() && level.random.nextFloat() < 0.002F) {
             var cloud = createEffectCloud(level, pos, 1.4F, 600);
             cloud.setOwner(this.dragon);
-            cloud.setParticle(ParticleTypes.SMOKE);
+            cloud.setCustomParticle(ParticleTypes.SMOKE);
             cloud.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 120));
             level.addFreshEntity(cloud);
         }

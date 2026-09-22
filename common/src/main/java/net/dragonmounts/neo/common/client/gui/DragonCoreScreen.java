@@ -1,6 +1,7 @@
 package net.dragonmounts.neo.common.client.gui;
 
 import net.dragonmounts.neo.common.inventory.DragonCoreHandler;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderType;
@@ -26,6 +27,6 @@ public class DragonCoreScreen extends AbstractContainerScreen<DragonCoreHandler>
 
     @Override
     protected void renderBg(GuiGraphics graphics, float ticks, int x, int y) {
-        graphics.blit(RenderType::guiTextured, TEXTURE_LOCATION, this.leftPos, this.topPos, 0.0F, 0.0F, this.imageWidth, this.imageHeight, 256, 256);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE_LOCATION, this.leftPos, this.topPos, 0.0F, 0.0F, this.imageWidth, this.imageHeight, 256, 256);
     }
 }

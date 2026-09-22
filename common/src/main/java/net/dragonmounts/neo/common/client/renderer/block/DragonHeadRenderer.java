@@ -14,6 +14,8 @@ import net.dragonmounts.neo.compat.registry.DragonVariant;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.LightTexture;
+import org.joml.Vector3f;
+import java.util.Set;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -93,6 +95,16 @@ public enum DragonHeadRenderer implements BlockEntityRenderer<DragonHeadBlockEnt
     }
 
     public record Special(float animation, DragonVariant fallback) implements SpecialModelRenderer<DragonVariant> {
+        /// New abstract method in 1.21.6. There is no variant argument here, so the extents are
+        /// taken from the fallback variant's head - the same model render() falls back to.
+        @Override
+        public void getExtents(Set<Vector3f> output) {
+            var model = this.fallback.appearance.getModel(null);
+            if (model == null) return;
+            model.setupBlock(this.animation, 180.0F, 0.75F);
+            model.head.getExtentsForGui(new PoseStack(), output);
+        }
+
         @Override
         public void render(@Nullable DragonVariant variant, ItemDisplayContext context, PoseStack matrices, MultiBufferSource buffers, int light, int overlay, boolean foil) {
             if (variant == null) {

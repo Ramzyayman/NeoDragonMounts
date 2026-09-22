@@ -25,7 +25,7 @@ public class WitherBreath extends DragonBreath {
         if (!state.isAir() && level.random.nextFloat() < 0.002F) {
             var cloud = new AreaEffectCloud(level, pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
             cloud.setOwner(this.dragon);
-            cloud.setParticle(ParticleTypes.SMOKE);
+            cloud.setCustomParticle(ParticleTypes.SMOKE);
             cloud.setRadius(1.4F);
             cloud.setDuration(600);
             cloud.setRadiusPerTick((1.0F - cloud.getRadius()) / cloud.getDuration());

@@ -9,7 +9,8 @@ import net.neoforged.neoforge.attachment.AttachmentType;
 public class DMAttachments {
     public static final AttachmentType<FluteHolder> FLUTE_HOLDER = AttachmentType
             .<FluteHolder>builder(FluteHolderImpl::new)
-            .serialize(ItemStack.OPTIONAL_CODEC.xmap(FluteHolderImpl::of, FluteHolder::getFlute))
+            // serialize(Codec) became serialize(MapCodec) in NeoForge 21.8; fieldOf supplies the key
+            .serialize(ItemStack.OPTIONAL_CODEC.<FluteHolder>xmap(FluteHolderImpl::of, FluteHolder::getFlute).fieldOf("flute"))
             .copyOnDeath()
             .build();
 

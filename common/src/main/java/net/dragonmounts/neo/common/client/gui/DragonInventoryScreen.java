@@ -9,6 +9,8 @@ import net.dragonmounts.neo.common.network.c2s.ToggleSittingByIDPayload;
 import net.dragonmounts.neo.common.network.c2s.ToggleTrustPayload;
 import net.dragonmounts.neo.compat.platform.ClientNetworkHandler;
 import net.minecraft.client.Minecraft;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -176,7 +178,7 @@ public class DragonInventoryScreen extends AbstractContainerScreen<DragonInvento
     @Override
     protected void renderBg(GuiGraphics graphics, float ticks, int x, int y) {
         int left = this.leftPos, top = this.topPos;
-        Function<ResourceLocation, RenderType> renderer = RenderType::guiTextured;
+        RenderPipeline renderer = RenderPipelines.GUI_TEXTURED;
         graphics.blit(renderer, INVENTORY, left + 148, top, 0, 0, 176, this.imageHeight, 256, 256);
         var dragon = (ClientDragonEntity) this.menu.dragon;
         if (dragon.hasChest()) {

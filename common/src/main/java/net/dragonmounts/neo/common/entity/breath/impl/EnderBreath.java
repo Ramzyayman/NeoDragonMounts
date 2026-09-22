@@ -21,7 +21,7 @@ public class EnderBreath extends DragonBreath {
         if (!state.isAir() && level.random.nextFloat() < 0.002F) {
             var cloud = createEffectCloud(level, pos, 1.6F, 750);
             cloud.setOwner(this.dragon);
-            cloud.setParticle(ParticleTypes.DRAGON_BREATH);
+            cloud.setCustomParticle(ParticleTypes.DRAGON_BREATH);
             cloud.addEffect(new MobEffectInstance(MobEffects.INSTANT_DAMAGE, 1));
             level.addFreshEntity(cloud);
         }

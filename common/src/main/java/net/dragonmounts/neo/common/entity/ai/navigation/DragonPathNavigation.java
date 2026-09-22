@@ -21,6 +21,14 @@ public class DragonPathNavigation extends PathNavigation {
         this.dragon = dragon;
     }
 
+    /// New abstract method in 1.21.8. GoalUtils#hasGroundPathNavigation previously tested
+    /// `instanceof GroundPathNavigation`, and this class extends PathNavigation directly, so it
+    /// evaluated to false. Returning false preserves the old behaviour exactly.
+    @Override
+    public boolean canNavigateGround() {
+        return false;
+    }
+
     @Override
     protected PathFinder createPathFinder(int maxVisitedNodes) {
         this.nodeEvaluator = new DragonNodeEvaluator();

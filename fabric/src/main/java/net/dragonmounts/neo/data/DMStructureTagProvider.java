@@ -17,7 +17,7 @@ public class DMStructureTagProvider extends FabricTagProvider<Structure> {
 
     @Override
     protected void addTags(HolderLookup.Provider registries) {
-        this.getOrCreateTagBuilder(DMStructureTags.DRAGON_NESTS)
+        this.builder(DMStructureTags.DRAGON_NESTS)
                 .add(DMStructures.AETHER_DRAGON_NEST)
                 .add(DMStructures.ENCHANTED_DRAGON_NEST)
                 .add(DMStructures.FIRE_DRAGON_NEST)

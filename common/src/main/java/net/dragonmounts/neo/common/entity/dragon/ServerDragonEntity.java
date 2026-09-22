@@ -27,6 +27,7 @@ import net.dragonmounts.neo.config.ServerConfig;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
+import net.dragonmounts.neo.common.util.EntityUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -50,6 +51,8 @@ import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -91,36 +94,26 @@ public class ServerDragonEntity extends TameableDragonEntity {
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag tag) {
-        super.addAdditionalSaveData(tag);
-        tag.putString(DragonVariant.SERIALIZATION_KEY, this.getVariant().identifier.toString());
+    protected void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        output.putString(DragonVariant.SERIALIZATION_KEY, this.getVariant().identifier.toString());
         if (this.stage != null) {
-            tag.putString(DragonLifeStage.SERIALIZATION_KEY, this.stage.getSerializedName());
+            output.putString(DragonLifeStage.SERIALIZATION_KEY, this.stage.getSerializedName());
         }
-        tag.putBoolean(SERIALIZATION_KEY_AGE_LOCKED, this.isAgeLocked());
-        tag.putInt(SERIALIZATION_KEY_SHEARED, this.isSheared() ? this.shearCooldown : 0);
-        var items = this.inventory.saveItems(this.registryAccess());
-        if (!items.isEmpty()) {
-            tag.put(DragonInventory.SERIALIZATION_KEY, items);
-        }
+        output.putBoolean(SERIALIZATION_KEY_AGE_LOCKED, this.isAgeLocked());
+        output.putInt(SERIALIZATION_KEY_SHEARED, this.isSheared() ? this.shearCooldown : 0);
+        this.inventory.saveItems(output, DragonInventory.SERIALIZATION_KEY);
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag tag) {
-        super.readAdditionalSaveData(tag);
+    protected void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
         this.setInSittingPose(this.isOrderedToSit() && this.onGround());
-        if (tag.contains(SERIALIZATION_KEY_SADDLE)) {
-            this.inventory.saddle.setLocal(ItemStack.parse(this.registryAccess(), tag.getCompoundOrEmpty(SERIALIZATION_KEY_SADDLE)).orElse(ItemStack.EMPTY), true);
-        }
-        if (tag.contains(SERIALIZATION_KEY_SHEARED)) {
-            this.setSheared(tag.getIntOr(SERIALIZATION_KEY_SHEARED, 0));
-        }
-        if (tag.contains(SERIALIZATION_KEY_AGE_LOCKED)) {
-            this.setAgeLocked(tag.getBooleanOr(SERIALIZATION_KEY_AGE_LOCKED, false));
-        }
-        if (tag.contains(DragonInventory.SERIALIZATION_KEY)) {
-            this.inventory.loadItems(tag.getListOrEmpty(DragonInventory.SERIALIZATION_KEY), this.registryAccess());
-        }
+        input.read(SERIALIZATION_KEY_SADDLE, ItemStack.CODEC)
+                .ifPresent(stack -> this.inventory.saddle.setLocal(stack, true));
+        input.getInt(SERIALIZATION_KEY_SHEARED).ifPresent(this::setSheared);
+        this.setAgeLocked(input.getBooleanOr(SERIALIZATION_KEY_AGE_LOCKED, this.isAgeLocked()));
+        this.inventory.loadItems(input, DragonInventory.SERIALIZATION_KEY);
     }
 
     public void spawnEssence(ItemStack stack) {
@@ -296,8 +289,9 @@ public class ServerDragonEntity extends TameableDragonEntity {
             this.setTarget(null);
             this.getNavigation().stop();
             this.setInSittingPose(false);
-            var tag = new CompoundTag();
-            if (this.save(tag) && player.setEntityOnShoulder(tag)) {
+            /// Player#setEntityOnShoulder still takes a CompoundTag, but Entity#save writes to a
+            /// ValueOutput now, so bridge via EntityUtil - same shape as vanilla ShoulderRidingEntity.
+            if (player.setEntityOnShoulder(EntityUtil.saveWithId(this, new CompoundTag()))) {
                 this.discard();
             }
         } else if (this.isSaddled) {

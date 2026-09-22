@@ -1,5 +1,6 @@
 package net.dragonmounts.neo.common.client.gui;
 
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.RenderType;
@@ -32,7 +33,7 @@ public class IconToggleButton extends ToggleButton {
         } else {
             icon = this.getState() ? Icon.LOCKED : Icon.UNLOCKED;
         }
-        guiGraphics.blitSprite(RenderType::guiTextured, icon.sprite, this.getX(), this.getY(), this.width, this.height);
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, icon.sprite, this.getX(), this.getY(), this.width, this.height);
     }
 
     enum Icon {

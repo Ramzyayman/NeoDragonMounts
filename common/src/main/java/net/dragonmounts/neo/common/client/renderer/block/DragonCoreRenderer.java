@@ -10,6 +10,8 @@ import net.dragonmounts.neo.common.block.entity.DragonCoreBlockEntity;
 import net.dragonmounts.neo.common.client.model.DragonCoreModel;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayers;
+import org.joml.Vector3f;
+import java.util.Set;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -65,6 +67,15 @@ public class DragonCoreRenderer implements BlockEntityRenderer<DragonCoreBlockEn
         @Override
         public void render(ItemDisplayContext context, PoseStack matrices, MultiBufferSource buffers, int light, int overlay, boolean foil) {
             this.renderer.render(matrices, buffers, light, overlay, this.facing, this.openness);
+        }
+
+        /// New abstract method in 1.21.6 - reports the model's transformed extents so the GUI
+        /// can size the item. Mirrors vanilla ChestSpecialRenderer: pose the model, then collect.
+        @Override
+        public void getExtents(Set<Vector3f> output) {
+            var model = this.renderer.model;
+            model.animate(this.openness);
+            model.root().getExtentsForGui(new PoseStack(), output);
         }
     }
 

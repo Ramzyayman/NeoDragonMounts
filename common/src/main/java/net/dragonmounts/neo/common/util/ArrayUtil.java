@@ -28,17 +28,6 @@ public class ArrayUtil {
         return ItemStack.EMPTY;
     }
 
-    public static ListTag saveItems(HolderLookup.Provider provider, ListTag list, ItemStack[] stacks, int index) {
-        for (int n = stacks.length; index < n; ++index) {
-            var stack = stacks[index];
-            if (stack.isEmpty()) continue;
-            var tag = new CompoundTag();
-            tag.putByte("Slot", (byte) index);
-            list.add(stack.save(provider, tag));
-        }
-        return list;
-    }
-
     public static void dropContents(Level level, double x, double y, double z, ItemStack[] stacks, int index) {
         var random = level.random;
         double width = EntityType.ITEM.getWidth(), factor = 1.0 - width, half = width / 2.0;

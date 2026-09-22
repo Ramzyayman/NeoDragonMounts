@@ -6,6 +6,8 @@ import net.dragonmounts.neo.common.tag.DMBlockTags;
 import net.dragonmounts.neo.compat.registry.BlockHolder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.data.tags.TagAppender;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.data.PackOutput;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
@@ -24,6 +26,11 @@ public class DMBlockTagProvider extends BlockTagsProvider {
 
     public DMBlockTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider) {
         super(output, provider, DragonMountsShared.NAMESPACE);
+    }
+
+    /// See DMEntityTagProvider#keyTag - this mod is ResourceKey-based throughout.
+    protected TagAppender<ResourceKey<Block>, Block> keyTag(TagKey<Block> key) {
+        return TagAppender.forBuilder(this.getOrCreateRawBuilder(key));
     }
 
     @Override
@@ -89,18 +96,18 @@ public class DMBlockTagProvider extends BlockTagsProvider {
                 .addTag(Tags.Blocks.GLASS_PANES)
                 .addTag(Tags.Blocks.SANDS);
 
-        addAll(this.tag(DMBlockTags.DRAGON_EGGS).add(Blocks.DRAGON_EGG), DMBlocks.BUILTIN_DRAGON_EGGS);
-        addAll(this.tag(DMBlockTags.DRAGON_SCALE_BLOCKS), DMBlocks.BUILTIN_DRAGON_SCALE_BLOCKS);
-        this.tag(BlockTags.BEACON_BASE_BLOCKS).addTag(DMBlockTags.DRAGON_SCALE_BLOCKS);
-        this.tag(BlockTags.NEEDS_DIAMOND_TOOL).addTag(DMBlockTags.DRAGON_SCALE_BLOCKS);
-        this.tag(BlockTags.FEATURES_CANNOT_REPLACE).addTag(DMBlockTags.DRAGON_EGGS);
-        this.tag(BlockTags.PIGLIN_REPELLENTS).add(DMBlocks.DRAGON_CORE.key);
-        this.tag(BlockTags.DRAGON_IMMUNE).add(DMBlocks.DRAGON_CORE.key);
-        this.tag(BlockTags.MINEABLE_WITH_PICKAXE).addTag(DMBlockTags.DRAGON_SCALE_BLOCKS);
-        this.tag(BlockTags.MINEABLE_WITH_AXE).add(DMBlocks.DRAGON_NEST.key);
+        addAll(this.keyTag(DMBlockTags.DRAGON_EGGS).add(Blocks.DRAGON_EGG.builtInRegistryHolder().key()), DMBlocks.BUILTIN_DRAGON_EGGS);
+        addAll(this.keyTag(DMBlockTags.DRAGON_SCALE_BLOCKS), DMBlocks.BUILTIN_DRAGON_SCALE_BLOCKS);
+        this.keyTag(BlockTags.BEACON_BASE_BLOCKS).addTag(DMBlockTags.DRAGON_SCALE_BLOCKS);
+        this.keyTag(BlockTags.NEEDS_DIAMOND_TOOL).addTag(DMBlockTags.DRAGON_SCALE_BLOCKS);
+        this.keyTag(BlockTags.FEATURES_CANNOT_REPLACE).addTag(DMBlockTags.DRAGON_EGGS);
+        this.keyTag(BlockTags.PIGLIN_REPELLENTS).add(DMBlocks.DRAGON_CORE.key);
+        this.keyTag(BlockTags.DRAGON_IMMUNE).add(DMBlocks.DRAGON_CORE.key);
+        this.keyTag(BlockTags.MINEABLE_WITH_PICKAXE).addTag(DMBlockTags.DRAGON_SCALE_BLOCKS);
+        this.keyTag(BlockTags.MINEABLE_WITH_AXE).add(DMBlocks.DRAGON_NEST.key);
     }
 
-    static void addAll(TagAppender<Block> builder, Collection<? extends BlockHolder<?>> blocks) {
+    static void addAll(TagAppender<ResourceKey<Block>, Block> builder, Collection<? extends BlockHolder<?>> blocks) {
         for (var block : blocks) {
             builder.add(block.key);
         }

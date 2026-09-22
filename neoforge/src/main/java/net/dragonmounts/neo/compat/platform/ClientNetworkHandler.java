@@ -17,7 +17,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import static net.dragonmounts.neo.config.EntryUtil.override;
@@ -25,7 +25,7 @@ import static net.minecraft.util.Mth.DEG_TO_RAD;
 
 public class ClientNetworkHandler {
     public static void send(CustomPacketPayload payload) {
-        PacketDistributor.sendToServer(payload);
+        ClientPacketDistributor.sendToServer(payload);
     }
 
     public static void handleArmorRiposte(ArmorRipostePayload payload, IPayloadContext context) {

@@ -13,6 +13,9 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.data.tags.TagAppender;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -29,14 +32,21 @@ public class DMItemTagProvider extends FabricTagProvider.ItemTagProvider {
         super(output, provider, block);
     }
 
-    protected TagAppender<Item> addToParent(FabricTagBuilder parent, TagKey<Item> child) {
+    protected TagAppender<ResourceKey<Item>, Item> addToParent(TagAppender<ResourceKey<Item>, Item> parent, TagKey<Item> child) {
         parent.addTag(child);
-        return this.tag(child);
+        return this.builder(child);
+    }
+
+    /// Fabric 23.x replaced getOrCreateTagBuilder with builder() (ResourceKey-typed) and
+    /// valueLookupBuilder() (object-typed). This mod registers via ResourceKey, so builder() is the
+    /// default; the Consumer<Item> chains keep the object-typed one.
+    static ResourceKey<Item> key(ItemLike item) {
+        return item.asItem().builtInRegistryHolder().key();
     }
 
     @Override
     protected void addTags(HolderLookup.Provider registries) {
-        var scales = this.getOrCreateTagBuilder(DMItemTags.DRAGON_SCALES);
+        var scales = this.builder(DMItemTags.DRAGON_SCALES);
         this.addToParent(scales, DMItemTags.AETHER_DRAGON_SCALES).add(DMItems.AETHER_DRAGON_SCALES.key);
         this.addToParent(scales, DMItemTags.ENCHANTED_DRAGON_SCALES).add(DMItems.ENCHANTED_DRAGON_SCALES.key);
         this.addToParent(scales, DMItemTags.ENDER_DRAGON_SCALES).add(DMItems.ENDER_DRAGON_SCALES.key);
@@ -52,40 +62,40 @@ public class DMItemTagProvider extends FabricTagProvider.ItemTagProvider {
         this.addToParent(scales, DMItemTags.WATER_DRAGON_SCALES).add(DMItems.WATER_DRAGON_SCALES.key);
         this.addToParent(scales, DMItemTags.ZOMBIE_DRAGON_SCALES).add(DMItems.ZOMBIE_DRAGON_SCALES.key);
         this.addToParent(scales, DMItemTags.DARK_DRAGON_SCALES).add(DMItems.DARK_DRAGON_SCALES.key);
-        this.getOrCreateTagBuilder(DMItemTags.HARD_SHEARS)
+        this.builder(DMItemTags.HARD_SHEARS)
                 .add(DMItems.DIAMOND_SHEARS.key)
                 .add(DMItems.NETHERITE_SHEARS.key);
-        this.getOrCreateTagBuilder(ItemTags.PIGLIN_LOVED)
+        this.builder(ItemTags.PIGLIN_LOVED)
                 .add(DMItems.GOLDEN_DRAGON_ARMOR.key);
-        this.getOrCreateTagBuilder(ItemTags.PIGLIN_REPELLENTS)
-                .add(DMBlocks.DRAGON_CORE.asItem());
-        this.getOrCreateTagBuilder(ItemTags.MEAT)
+        this.builder(ItemTags.PIGLIN_REPELLENTS)
+                .add(key(DMBlocks.DRAGON_CORE));
+        this.builder(ItemTags.MEAT)
                 .add(DMItems.DRAGON_MEAT.key)
                 .add(DMItems.COOKED_DRAGON_MEAT.key);
-        this.getOrCreateTagBuilder(DMItemTags.BATONS)
+        this.builder(DMItemTags.BATONS)
                 .forceAddTag(ConventionalItemTags.RODS)
-                .add(Items.DEBUG_STICK)
-                .add(Items.BONE)
-                .add(Items.BAMBOO);
-        this.getOrCreateTagBuilder(DMItemTags.DRAGON_SADDLES)
-                .add(Items.SADDLE);
-        var head = this.tag(ItemTags.HEAD_ARMOR);
-        var chest = this.tag(ItemTags.CHEST_ARMOR);
-        var leg = this.tag(ItemTags.LEG_ARMOR);
-        var foot = this.tag(ItemTags.FOOT_ARMOR);
+                .add(key(Items.DEBUG_STICK))
+                .add(key(Items.BONE))
+                .add(key(Items.BAMBOO));
+        this.builder(DMItemTags.DRAGON_SADDLES)
+                .add(key(Items.SADDLE));
+        var head = this.builder(ItemTags.HEAD_ARMOR);
+        var chest = this.builder(ItemTags.CHEST_ARMOR);
+        var leg = this.builder(ItemTags.LEG_ARMOR);
+        var foot = this.builder(ItemTags.FOOT_ARMOR);
         Consumer<DragonScaleArmorSuit> addScaleSuit = suit -> {
             head.add(suit.helmet);
             chest.add(suit.chestplate);
             leg.add(suit.leggings);
             foot.add(suit.boots);
         };
-        Consumer<Item> addToSwords = this.getOrCreateTagBuilder(ItemTags.SWORDS)::add;
-        Consumer<Item> addToBows = this.getOrCreateTagBuilder(DMItemTags.DRAGON_SCALE_BOWS)::add;
-        Consumer<Item> addToAxes = this.getOrCreateTagBuilder(ItemTags.AXES)::add;
-        Consumer<Item> addToHoes = this.getOrCreateTagBuilder(ItemTags.HOES)::add;
-        Consumer<Item> addToPickaxes = this.getOrCreateTagBuilder(ItemTags.PICKAXES)::add;
-        Consumer<Item> addToShovels = this.getOrCreateTagBuilder(ItemTags.SHOVELS)::add;
-        Consumer<Item> addToShields = this.getOrCreateTagBuilder(DMItemTags.DRAGON_SCALE_SHIELDS)::add;
+        Consumer<Item> addToSwords = this.valueLookupBuilder(ItemTags.SWORDS)::add;
+        Consumer<Item> addToBows = this.valueLookupBuilder(DMItemTags.DRAGON_SCALE_BOWS)::add;
+        Consumer<Item> addToAxes = this.valueLookupBuilder(ItemTags.AXES)::add;
+        Consumer<Item> addToHoes = this.valueLookupBuilder(ItemTags.HOES)::add;
+        Consumer<Item> addToPickaxes = this.valueLookupBuilder(ItemTags.PICKAXES)::add;
+        Consumer<Item> addToShovels = this.valueLookupBuilder(ItemTags.SHOVELS)::add;
+        Consumer<Item> addToShields = this.valueLookupBuilder(DMItemTags.DRAGON_SCALE_SHIELDS)::add;
         for (var type : DragonType.REGISTRY) {
             type.ifPresent(DragonScaleArmorSuit.class, addScaleSuit);
             type.ifPresent(DragonScaleSwordItem.class, addToSwords);
@@ -96,40 +106,40 @@ public class DMItemTagProvider extends FabricTagProvider.ItemTagProvider {
             type.ifPresent(DragonScaleShovelItem.class, addToShovels);
             type.ifPresent(DragonScaleShieldItem.class, addToShields);
         }
-        this.getOrCreateTagBuilder(DMItemTags.DRAGON_INEDIBLE)
-                .add(Items.PUFFERFISH) // it is considered as food in conventional tags...
-                .add(Items.PUFFERFISH_BUCKET)
-                .add(Items.AXOLOTL_BUCKET)
-                .add(Items.TADPOLE_BUCKET)
+        this.builder(DMItemTags.DRAGON_INEDIBLE)
+                .add(key(Items.PUFFERFISH)) // it is considered as food in conventional tags...
+                .add(key(Items.PUFFERFISH_BUCKET))
+                .add(key(Items.AXOLOTL_BUCKET))
+                .add(key(Items.TADPOLE_BUCKET))
                 .add(DMItems.DRAGON_MEAT.key)
                 .add(DMItems.COOKED_DRAGON_MEAT.key);
-        this.getOrCreateTagBuilder(DMItemTags.COOKED_DRAGON_FOODS)
+        this.builder(DMItemTags.COOKED_DRAGON_FOODS)
                 .forceAddTag(ConventionalItemTags.COOKED_MEAT_FOODS)
                 .forceAddTag(ConventionalItemTags.COOKED_FISH_FOODS);
-        this.getOrCreateTagBuilder(DMItemTags.RAW_DRAGON_FOODS)
+        this.builder(DMItemTags.RAW_DRAGON_FOODS)
                 .forceAddTag(ConventionalItemTags.RAW_MEAT_FOODS)
                 .forceAddTag(ConventionalItemTags.RAW_FISH_FOODS)
-                .add(Items.COD_BUCKET)
-                .add(Items.SALMON_BUCKET)
-                .add(Items.TROPICAL_FISH_BUCKET);
-        this.tag(ItemTags.BOW_ENCHANTABLE).addTag(DMItemTags.DRAGON_SCALE_BOWS);
-        this.tag(ConventionalItemTags.BOW_TOOLS).addTag(DMItemTags.DRAGON_SCALE_BOWS);
-        this.tag(ConventionalItemTags.SHEAR_TOOLS).addTag(DMItemTags.HARD_SHEARS);
-        this.tag(ItemTags.MINING_ENCHANTABLE).addTag(DMItemTags.HARD_SHEARS);
-        this.tag(ConventionalItemTags.SHIELD_TOOLS).addTag(DMItemTags.DRAGON_SCALE_SHIELDS);
-        this.tag(ItemTags.DURABILITY_ENCHANTABLE)
+                .add(key(Items.COD_BUCKET))
+                .add(key(Items.SALMON_BUCKET))
+                .add(key(Items.TROPICAL_FISH_BUCKET));
+        this.builder(ItemTags.BOW_ENCHANTABLE).addTag(DMItemTags.DRAGON_SCALE_BOWS);
+        this.builder(ConventionalItemTags.BOW_TOOLS).addTag(DMItemTags.DRAGON_SCALE_BOWS);
+        this.builder(ConventionalItemTags.SHEAR_TOOLS).addTag(DMItemTags.HARD_SHEARS);
+        this.builder(ItemTags.MINING_ENCHANTABLE).addTag(DMItemTags.HARD_SHEARS);
+        this.builder(ConventionalItemTags.SHIELD_TOOLS).addTag(DMItemTags.DRAGON_SCALE_SHIELDS);
+        this.builder(ItemTags.DURABILITY_ENCHANTABLE)
                 .addTag(DMItemTags.DRAGON_SCALE_BOWS)
                 .addTag(DMItemTags.HARD_SHEARS)
                 .addTag(DMItemTags.DRAGON_SCALE_SHIELDS);
         this.copy(DMBlockTags.DRAGON_EGGS, DMItemTags.DRAGON_EGGS);
         this.copy(DMBlockTags.DRAGON_SCALE_BLOCKS, DMItemTags.DRAGON_SCALE_BLOCKS);
-        this.getOrCreateTagBuilder(ItemTags.PIGLIN_REPELLENTS).add(DMBlocks.DRAGON_CORE.asItem());
-        this.tag(ItemTags.PIGLIN_LOVED).add(DMItems.GOLDEN_DRAGON_ARMOR.key);
-        var skulls = this.getOrCreateTagBuilder(DMItemTags.DRAGON_HEADS).add(Items.DRAGON_HEAD);
+        this.builder(ItemTags.PIGLIN_REPELLENTS).add(key(DMBlocks.DRAGON_CORE));
+        this.builder(ItemTags.PIGLIN_LOVED).add(DMItems.GOLDEN_DRAGON_ARMOR.key);
+        var skulls = this.builder(DMItemTags.DRAGON_HEADS).add(key(Items.DRAGON_HEAD));
         for (var variant : DragonVariants.BUILTIN_VALUES) {
-            skulls.add(variant.head.asItem());
+            skulls.add(key(variant.head));
         }
-        this.tag(ItemTags.SKULLS).addTag(DMItemTags.DRAGON_HEADS);
-        this.tag(ItemTags.NOTE_BLOCK_TOP_INSTRUMENTS).addTag(DMItemTags.DRAGON_HEADS);
+        this.builder(ItemTags.SKULLS).addTag(DMItemTags.DRAGON_HEADS);
+        this.builder(ItemTags.NOTE_BLOCK_TOP_INSTRUMENTS).addTag(DMItemTags.DRAGON_HEADS);
     }
 }

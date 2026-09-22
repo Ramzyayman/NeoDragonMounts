@@ -9,6 +9,8 @@ import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.data.tags.TagAppender;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -27,7 +29,7 @@ public class DMBlockTagProvider extends FabricTagProvider.BlockTagProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider registries) {
-        this.getOrCreateTagBuilder(TORCHES).add(
+        this.valueLookupBuilder(TORCHES).add(
                 Blocks.TORCH,
                 Blocks.WALL_TORCH,
                 Blocks.SOUL_TORCH,
@@ -35,7 +37,7 @@ public class DMBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 Blocks.REDSTONE_TORCH,
                 Blocks.REDSTONE_WALL_TORCH
         );
-        this.getOrCreateTagBuilder(DMBlockTags.AIRFLOW_DESTRUCTIBLE).add(
+        this.valueLookupBuilder(DMBlockTags.AIRFLOW_DESTRUCTIBLE).add(
                         // Overworld:
                         Blocks.SHORT_GRASS,
                         Blocks.FERN,
@@ -85,18 +87,18 @@ public class DMBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 .forceAddTag(BlockTags.SNOW)
                 .forceAddTag(ConventionalBlockTags.GLASS_PANES)
                 .forceAddTag(ConventionalBlockTags.SANDS);
-        addAll(this.getOrCreateTagBuilder(DMBlockTags.DRAGON_EGGS).add(Blocks.DRAGON_EGG), DMBlocks.BUILTIN_DRAGON_EGGS);
-        addAll(this.getOrCreateTagBuilder(DMBlockTags.DRAGON_SCALE_BLOCKS), DMBlocks.BUILTIN_DRAGON_SCALE_BLOCKS);
-        this.tag(BlockTags.BEACON_BASE_BLOCKS).addTag(DMBlockTags.DRAGON_SCALE_BLOCKS);
-        this.tag(BlockTags.NEEDS_DIAMOND_TOOL).addTag(DMBlockTags.DRAGON_SCALE_BLOCKS);
-        this.tag(BlockTags.FEATURES_CANNOT_REPLACE).addTag(DMBlockTags.DRAGON_EGGS);
-        this.tag(BlockTags.PIGLIN_REPELLENTS).add(DMBlocks.DRAGON_CORE.key);
-        this.tag(BlockTags.DRAGON_IMMUNE).add(DMBlocks.DRAGON_CORE.key);
-        this.tag(BlockTags.MINEABLE_WITH_PICKAXE).addTag(DMBlockTags.DRAGON_SCALE_BLOCKS);
-        this.tag(BlockTags.MINEABLE_WITH_AXE).add(DMBlocks.DRAGON_NEST.key);
+        addAll(this.builder(DMBlockTags.DRAGON_EGGS).add(Blocks.DRAGON_EGG.builtInRegistryHolder().key()), DMBlocks.BUILTIN_DRAGON_EGGS);
+        addAll(this.builder(DMBlockTags.DRAGON_SCALE_BLOCKS), DMBlocks.BUILTIN_DRAGON_SCALE_BLOCKS);
+        this.builder(BlockTags.BEACON_BASE_BLOCKS).addTag(DMBlockTags.DRAGON_SCALE_BLOCKS);
+        this.builder(BlockTags.NEEDS_DIAMOND_TOOL).addTag(DMBlockTags.DRAGON_SCALE_BLOCKS);
+        this.builder(BlockTags.FEATURES_CANNOT_REPLACE).addTag(DMBlockTags.DRAGON_EGGS);
+        this.builder(BlockTags.PIGLIN_REPELLENTS).add(DMBlocks.DRAGON_CORE.key);
+        this.builder(BlockTags.DRAGON_IMMUNE).add(DMBlocks.DRAGON_CORE.key);
+        this.builder(BlockTags.MINEABLE_WITH_PICKAXE).addTag(DMBlockTags.DRAGON_SCALE_BLOCKS);
+        this.builder(BlockTags.MINEABLE_WITH_AXE).add(DMBlocks.DRAGON_NEST.key);
     }
 
-    static void addAll(TagAppender<Block> builder, Collection<? extends BlockHolder<?>> blocks) {
+    static void addAll(TagAppender<ResourceKey<Block>, Block> builder, Collection<? extends BlockHolder<?>> blocks) {
         for (var block : blocks) {
             builder.add(block.key);
         }

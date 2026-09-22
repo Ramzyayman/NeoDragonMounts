@@ -9,6 +9,11 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import com.mojang.logging.LogUtils;
+import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
+import org.slf4j.Logger;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
@@ -40,6 +45,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 public abstract class EntityUtil extends /*to access protected methods*/ EntityType<Entity> {
+    private static final Logger LOGGER = LogUtils.getLogger();
     public static Vec2 getRiddenRotation(LivingEntity rider) {
         return new Vec2(rider.getXRot() * 0.5F, rider.getYRot());
     }
@@ -123,9 +129,26 @@ public abstract class EntityUtil extends /*to access protected methods*/ EntityT
         }
     }
 
+    /// 1.21.6 moved entity serialization onto ValueInput/ValueOutput. Several call sites still need a
+    /// real CompoundTag, because the data ends up in an item's ENTITY_DATA component, so these two
+    /// bridge between the two worlds using the same shape as vanilla's Entity#restoreFrom.
+    public static CompoundTag saveWithoutId(Entity entity) {
+        try (var problems = new ProblemReporter.ScopedCollector(entity.problemPath(), LOGGER)) {
+            var output = TagValueOutput.createWithContext(problems, entity.registryAccess());
+            entity.saveWithoutId(output);
+            return output.buildResult();
+        }
+    }
+
+    public static void load(Entity entity, CompoundTag tag) {
+        try (var problems = new ProblemReporter.ScopedCollector(entity.problemPath(), LOGGER)) {
+            entity.load(TagValueInput.create(problems, entity.registryAccess(), tag));
+        }
+    }
+
     public static CompoundTag saveWithId(Entity entity, CompoundTag tag) {
         tag.putString("id", BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()).toString());
-        entity.saveWithoutId(tag);
+        tag.merge(saveWithoutId(entity));
         return tag;
     }
 

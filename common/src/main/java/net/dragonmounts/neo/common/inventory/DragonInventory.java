@@ -17,6 +17,9 @@ import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.StackedItemContents;
 import net.minecraft.world.inventory.StackedContentsCompatible;
+import net.minecraft.world.ItemStackWithSlot;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.Arrays;
@@ -225,14 +228,17 @@ public class DragonInventory implements Container, StackedContentsCompatible {
         ArrayUtil.dropContents(this.dragon.level(), pos.x, pos.y + offsetY, pos.z, stacks, 0);
     }
 
-    public void loadItems(ListTag list, HolderLookup.Provider registry) {
-        var empty = ItemStack.EMPTY;
+    /// 1.21.6 replaced CompoundTag serialization with ValueInput/ValueOutput. Vanilla's
+    /// ItemStackWithSlot.CODEC writes "Slot" as an unsigned byte alongside ItemStack.MAP_CODEC,
+    /// which is byte-for-byte the format ArrayUtil#saveItems produced by hand, so the on-disk
+    /// layout is unchanged and existing worlds still load.
+    public void loadItems(ValueInput input, String key) {
         ItemStack[] stacks = this.stacks;
-        Arrays.fill(stacks, empty);
-        for (int i = 0, j, n = list.size(), m = stacks.length; i < n; ++i) {
-            var tag = list.getCompoundOrEmpty(i);
-            if ((j = tag.getByteOr("Slot", (byte) 0) & 255) == SLOT_ARMOR_INDEX || j >= m) continue;
-            var stack = stacks[j] = ItemStack.parse(registry, tag).orElse(empty);
+        Arrays.fill(stacks, ItemStack.EMPTY);
+        for (var entry : input.listOrEmpty(key, ItemStackWithSlot.CODEC)) {
+            int slot = entry.slot();
+            if (slot == SLOT_ARMOR_INDEX || slot >= stacks.length) continue;
+            var stack = stacks[slot] = entry.stack();
             stack.limitSize(this.getMaxStackSize(stack));
         }
         this.chest.set(stacks[SLOT_CHEST_INDEX]);
@@ -240,11 +246,20 @@ public class DragonInventory implements Container, StackedContentsCompatible {
         this.setChanged();
     }
 
-    public ListTag saveItems(HolderLookup.Provider registry) {
+    public void saveItems(ValueOutput output, String key) {
         ItemStack[] stacks = this.stacks;
         stacks[SLOT_CHEST_INDEX] = this.chest.get();
         stacks[SLOT_SADDLE_INDEX] = this.saddle.get();
-        return ArrayUtil.saveItems(registry, new ListTag(), stacks, 1);
+        var list = output.list(key, ItemStackWithSlot.CODEC);
+        for (int i = 1, n = stacks.length; i < n; ++i) {
+            var stack = stacks[i];
+            if (!stack.isEmpty()) {
+                list.add(new ItemStackWithSlot(i, stack));
+            }
+        }
+        if (list.isEmpty()) {
+            output.discard(key);
+        }
     }
 
     public static class Slot implements SlotAccess {

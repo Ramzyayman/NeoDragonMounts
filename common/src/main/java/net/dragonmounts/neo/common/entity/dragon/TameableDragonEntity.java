@@ -68,6 +68,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -271,53 +273,43 @@ public abstract class TameableDragonEntity extends TamableAnimal implements
     //----------Entity----------
 
     @Override
-    public void readAdditionalSaveData(CompoundTag tag) {
-        if (tag.contains(DragonLifeStage.SERIALIZATION_KEY)) {
-            this.setLifeStage(DragonLifeStage.byName(tag.getStringOr(DragonLifeStage.SERIALIZATION_KEY, "")), false, false);
-        }
-        if (tag.contains(DragonVariant.SERIALIZATION_KEY)) {
-            this.setVariant(DragonVariant.REGISTRY.getValue(tryParse(tag.getStringOr(DragonVariant.SERIALIZATION_KEY, ""))));
-        } else if (tag.contains(DragonType.SERIALIZATION_KEY)) {
-            this.overrideType(DragonType.REGISTRY.getValue(tryParse(tag.getStringOr(DragonType.SERIALIZATION_KEY, ""))), false);
+    protected void readAdditionalSaveData(ValueInput input) {
+        input.getString(DragonLifeStage.SERIALIZATION_KEY)
+                .ifPresent(name -> this.setLifeStage(DragonLifeStage.byName(name), false, false));
+        var variant = input.getString(DragonVariant.SERIALIZATION_KEY);
+        if (variant.isPresent()) {
+            this.setVariant(DragonVariant.REGISTRY.getValue(tryParse(variant.get())));
         } else {
-            this.applyType(this.getDragonType());
-        }
-        /// to skip {@link OldUsersConverter#convertMobOwnerIfNecessary} and prevent error when invoked on client side
-        /// 1.21.5 routes owner loading through EntityReference#readWithOldOwnerConversion, which still
-        /// calls the converter with level.getServer() - null on the client - so this guard is still required.
-        Tag owner = tag.get("Owner");
-        tag.store("Owner", UUIDUtil.CODEC, Util.NIL_UUID);
-        super.readAdditionalSaveData(tag);
-        UUID uuid;
-        if (owner == null) {
-            tag.remove("Owner");
-            uuid = null;
-        } else if (owner.getType() == IntArrayTag.TYPE && ((IntArrayTag) owner).getAsIntArray().length == 4) {
-            tag.put("Owner", owner);
-            uuid = UUIDUtil.uuidFromIntArray(((IntArrayTag) owner).getAsIntArray());
-        } else {
-            tag.put("Owner", owner);
-            var server = this.getServer();
-            var name = owner.asString().orElse("");
-            try {
-                uuid = server == null
-                        ? UUIDUtil.createOfflinePlayerUUID(name)
-                        : OldUsersConverter.convertMobOwnerIfNecessary(server, name);
-            } catch (Throwable throwable) {
-                uuid = null;
-                LOGGER.warn("Failed to resolve owner by uuid", throwable);
+            var type = input.getString(DragonType.SERIALIZATION_KEY);
+            if (type.isPresent()) {
+                this.overrideType(DragonType.REGISTRY.getValue(tryParse(type.get())), false);
+            } else {
+                this.applyType(this.getDragonType());
             }
         }
-        if (uuid == null) {
+        /// Owner loading used to be guarded by swapping the raw "Owner" tag for a NIL uuid so that
+        /// {@link OldUsersConverter#convertMobOwnerIfNecessary} - which dereferences a null server on
+        /// the client - could not run, then resolving the owner by hand. 1.21.6 replaced CompoundTag
+        /// with the read-only {@link ValueInput}, so the tag can no longer be rewritten and that
+        /// technique is gone.
+        ///
+        /// The hazard itself is unchanged: EntityReference#readWithOldOwnerConversion still calls the
+        /// converter with level.getServer(), and OldUsersConverter is byte-identical to 1.21.4. It is
+        /// only reachable for a legacy *string* "Owner" (pre-1.16 saves) read client-side, and every
+        /// entity-load path in this mod is typed to ServerLevel - but that is an absence of evidence,
+        /// not proof, so the guard degrades instead of being deleted.
+        ///
+        /// On failure we lose only the owner, which could not have been resolved anyway, and the
+        /// client gets it from DATA_OWNERUUID_ID over the network regardless. Sitting state is
+        /// reapplied by hand because super aborts before reaching it.
+        try {
+            super.readAdditionalSaveData(input);
+        } catch (Throwable throwable) {
+            LOGGER.warn("Failed to load dragon owner; continuing untamed", throwable);
             this.setOwnerReference(null);
             this.setTame(false, true);
-        } else {
-            try {
-                this.setOwnerReference(new EntityReference<>(uuid));
-                this.setTame(true, false);
-            } catch (Throwable throwable) {
-                this.setTame(false, true);
-            }
+            this.setOrderedToSit(input.getBooleanOr("Sitting", false));
+            this.setInSittingPose(this.isOrderedToSit());
         }
     }
 

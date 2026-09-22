@@ -143,7 +143,7 @@ public class TieredShearsItem extends ShearsItem {
         switch (entity) {
             case TameableDragonEntity dragon:
                 if (player instanceof ServerPlayer $player) {
-                    var level = $player.serverLevel();
+                    var level = $player.level();
                     if (dragon.isOwnedBy($player) && dragon.readyForShearing(level, stack) && dragon.shear(level, $player, stack, dragon.blockPosition(), SoundSource.PLAYERS)) {
                         stack.hurtAndBreak(20, level, $player, item -> $player.onEquippedItemBroken(item, getSlotForHand(hand)));
                         return InteractionResult.SUCCESS;

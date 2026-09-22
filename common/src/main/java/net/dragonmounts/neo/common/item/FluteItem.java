@@ -20,7 +20,7 @@ import java.util.UUID;
 
 public class FluteItem extends Item {
     public static @Nullable ServerDragonEntity getOrDeny(ServerPlayer player, UUID uuid) {
-        if (player.serverLevel().getEntity(uuid) instanceof ServerDragonEntity dragon
+        if (player.level().getEntity(uuid) instanceof ServerDragonEntity dragon
                 && Relation.checkRelation(dragon, player).isTrusted
         ) return dragon;
         player.sendSystemMessage(Component.translatable("message.neodragonmounts.flute.failed"), true);

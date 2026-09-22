@@ -119,7 +119,7 @@ public class DragonEssenceItem extends Item implements DragonTypified, EntityCon
         tag.remove("AgeLocked");
         tag.remove("ArmorDropChances");
         tag.remove("ArmorItems");
-        tag.remove(LivingEntity.ATTRIBUTES_FIELD);
+        tag.remove(LivingEntity.TAG_ATTRIBUTES);
         tag.remove("Brain");
         tag.remove("ForcedAge");
         tag.remove("HandDropChances");

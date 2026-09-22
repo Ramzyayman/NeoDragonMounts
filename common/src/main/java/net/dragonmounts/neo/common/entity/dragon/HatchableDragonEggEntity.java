@@ -15,6 +15,14 @@ import net.dragonmounts.neo.compat.platform.ServerNetworkHandler;
 import net.dragonmounts.neo.compat.registry.DragonType;
 import net.dragonmounts.neo.compat.registry.DragonVariant;
 import net.dragonmounts.neo.config.ServerConfig;
+import com.mojang.logging.LogUtils;
+import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import org.slf4j.Logger;
+import net.dragonmounts.neo.common.util.EntityUtil;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
@@ -57,16 +65,19 @@ import static net.minecraft.util.Mth.DEG_TO_RAD;
 public class HatchableDragonEggEntity extends LivingEntity implements DynamicAttributeEntity, DragonTypified.Mutable {
     public static ServerDragonEntity hatch(ServerLevel world, HatchableDragonEggEntity egg, DragonLifeStage stage) {
         return new ServerDragonEntity(world, (level, dragon) -> {
-            CompoundTag data = egg.saveWithoutId(new CompoundTag());
+            /// 1.21.6 routes entity serialization through ValueInput/ValueOutput, so this round trip
+            /// has to bridge back to a CompoundTag to strip keys - see EntityUtil#saveWithoutId.
+            CompoundTag data = EntityUtil.saveWithoutId(egg);
             data.remove(HatchableDragonEggEntity.SERIALIZATION_KEY_AGE);
             data.remove(DragonLifeStage.SERIALIZATION_KEY);
-            dragon.load(data);
+            EntityUtil.load(dragon, data);
             dragon.overrideType(egg.getDragonType(), false);
             dragon.setLifeStage(stage, true, false);
             dragon.setHealth(dragon.getMaxHealth() + egg.getHealth() - egg.getMaxHealth());
         });
     }
 
+    private static final Logger LOGGER = LogUtils.getLogger();
     public static final String SERIALIZATION_KEY_AGE = "Age";
     protected static final EntityDataAccessor<DragonType> DATA_DRAGON_TYPE = SynchedEntityData.defineId(HatchableDragonEggEntity.class, DragonType.SERIALIZER);
     public static final float EGG_CRACK_THRESHOLD = 0.9F;
@@ -110,47 +121,41 @@ public class HatchableDragonEggEntity extends LivingEntity implements DynamicAtt
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag tag) {
-        super.addAdditionalSaveData(tag);
-        tag.putString(DragonType.SERIALIZATION_KEY, this.getDragonType().identifier.toString());
-        tag.putInt(SERIALIZATION_KEY_AGE, this.age);
-        tag.putBoolean(SERIALIZATION_KEY_VANILLA, this.isVanilla);
-        if (this.owner != null) {
-            tag.store("Owner", UUIDUtil.CODEC, this.owner);
-        }
+    protected void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        output.putString(DragonType.SERIALIZATION_KEY, this.getDragonType().identifier.toString());
+        output.putInt(SERIALIZATION_KEY_AGE, this.age);
+        output.putBoolean(SERIALIZATION_KEY_VANILLA, this.isVanilla);
+        output.storeNullable("Owner", UUIDUtil.CODEC, this.owner);
         if (this.variant != null) {
-            tag.putString(DragonVariant.SERIALIZATION_KEY, this.variant);
+            output.putString(DragonVariant.SERIALIZATION_KEY, this.variant);
         }
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag tag) {
-        super.readAdditionalSaveData(tag);
-        if (tag.contains(DragonType.SERIALIZATION_KEY)) {
-            this.overrideType(DragonType.REGISTRY.getValue(tryParse(tag.getStringOr(DragonType.SERIALIZATION_KEY, ""))), false);
-        }
-        if (tag.contains(DragonVariant.SERIALIZATION_KEY)) {
-            this.variant = tag.getStringOr(DragonVariant.SERIALIZATION_KEY, "");
-        }
-        if (tag.contains(SERIALIZATION_KEY_AGE)) {
-            this.setAge(tag.getIntOr(SERIALIZATION_KEY_AGE, 0), !this.firstTick);
-        }
-        if (tag.contains(SERIALIZATION_KEY_VANILLA)) {
-            this.setVanilla(tag.getBooleanOr(SERIALIZATION_KEY_VANILLA, false));
-        }
-        var storedOwner = tag.read("Owner", UUIDUtil.CODEC);
+    protected void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        input.getString(DragonType.SERIALIZATION_KEY)
+                .ifPresent(id -> this.overrideType(DragonType.REGISTRY.getValue(tryParse(id)), false));
+        input.getString(DragonVariant.SERIALIZATION_KEY).ifPresent(id -> this.variant = id);
+        input.getInt(SERIALIZATION_KEY_AGE).ifPresent(age -> this.setAge(age, !this.firstTick));
+        this.setVanilla(input.getBooleanOr(SERIALIZATION_KEY_VANILLA, this.isVanilla));
+        var storedOwner = input.read("Owner", UUIDUtil.CODEC);
         if (storedOwner.isPresent()) {
             this.owner = storedOwner.get();
-        } else if (tag.contains("Owner")) {
-            var name = tag.getStringOr("Owner", "");
-            var server = this.getServer();
-            this.owner = server == null
-                    ? UUIDUtil.createOfflinePlayerUUID(name)
-                    : OldUsersConverter.convertMobOwnerIfNecessary(server, name);
         } else {
-            this.owner = null;
+            /// Unlike TameableDragonEntity this path was already null-server safe, so it needs no guard.
+            var name = input.getString("Owner");
+            if (name.isPresent()) {
+                var server = this.getServer();
+                this.owner = server == null
+                        ? UUIDUtil.createOfflinePlayerUUID(name.get())
+                        : OldUsersConverter.convertMobOwnerIfNecessary(server, name.get());
+            } else {
+                this.owner = null;
+            }
         }
-        if (tag.getBooleanOr(SERIALIZATION_KEY_SPAWNER, false)) {
+        if (input.getBooleanOr(SERIALIZATION_KEY_SPAWNER, false)) {
             this.hatched = true;
         }
     }
@@ -327,7 +332,7 @@ public class HatchableDragonEggEntity extends LivingEntity implements DynamicAtt
     }
 
     @Override
-    public boolean canBeCollidedWith() {
+    public boolean canBeCollidedWith(@Nullable Entity entity) {
         return true;
     }
 
