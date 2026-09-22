@@ -73,3 +73,58 @@ immediately (dragon scale shields would stop blocking). The `LivingEntity` ones 
 loot/XP attribution and would be easy to miss for a long time.
 
 **Do not mark hop 1 complete until these are resolved and the mod launches.**
+
+---
+
+# Verification (in-game, 1.21.5, NeoForge 21.5.98)
+
+Tested against commit `bd36e02`.
+
+| Behaviour | Result |
+|---|---|
+| Dragon scale shields block and take durability | PASS |
+| Axe disables a blocking shield | not tested |
+| Dragon core drops its essence exactly once | **PASS** |
+| Tamed dragon's kills credit the owner | PASS |
+| Dragon type line in item tooltips | PASS |
+| Dragon spawn egg icons | FAIL - see below, not a port regression |
+
+The dragon core case is the one that mattered. The core is a one-shot container:
+`canPlaceItem` always returns false, and its closing animation ends in
+`level.destroyBlock(pos, true)`, so it self-destructs. It is filled only by
+`ServerDragonEntity#die` -> `spawnEssence`, and only when the dragon is tamed.
+
+Confirmed drop path: `destroyBlock(pos, true)` -> `Block.dropResources` (there is no
+`dragon_core` loot table, so nothing) -> `setBlock(air)` -> `preRemoveSideEffects`
+(block entity still alive, drops contents) -> `removeBlockEntity` ->
+`affectNeighborsAfterRemoval`. Exactly one drop, from the inherited hook.
+
+Had `onRemove` been renamed to `affectNeighborsAfterRemoval` the obvious way, the
+block-entity lookup would return null on this exact path and killing a tamed dragon
+would have silently destroyed its essence, with no crash or log line.
+
+## Known open issue: spawn egg icons
+
+1.21.5 deleted the tinted-template spawn egg system outright:
+`models/item/template_spawn_egg.json`, `textures/item/spawn_egg.png` and
+`spawn_egg_overlay.png` are all gone, `SpawnEggItem` no longer carries colours, and
+there is no replacement tint source. Every vanilla spawn egg now ships its own texture.
+
+The mod's 17 dragon spawn eggs are defined purely as two constant tints over that
+deleted template, and those model JSONs are committed under
+`*/src/main/generated/assets/neodragonmounts/items/`. They break at 1.21.5 regardless
+of the port; `DMModelProvider#generateSpawnEgg` regenerates the same dead reference.
+
+Needs an art decision, not a code fix: either mod-authored base + overlay textures
+plus a mod-side template model (keeps all 17 tints), or 17 pre-tinted textures.
+Copying Mojang's 1.21.4 textures would work but redistributes their assets.
+
+## Unrelated upstream bug found and fixed
+
+`sunlight.nbt` was corrupt in the repository since commit `101535e`: `.gitattributes`
+had `* text eol=lf` and no `*.nbt binary` rule, so committing it stripped nine CR
+bytes and destroyed the gzip stream. It crashed worldgen on 1.21.4 as well - the empty
+template produced a zero-size bounding box and `Mth.randomBetweenInclusive(random, 2, 0)`
+threw, killing chunk generation. Recovered from `6639f61`, reapplied the
+`dragonmounts.plus:` -> `neodragonmounts:` rename with corrected NBT length prefixes,
+and added `*.nbt binary`. Worth reporting upstream.
