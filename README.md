@@ -19,17 +19,23 @@
 | 1.21.5 | 21.5.98 | Playtested | [download](https://github.com/Ramzyayman/NeoDragonMounts/releases/download/v0.1.1-mc1.21.5/DragonMounts2-NeoForge-1.21.5-0.1.1.jar) | [download](https://github.com/Ramzyayman/NeoDragonMounts/releases/download/v0.1.1-mc1.21.5/DragonMounts2-Fabric-1.21.5-0.1.1.jar) |
 | 1.21.8 | 21.8.54 | Playtested | [download](https://github.com/Ramzyayman/NeoDragonMounts/releases/download/v0.1.1-mc1.21.8/DragonMounts2-NeoForge-1.21.8-0.1.1.jar) | [download](https://github.com/Ramzyayman/NeoDragonMounts/releases/download/v0.1.1-mc1.21.8/DragonMounts2-Fabric-1.21.8-0.1.1.jar) |
 | 1.21.10 | 21.10.64 | Playtested | [download](https://github.com/Ramzyayman/NeoDragonMounts/releases/download/v0.1.1-mc1.21.10/DragonMounts2-NeoForge-1.21.10-0.1.1.jar) | [download](https://github.com/Ramzyayman/NeoDragonMounts/releases/download/v0.1.1-mc1.21.10/DragonMounts2-Fabric-1.21.10-0.1.1.jar) |
+| 1.21.11 | 21.11.45 | Playtested | [download](https://github.com/Ramzyayman/NeoDragonMounts/releases/download/v0.1.1-mc1.21.11/DragonMounts2-NeoForge-1.21.11-0.1.1.jar) | [download](https://github.com/Ramzyayman/NeoDragonMounts/releases/download/v0.1.1-mc1.21.11/DragonMounts2-Fabric-1.21.11-0.1.1.jar) |
+| **26.1.2** | 26.1.2.109 | **Preview, untested** | [download](https://github.com/Ramzyayman/NeoDragonMounts/releases/download/v0.1.1-mc26.1.2/DragonMounts2-NeoForge-26.1.2-0.1.1.jar) | none — see below |
 
 Each version is also tagged in this repository, so the exact source for any build is available
 under [Releases](https://github.com/Ramzyayman/NeoDragonMounts/releases).
 
 ## Known issues
 
-These affect **every** version in the table above:
-
-- **The death dissolve effect is disabled.** Dragons used a custom shader to dissolve away on
-  death. The 1.21.5 render pipeline rework removed the hooks it relied on, so it is temporarily
-  stubbed to standard render types. Dragons still die correctly; the animation is plain.
+- **The death dissolve effect is disabled on 1.21.5 through 1.21.11.** Dragons used a custom shader
+  to dissolve away on death, and the 1.21.5 render pipeline rework removed the hooks it relied on.
+  Dragons still die correctly; the animation is plain. **It works again on 26.1.2**, which ships a
+  dissolve render type of its own.
+- **26.1.2 has not been playtested**, and has no Fabric build. Minecraft 26.1 ships unobfuscated, so
+  Mojang publishes no mapping file and Fabric Loom cannot set the game up. That is an upstream gap,
+  not a choice here — a Fabric build returns when Loom supports it.
+- **On 26.1.2 only**, breeding a baby dragon from a spawn egg does nothing; the method the mod
+  hooked became static. Feeding two adult dragons still produces an egg as normal.
 
 Version-specific:
 
