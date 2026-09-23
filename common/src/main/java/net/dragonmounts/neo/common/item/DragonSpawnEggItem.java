@@ -26,7 +26,6 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpawnEggItem;
-import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -46,7 +45,6 @@ import java.util.Optional;
 import static net.dragonmounts.neo.common.DragonMountsShared.ITEM_TRANSLATION_KEY_PREFIX;
 import static net.dragonmounts.neo.common.component.ScoreboardInfo.applyScores;
 import static net.dragonmounts.neo.common.util.EntityUtil.mergeEntityData;
-import static net.dragonmounts.neo.common.util.EntityUtil.saveWithId;
 
 public class DragonSpawnEggItem extends SpawnEggItem implements EntityContainer<Entity>, DragonTypified {
     public static final DispenseItemBehavior DISPENSE_ITEM_BEHAVIOR = new DefaultDispenseItemBehavior() {
@@ -82,7 +80,9 @@ public class DragonSpawnEggItem extends SpawnEggItem implements EntityContainer<
     public final DragonType type;
 
     public DragonSpawnEggItem(EntityType<? extends TameableDragonEntity> defaultType, DragonType dragonType, Properties props) {
-        super(defaultType, props.component(DMDataComponents.DRAGON_TYPE, dragonType));
+        // 1.21.10 dropped SpawnEggItem's EntityType parameter: the type now travels in the
+        // ENTITY_DATA component, which is also what registers this item in SpawnEggItem.BY_ID.
+        super(props.spawnEgg(defaultType).component(DMDataComponents.DRAGON_TYPE, dragonType));
         this.name = new TranslatableContents(TRANSLATION_KEY + ".name", null, new Object[]{MutableComponent.create(dragonType.name)});
         this.type = dragonType;
     }
@@ -108,7 +108,7 @@ public class DragonSpawnEggItem extends SpawnEggItem implements EntityContainer<
         EntityType<?> type;
         switch (level.getBlockEntity(pos)) {
             case TrialSpawnerBlockEntity spawner:
-                type = this.getType(level.registryAccess(), stack);
+                type = this.getType(stack);
                 if (DMEntities.TAMEABLE_DRAGON.is(type)) {
                     var entity = new CompoundTag();
                     this.writeDragonSpec(entity);
@@ -120,7 +120,7 @@ public class DragonSpawnEggItem extends SpawnEggItem implements EntityContainer<
                 }
                 break;
             case SpawnerBlockEntity spawner:
-                type = this.getType(level.registryAccess(), stack);
+                type = this.getType(stack);
                 if (DMEntities.TAMEABLE_DRAGON.is(type)) {
                     this.writeDragonSpec(spawner.getSpawner().getOrCreateNextSpawnData(level, random, pos).entityToSpawn());
                     spawner.setChanged();
@@ -129,7 +129,7 @@ public class DragonSpawnEggItem extends SpawnEggItem implements EntityContainer<
                 }
                 break;
             case Spawner spawner:
-                spawner.setEntityId(this.getType(level.registryAccess(), stack), random);
+                spawner.setEntityId(this.getType(stack), random);
                 break;
             case null:
             default:
@@ -177,7 +177,7 @@ public class DragonSpawnEggItem extends SpawnEggItem implements EntityContainer<
 
     @Override
     public Optional<Mob> spawnOffspringFromSpawnEgg(Player player, Mob mob, EntityType<? extends Mob> type, ServerLevel level, Vec3 pos, ItemStack stack) {
-        if (!this.spawnsEntity(level.registryAccess(), stack, type)) return Optional.empty();
+        if (!this.spawnsEntity(stack, type)) return Optional.empty();
         Mob neo = mob instanceof AgeableMob old ? old.getBreedOffspring(level, old) : type.create(level, EntitySpawnReason.SPAWN_ITEM_USE);
         if (neo == null) return Optional.empty();
         neo.setBaby(true);
@@ -201,16 +201,16 @@ public class DragonSpawnEggItem extends SpawnEggItem implements EntityContainer<
     }
 
     public ItemStack saveEntity(TameableDragonEntity dragon) {
-        return EntityContainer.saveEntityData(this, saveWithId(dragon, new CompoundTag()), DataComponentPatch.EMPTY);
+        return EntityContainer.saveEntityData(this, dragon, DataComponentPatch.EMPTY);
     }
 
     @Override
     public ItemStack saveEntity(Entity entity, DataComponentPatch patch) {
         if (entity instanceof TameableDragonEntity) {
-            return EntityContainer.saveEntityData(this, saveWithId(entity, new CompoundTag()), patch);
+            return EntityContainer.saveEntityData(this, entity, patch);
         }
         var item = SpawnEggItem.byId(entity.getType());
-        return item == null ? ItemStack.EMPTY : EntityContainer.saveEntityData(item, saveWithId(entity, new CompoundTag()), patch);
+        return item == null ? ItemStack.EMPTY : EntityContainer.saveEntityData(item, entity, patch);
     }
 
     @Override
@@ -223,13 +223,14 @@ public class DragonSpawnEggItem extends SpawnEggItem implements EntityContainer<
             boolean yOffset,
             boolean extraOffset
     ) {
-        var type = this.getType(level.registryAccess(), stack);
-        var entity = type.create(level, null, pos, reason, yOffset, extraOffset);
+        var data = stack.get(DataComponents.ENTITY_DATA);
+        if (data == null) return null;
+        var entity = data.type().create(level, null, pos, reason, yOffset, extraOffset);
         if (entity == null) return null;
         if (entity instanceof TameableDragonEntity) {
             ((TameableDragonEntity) entity).overrideType(this.type, true);
         }
-        mergeEntityData(entity, level, player, stack.getOrDefault(DataComponents.ENTITY_DATA, CustomData.EMPTY));
+        mergeEntityData(entity, level, player, data);
         entity.setCustomName(stack.get(DataComponents.CUSTOM_NAME));
         applyScores(level.getScoreboard(), stack, entity);
         return entity;

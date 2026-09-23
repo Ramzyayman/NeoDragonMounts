@@ -6,7 +6,7 @@ import net.dragonmounts.neo.common.entity.breath.BreathNodeHost;
 import net.dragonmounts.neo.common.entity.breath.BreathParticleOption;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleRenderType;
-import net.minecraft.client.particle.TextureSheetParticle;
+import net.minecraft.client.particle.SingleQuadParticle;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -19,7 +19,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class BreathParticle extends TextureSheetParticle implements BreathNodeHost {
+public abstract class BreathParticle extends SingleQuadParticle implements BreathNodeHost {
     public static final float NORMAL_PARTICLE_CHANCE = 0.1F;
     public static final float SPECIAL_PARTICLE_CHANCE = 0.3F;
     public final BreathNode node;
@@ -38,8 +38,7 @@ public abstract class BreathParticle extends TextureSheetParticle implements Bre
             double motionY,
             double motionZ
     ) {
-        super(level, x, y, z);
-        this.setSprite(sprite);
+        super(level, x, y, z, sprite);
         this.node = new BreathNode(option.power(), this.random);
         this.lastQuadSize = this.quadSize = this.getRenderSize();
         Vec3 motion = this.node.getRandomisedStartingMotion(new Vec3(motionX, motionY, motionZ), this.random);
@@ -48,9 +47,12 @@ public abstract class BreathParticle extends TextureSheetParticle implements Bre
         this.zd = motion.z;
     }
 
+    /// 1.21.9 replaced TextureSheetParticle with SingleQuadParticle. The sheet choice moved from
+    /// ParticleRenderType (PARTICLE_SHEET_OPAQUE) to a Layer; Layer.OPAQUE is the same combination -
+    /// the particles atlas with the opaque pipeline. getGroup() is inherited and returns SINGLE_QUADS.
     @Override
-    public @NotNull ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
+    public @NotNull SingleQuadParticle.Layer getLayer() {
+        return SingleQuadParticle.Layer.OPAQUE;
     }
 
     protected float getRenderSize() {

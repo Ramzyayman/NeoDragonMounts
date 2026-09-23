@@ -4,6 +4,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.dragonmounts.neo.common.client.ClientDragonEntity;
 import net.dragonmounts.neo.common.client.model.dragon.BuiltinFactory;
 import net.dragonmounts.neo.common.client.model.dragon.DragonModel;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -11,7 +13,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
-import static net.minecraft.client.renderer.entity.EnderDragonRenderer.renderCrystalBeams;
+import static net.minecraft.client.renderer.entity.EnderDragonRenderer.submitCrystalBeams;
 
 public class TameableDragonRenderer extends MobRenderer<ClientDragonEntity, DragonRenderState, DragonModel> {
     public TameableDragonRenderer(EntityRendererProvider.Context context) {
@@ -25,24 +27,28 @@ public class TameableDragonRenderer extends MobRenderer<ClientDragonEntity, Drag
         dragon.animator.extractRenderState(state, partialTick);
     }
 
+    /// 1.21.9 replaced the immediate render(...) call with a two-phase submission model:
+    /// renderers now push work into a SubmitNodeCollector instead of writing to a
+    /// MultiBufferSource, and the light value comes off the render state rather than a
+    /// parameter. Mirrors vanilla EndCrystalRenderer#submit.
     @Override
-    public void render(DragonRenderState state, PoseStack matrices, MultiBufferSource buffers, int light) {
+    public void submit(DragonRenderState state, PoseStack matrices, SubmitNodeCollector collector, CameraRenderState camera) {
         this.model = state.variant.appearance.getModel(state);
         if (state.renderCrystalBeams && state.crystal != null) {
             matrices.pushPose();
             var crystal = state.crystal;
-            renderCrystalBeams(
+            submitCrystalBeams(
                     (float) (crystal.x - state.x),
                     (float) (crystal.y - state.y),
                     (float) (crystal.z - state.z),
                     state.ageInTicks,
                     matrices,
-                    buffers,
-                    light
+                    collector,
+                    state.lightCoords
             );
             matrices.popPose();
         }
-        super.render(state, matrices, buffers, light);
+        super.submit(state, matrices, collector, camera);
     }
 
     @Override

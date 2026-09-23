@@ -2,7 +2,6 @@ package net.dragonmounts.neo.common.entity.ai.navigation;
 
 import net.dragonmounts.neo.common.entity.dragon.ServerDragonEntity;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.protocol.game.DebugPackets;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
@@ -71,7 +70,6 @@ public class DragonPathNavigation extends PathNavigation {
                     this.path.advance();
                 }
             }
-            DebugPackets.sendPathFindingPacket(this.level, this.mob, this.path, this.maxDistanceToWaypoint);
             if (!this.isDone()) {
                 assert this.path != null;
                 var next = this.path.getNextEntityPos(this.mob);

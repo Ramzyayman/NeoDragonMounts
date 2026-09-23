@@ -87,10 +87,14 @@ public class TieredShearsItem extends ShearsItem {
                 int content = state.getValue(HONEY_LEVEL);
                 if (content < 5) return InteractionResult.TRY_WITH_EMPTY_HAND;
                 level.playSound(player, player.getX(), player.getY(), player.getZ(), SoundEvents.BEEHIVE_SHEAR, SoundSource.BLOCKS, 1.0F, 1.0F);
-                dropHoneycomb(level, pos);
+                // 1.21.10 routes honeycomb through a block-interact loot table, so it needs the
+                // server level and the full context; vanilla's BeehiveBlock guards it the same way.
+                if (level instanceof ServerLevel server) {
+                    dropHoneycomb(server, stack, state, server.getBlockEntity(pos), player, pos);
+                }
                 stack.hurtAndBreak(1, player, getSlotForHand(context.getHand()));
                 level.gameEvent(player, GameEvent.SHEAR, pos);
-                if (!level.isClientSide) {
+                if (!level.isClientSide()) {
                     player.awardStat(Stats.ITEM_USED.get(this));
                 }
                 if (CampfireBlock.isSmokeyPos(level, pos)) {

@@ -11,13 +11,17 @@ import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.component.TypedEntityData;
 import org.jetbrains.annotations.Nullable;
 
 import static net.dragonmounts.neo.common.entity.dragon.TameableDragonEntity.SERIALIZATION_KEY_FLYING;
 
 public interface EntityContainer<T extends Entity> {
-    static CustomData simplifyData(CompoundTag tag) {
+    /// 1.21.10 gave ENTITY_DATA its own component type: TypedEntityData carries the entity type
+    /// beside the tag instead of leaving an "id" key inside it for readers to re-parse, so the type
+    /// has to be handed in here. TypedEntityData#of strips any leftover "id" itself.
+    static TypedEntityData<EntityType<?>> simplifyData(EntityType<?> type, CompoundTag tag) {
         tag.remove("Air");
         tag.remove("DeathTime");
         tag.remove("FallDistance");
@@ -38,14 +42,15 @@ public interface EntityContainer<T extends Entity> {
         tag.remove("SleepingY");
         tag.remove("SleepingZ");
         tag.remove("TicksFrozen");
-        return CustomData.of(tag);
+        return TypedEntityData.of(type, tag);
     }
 
-    static ItemStack saveEntityData(Item item, CompoundTag tag, DataComponentPatch patch) {
+    static ItemStack saveEntityData(Item item, Entity entity, DataComponentPatch patch) {
         var stack = new ItemStack(item);
+        var tag = EntityUtil.saveWithId(entity, new CompoundTag());
         tag.remove(SERIALIZATION_KEY_FLYING);
         tag.remove("UUID");
-        stack.set(DataComponents.ENTITY_DATA, EntityContainer.simplifyData(tag));
+        stack.set(DataComponents.ENTITY_DATA, EntityContainer.simplifyData(entity.getType(), tag));
         stack.applyComponents(patch);
         return stack;
     }

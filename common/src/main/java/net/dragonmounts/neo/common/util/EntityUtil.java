@@ -29,7 +29,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.component.TypedEntityData;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.pathfinder.PathType;
@@ -68,11 +68,15 @@ public abstract class EntityUtil extends /*to access protected methods*/ EntityT
         }
     }
 
-    /// @see EntityType#updateCustomEntityTag(Level, Player, Entity, CustomData)
-    public static void mergeEntityData(Entity entity, ServerLevel level, Player player, CustomData data) {
+    /// @see EntityType#updateCustomEntityTag(Level, LivingEntity, Entity, TypedEntityData)
+    ///
+    /// 1.21.10 gave ENTITY_DATA its own component type, TypedEntityData, which carries the entity
+    /// type alongside the tag instead of re-parsing it out of an "id" key, so the old
+    /// CustomData#parseEntityType lookup is gone. Ops are identified by NameAndId now, not GameProfile.
+    public static void mergeEntityData(Entity entity, ServerLevel level, Player player, TypedEntityData<EntityType<?>> data) {
         MinecraftServer server = level.getServer();
-        EntityType<?> type = data.parseEntityType(server.registryAccess(), Registries.ENTITY_TYPE);
-        if (entity.getType() == type && (!type.onlyOpCanSetNbt() || player != null && server.getPlayerList().isOp(player.getGameProfile()))) {
+        EntityType<?> type = data.type();
+        if (entity.getType() == type && (!type.onlyOpCanSetNbt() || player != null && server.getPlayerList().isOp(player.nameAndId()))) {
             data.loadInto(entity);
         }
     }
@@ -296,7 +300,7 @@ public abstract class EntityUtil extends /*to access protected methods*/ EntityT
     }
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    private EntityUtil(EntityFactory<Entity> a, MobCategory b, boolean c, boolean d, boolean e, boolean f, ImmutableSet<Block> g, EntityDimensions h, float i, int j, int k, String l, Optional<ResourceKey<LootTable>> m, FeatureFlagSet n) {
-        super(a, b, c, d, e, f, g, h, i, j, k, l, m, n);
+    private EntityUtil(EntityFactory<Entity> a, MobCategory b, boolean c, boolean d, boolean e, boolean f, ImmutableSet<Block> g, EntityDimensions h, float i, int j, int k, String l, Optional<ResourceKey<LootTable>> m, FeatureFlagSet n, boolean o) {
+        super(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o);
     }
 }

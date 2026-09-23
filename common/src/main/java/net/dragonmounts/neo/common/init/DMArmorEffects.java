@@ -51,7 +51,7 @@ public class DMArmorEffects {
         public boolean activate(ArmorEffectManager manager, Player player, int level) {
             boolean flag = level > 3;
             Level world = player.level();
-            if (flag && !world.isClientSide && manager.getCooldown(this) <= 0 && player.isSprinting() && addOrMergeEffect(player, MobEffects.SPEED, 100, 1, true, true, true)) {
+            if (flag && !world.isClientSide() && manager.getCooldown(this) <= 0 && player.isSprinting() && addOrMergeEffect(player, MobEffects.SPEED, 100, 1, true, true, true)) {
                 world.playSound(null, player, SoundEvents.GUARDIAN_HURT, SoundSource.NEUTRAL, 1.0F, 1.0F);
                 manager.setCooldown(this, this.cooldown);
             }
@@ -91,7 +91,7 @@ public class DMArmorEffects {
         @Override
         public boolean activate(ArmorEffectManager manager, Player player, int level) {
             Level world = player.level();
-            if (world.isClientSide) {
+            if (world.isClientSide()) {
                 RandomSource random = player.getRandom();
                 Vec3 pos = player.position();
                 double x = pos.x, y = pos.y + 1.5, z = pos.z;
@@ -140,7 +140,7 @@ public class DMArmorEffects {
         @Override
         public boolean activate(ArmorEffectManager manager, Player player, int level) {
             Level world = player.level();
-            if (world.isClientSide) {
+            if (world.isClientSide()) {
                 RandomSource random = player.getRandom();
                 Vec3 pos = player.position();
                 world.addParticle(
@@ -174,7 +174,7 @@ public class DMArmorEffects {
         @Override
         public boolean activate(ArmorEffectManager manager, Player player, int level) {
             boolean flag = level > 3;
-            if (flag && !player.level().isClientSide && manager.getCooldown(this) <= 0 && player.isOnFire()) {
+            if (flag && !player.level().isClientSide() && manager.getCooldown(this) <= 0 && player.isOnFire()) {
                 if (addOrMergeEffect(player, MobEffects.FIRE_RESISTANCE, 600, 0, true, true, true)) {
                     manager.setCooldown(this, this.cooldown);
                 }
@@ -193,7 +193,7 @@ public class DMArmorEffects {
         @Override
         public boolean activate(ArmorEffectManager manager, Player player, int level) {
             boolean flag = level > 3;
-            if (flag && !player.level().isClientSide) {
+            if (flag && !player.level().isClientSide()) {
                 if (player.fishing != null) {
                     addOrResetEffect(player, MobEffects.LUCK, 200, 0, true, true, true, 21);
                 }
@@ -234,7 +234,7 @@ public class DMArmorEffects {
         @Override
         public boolean activate(ArmorEffectManager manager, Player player, int level) {
             boolean flag = level > 3;
-            if (flag && !player.level().isClientSide) {
+            if (flag && !player.level().isClientSide()) {
                 addOrResetEffect(player, MobEffects.NIGHT_VISION, 600, 0, true, true, true, 201);
             }
             return flag;
@@ -303,7 +303,7 @@ public class DMArmorEffects {
         @Override
         public boolean activate(ArmorEffectManager manager, Player player, int level) {
             boolean flag = level > 3;
-            if (flag && !player.level().isClientSide) {
+            if (flag && !player.level().isClientSide()) {
                 if (player.fishing != null) {
                     addOrResetEffect(player, MobEffects.LUCK, 200, 0, true, true, true, 21);
                 }
@@ -337,7 +337,7 @@ public class DMArmorEffects {
         @Override
         public boolean activate(ArmorEffectManager manager, Player player, int level) {
             boolean flag = level > 3;
-            if (flag && !player.level().isClientSide) {
+            if (flag && !player.level().isClientSide()) {
                 addOrResetEffect(player, MobEffects.HASTE, 600, 0, true, true, true, 201);
             }
             return flag;
@@ -363,7 +363,7 @@ public class DMArmorEffects {
         @Override
         public boolean activate(ArmorEffectManager manager, Player player, int level) {
             boolean flag = level > 3;
-            if (flag && !player.level().isClientSide && player.isEyeInFluid(FluidTags.WATER)) {
+            if (flag && !player.level().isClientSide() && player.isEyeInFluid(FluidTags.WATER)) {
                 addOrResetEffect(player, MobEffects.WATER_BREATHING, 600, 0, true, true, true, 201);
             }
             return flag;
@@ -392,7 +392,7 @@ public class DMArmorEffects {
         @Override
         public boolean activate(ArmorEffectManager manager, Player player, int level) {
             boolean flag = level > 3;
-            if (flag && !player.level().isClientSide && !player.level().isBrightOutside() && manager.getCooldown(this) <= 0 && addOrMergeEffect(player, MobEffects.STRENGTH, 300, 0, true, true, true)) {
+            if (flag && !player.level().isClientSide() && !player.level().isBrightOutside() && manager.getCooldown(this) <= 0 && addOrMergeEffect(player, MobEffects.STRENGTH, 300, 0, true, true, true)) {
                 manager.setCooldown(this, this.cooldown);
             }
             return flag;

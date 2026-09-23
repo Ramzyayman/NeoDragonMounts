@@ -6,6 +6,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.particles.PowerParticleOption;
 
 public class EnderBreathParticle extends FlameBreathParticle {
     public static final BreathParticleFactory FACTORY = EnderBreathParticle::new;
@@ -16,6 +17,6 @@ public class EnderBreathParticle extends FlameBreathParticle {
 
     @Override
     protected ParticleOptions getChildParticle() {
-        return ParticleTypes.DRAGON_BREATH;
+        return PowerParticleOption.create(ParticleTypes.DRAGON_BREATH, 1.0F);
     }
 }

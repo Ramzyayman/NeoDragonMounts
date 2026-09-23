@@ -5,6 +5,7 @@ import net.dragonmounts.neo.common.entity.breath.DragonBreath;
 import net.dragonmounts.neo.common.entity.dragon.TameableDragonEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.particles.PowerParticleOption;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -21,7 +22,7 @@ public class EnderBreath extends DragonBreath {
         if (!state.isAir() && level.random.nextFloat() < 0.002F) {
             var cloud = createEffectCloud(level, pos, 1.6F, 750);
             cloud.setOwner(this.dragon);
-            cloud.setCustomParticle(ParticleTypes.DRAGON_BREATH);
+            cloud.setCustomParticle(PowerParticleOption.create(ParticleTypes.DRAGON_BREATH, 1.0F));
             cloud.addEffect(new MobEffectInstance(MobEffects.INSTANT_DAMAGE, 1));
             level.addFreshEntity(cloud);
         }

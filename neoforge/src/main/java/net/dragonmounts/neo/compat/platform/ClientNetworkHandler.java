@@ -29,7 +29,7 @@ public class ClientNetworkHandler {
     }
 
     public static void handleArmorRiposte(ArmorRipostePayload payload, IPayloadContext context) {
-        var level = ((LocalPlayer) context.player()).clientLevel;
+        var level = context.player().level();
         var entity = level.getEntity(payload.id());
         if (entity == null) return;
         int flag = payload.flag();
@@ -62,7 +62,7 @@ public class ClientNetworkHandler {
     }
 
     public static void handleEggWobble(WobbleEggPayload payload, IPayloadContext context) {
-        if (((LocalPlayer) context.player()).clientLevel.getEntity(payload.id()) instanceof HatchableDragonEggEntity egg) {
+        if (context.player().level().getEntity(payload.id()) instanceof HatchableDragonEggEntity egg) {
             int flag = payload.flag();
             egg.applyWobble(
                     payload.amplitude(),
@@ -74,14 +74,14 @@ public class ClientNetworkHandler {
     }
 
     public static void handleDragonSync(SyncDragonAgePayload payload, IPayloadContext context) {
-        if (((LocalPlayer) context.player()).clientLevel.getEntity(payload.id()) instanceof ClientDragonEntity dragon) {
+        if (context.player().level().getEntity(payload.id()) instanceof ClientDragonEntity dragon) {
             dragon.setAge(payload.age());
             dragon.setLifeStage(payload.stage(), false, false);
         }
     }
 
     public static void handleFeedDragon(FeedDragonPayload payload, IPayloadContext context) {
-        var level = ((LocalPlayer) context.player()).clientLevel;
+        var level = context.player().level();
         if (level.getEntity(payload.id()) instanceof ClientDragonEntity dragon) {
             dragon.setAge(payload.age());
             dragon.setLifeStage(payload.stage(), false, false);
@@ -113,7 +113,7 @@ public class ClientNetworkHandler {
     }
 
     public static void handleEggSync(SyncEggAgePayload payload, IPayloadContext context) {
-        if (((LocalPlayer) context.player()).clientLevel.getEntity(payload.id()) instanceof HatchableDragonEggEntity egg) {
+        if (context.player().level().getEntity(payload.id()) instanceof HatchableDragonEggEntity egg) {
             egg.setAge(payload.age(), false);
         }
     }

@@ -57,11 +57,9 @@ public class AmuletItem<T extends Entity> extends Item implements EntityContaine
             boolean yOffset,
             boolean extraOffset
     ) {
-        var data = stack.getOrDefault(DataComponents.ENTITY_DATA, CustomData.EMPTY);
-        if (data.isEmpty()) return null;
-        var type = data.parseEntityType(level.registryAccess(), Registries.ENTITY_TYPE);
-        if (type == null) return null;
-        var entity = type.create(level, null, pos, reason, yOffset, extraOffset);
+        var data = stack.get(DataComponents.ENTITY_DATA);
+        if (data == null) return null;
+        var entity = data.type().create(level, null, pos, reason, yOffset, extraOffset);
         if (entity == null) return null;
         mergeEntityData(entity, level, player, data);
         applyScores(level.getScoreboard(), stack, entity);
@@ -78,7 +76,7 @@ public class AmuletItem<T extends Entity> extends Item implements EntityContaine
         var type = entity.getType();
         if (type.canSerialize()) {
             var stack = new ItemStack(this);
-            stack.set(DataComponents.ENTITY_DATA, EntityContainer.simplifyData(saveWithId(entity, new CompoundTag())));
+            stack.set(DataComponents.ENTITY_DATA, EntityContainer.simplifyData(type, saveWithId(entity, new CompoundTag())));
             stack.set(DMDataComponents.SCORES, ((ScoreboardAccessor) entity.level().getScoreboard()).neodragonmounts$getInfo(entity));
             stack.applyComponents(patch);
             return stack;

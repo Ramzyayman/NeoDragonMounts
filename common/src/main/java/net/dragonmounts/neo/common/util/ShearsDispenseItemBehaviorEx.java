@@ -24,9 +24,9 @@ public class ShearsDispenseItemBehaviorEx extends ShearsDispenseItemBehavior {
     @Override
     protected @NotNull ItemStack execute(BlockSource block, @NotNull ItemStack stack) {
         var level = block.level();
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             var pos = block.pos().relative(block.state().getValue(DispenserBlock.FACING));
-            this.setSuccess(tryShearBeehive(level, pos) || tryShearLivingEntity(level, pos, stack));
+            this.setSuccess(tryShearBeehive(level, pos, stack) || tryShearLivingEntity(level, pos, stack));
             if (this.isSuccess()) {
                 stack.hurtAndBreak(1, level, null, Consumers.nop());
             }
@@ -34,12 +34,12 @@ public class ShearsDispenseItemBehaviorEx extends ShearsDispenseItemBehavior {
         return stack;
     }
 
-    public static boolean tryShearBeehive(ServerLevel level, BlockPos pos) {
+    public static boolean tryShearBeehive(ServerLevel level, BlockPos pos, ItemStack stack) {
         var state = level.getBlockState(pos);
         if (state.is(BlockTags.BEEHIVES) && state.hasProperty(BeehiveBlock.HONEY_LEVEL) && state.getBlock() instanceof BeehiveBlock hive) {
             if (state.getValue(BeehiveBlock.HONEY_LEVEL) >= 5) {
                 level.playSound(null, pos, SoundEvents.BEEHIVE_SHEAR, SoundSource.BLOCKS, 1.0F, 1.0F);
-                BeehiveBlock.dropHoneycomb(level, pos);
+                BeehiveBlock.dropHoneycomb(level, stack, state, level.getBlockEntity(pos), null, pos);
                 hive.releaseBeesAndResetHoneyLevel(level, state, pos, null, BeehiveBlockEntity.BeeReleaseStatus.BEE_RELEASED);
                 level.gameEvent(null, GameEvent.SHEAR, pos);
                 return true;

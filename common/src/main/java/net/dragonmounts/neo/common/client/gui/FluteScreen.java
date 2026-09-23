@@ -77,7 +77,7 @@ public class FluteScreen extends Screen {
             this.minecraft.gui.setOverlayMessage(Component.translatable("message.neodragonmounts.flute.invalid_pos"), false);
             var player = this.minecraft.player;
             if (player != null) {
-                player.clientLevel.playLocalSound(player, DMSounds.FLUTE_BLOW_LONG, SoundSource.PLAYERS, 1.0F, 1.0F);
+                player.level().playLocalSound(player, DMSounds.FLUTE_BLOW_LONG, SoundSource.PLAYERS, 1.0F, 1.0F);
             }
         }
         this.onClose();

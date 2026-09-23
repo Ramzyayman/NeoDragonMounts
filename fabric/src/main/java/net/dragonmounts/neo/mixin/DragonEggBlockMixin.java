@@ -22,7 +22,7 @@ import static net.dragonmounts.neo.common.block.HatchableDragonEggBlock.spawn;
 public abstract class DragonEggBlockMixin extends FallingBlock {
     @Inject(method = "useWithoutItem", at = @At("HEAD"), cancellable = true)
     public void tryHatchDragonEgg(BlockState state, Level level, BlockPos pos, Player d, BlockHitResult e, CallbackInfoReturnable<InteractionResult> info) {
-        if (this == Blocks.DRAGON_EGG && !level.isClientSide && !level.dimension().equals(Level.END) && ServerConfig.INSTANCE.isEggOverridden.get()) {
+        if (this == Blocks.DRAGON_EGG && !level.isClientSide() && !level.dimension().equals(Level.END) && ServerConfig.INSTANCE.isEggOverridden.get()) {
             info.setReturnValue(spawn(level, pos, DragonTypes.ENDER, true));
         }
     }

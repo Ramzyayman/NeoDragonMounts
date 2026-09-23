@@ -63,7 +63,7 @@ public abstract class DragonHeadBlock extends BaseEntityBlock implements DragonT
 
     @Override
     protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, @Nullable Orientation orientation, boolean movedByPiston) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             boolean charged = level.hasNeighborSignal(pos);
             if (charged != state.getValue(POWERED)) {
                 level.setBlock(pos, state.setValue(POWERED, charged), 2);
@@ -88,7 +88,7 @@ public abstract class DragonHeadBlock extends BaseEntityBlock implements DragonT
     @Override
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        if (level.isClientSide && state.getBlock() instanceof DragonHeadBlock) {
+        if (level.isClientSide() && state.getBlock() instanceof DragonHeadBlock) {
             return createTickerHelper(type, DMBlockEntities.DRAGON_HEAD.get(), DragonHeadBlockEntity::animation);
         }
         return null;

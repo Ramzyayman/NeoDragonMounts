@@ -47,7 +47,7 @@ public class HatchableDragonEggBlock extends DragonEggBlock implements DragonTyp
 
     @Override
     public InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
-        if (level.isClientSide) return InteractionResult.SUCCESS;
+        if (level.isClientSide()) return InteractionResult.SUCCESS;
         if (level.dimension().equals(Level.END)) return super.useWithoutItem(state, level, pos, player, hit);
         return spawn(level, pos, this.type, false);
     }

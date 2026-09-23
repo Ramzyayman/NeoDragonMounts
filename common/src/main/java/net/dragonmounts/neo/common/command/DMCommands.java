@@ -1,6 +1,6 @@
 package net.dragonmounts.neo.common.command;
 
-import com.mojang.authlib.GameProfile;
+import net.minecraft.server.players.NameAndId;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -52,7 +52,7 @@ public class DMCommands {
         ).append(" cannot be cast to " + clazz.getName());
     }
 
-    public static GameProfile getSingleProfileOrException(CommandContext<CommandSourceStack> context, String name) throws CommandSyntaxException {
+    public static NameAndId getSingleProfileOrException(CommandContext<CommandSourceStack> context, String name) throws CommandSyntaxException {
         var profiles = GameProfileArgument.getGameProfiles(context, name);
         if (profiles.isEmpty()) throw EntityArgument.NO_PLAYERS_FOUND.create();
         if (profiles.size() > 1) throw EntityArgument.ERROR_NOT_SINGLE_PLAYER.create();

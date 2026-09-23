@@ -32,8 +32,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
-import net.minecraft.network.protocol.game.DebugPackets;
 import net.minecraft.server.level.ServerEntity;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.Unit;
@@ -289,9 +289,10 @@ public class ServerDragonEntity extends TameableDragonEntity {
             this.setTarget(null);
             this.getNavigation().stop();
             this.setInSittingPose(false);
-            /// Player#setEntityOnShoulder still takes a CompoundTag, but Entity#save writes to a
-            /// ValueOutput now, so bridge via EntityUtil - same shape as vanilla ShoulderRidingEntity.
-            if (player.setEntityOnShoulder(EntityUtil.saveWithId(this, new CompoundTag()))) {
+            /// setEntityOnShoulder moved from Player down to ServerPlayer in 1.21.10; it still takes
+            /// a CompoundTag, but Entity#save writes to a ValueOutput now, so bridge via EntityUtil -
+            /// same shape as vanilla ShoulderRidingEntity.
+            if (player instanceof ServerPlayer shoulder && shoulder.setEntityOnShoulder(EntityUtil.saveWithId(this, new CompoundTag()))) {
                 this.discard();
             }
         } else if (this.isSaddled) {
@@ -449,9 +450,4 @@ public class ServerDragonEntity extends TameableDragonEntity {
     @Override
     public void onPlayerJump(int power) {}
 
-    @Override
-    protected void sendDebugPackets() {
-        super.sendDebugPackets();
-        DebugPackets.sendEntityBrain(this);
-    }
 }

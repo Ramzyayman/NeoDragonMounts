@@ -2,6 +2,8 @@ package net.dragonmounts.neo.common.client.model.dragon;
 
 import net.dragonmounts.neo.common.client.renderer.dragon.DragonRenderState;
 import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.Model;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.model.HeadedModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.util.Mth;
@@ -44,6 +46,15 @@ public class DragonModel extends EntityModel<DragonRenderState> implements Heade
     public final ModelPart chest;
     public final ModelPart saddle;
     public final ModelPart back;
+    /// 1.21.9 defers every model draw and re-runs Model#setupAnim immediately before it, so a
+    /// layer can no longer flip a part visible around its own draw call - by then the flag is back
+    /// to whatever the last setupAnim left. The saddle and the chest each have to be visible for
+    /// exactly one pass and hidden for all the others, so each gets its own Model over the same
+    /// baked parts: which Model was submitted is what decides visibility when it is finally drawn.
+    public final Model<DragonRenderState> saddleOverlay;
+    /// Rooted at the chest part itself, so drawing it is exactly the old `chest.render(...)` - the
+    /// layer still supplies the body transform in the PoseStack it submits.
+    public final Model<DragonRenderState> chestOverlay;
 
     public DragonModel(ModelPart root) {
         super(root);
@@ -66,6 +77,20 @@ public class DragonModel extends EntityModel<DragonRenderState> implements Heade
         (this.chest = body.getChild("chest")).visible = false;
         (this.saddle = body.getChild("saddle")).visible = false;
         this.back = body.getChild("back");
+        this.saddleOverlay = new Model<>(this.root, RenderType::entityCutoutNoCull) {
+            @Override
+            public void setupAnim(DragonRenderState state) {
+                DragonModel.this.setupAnim(state);
+                DragonModel.this.saddle.visible = true;
+            }
+        };
+        this.chestOverlay = new Model<>(this.chest, RenderType::entityCutoutNoCull) {
+            @Override
+            public void setupAnim(DragonRenderState state) {
+                DragonModel.this.setupAnim(state);
+                DragonModel.this.chest.visible = true;
+            }
+        };
     }
 
     public void setupBlock(float ticks, float yRot, float scale) {
@@ -115,6 +140,9 @@ public class DragonModel extends EntityModel<DragonRenderState> implements Heade
         this.leftHindLeg.loadPose(state.leftHindLeg);
         this.rightHindLeg.loadPose(state.rightHindLeg);
         this.back.visible = !state.isSaddled;
+        // reset every frame: the overlay models above turn these back on for their own pass only
+        this.saddle.visible = false;
+        this.chest.visible = false;
         for (int i = 0; i < WING_FINGERS; ++i) {
             this.leftFingers[i].yRot = -(this.rightFingers[i].yRot = state.fingerRotY[i]);
         }

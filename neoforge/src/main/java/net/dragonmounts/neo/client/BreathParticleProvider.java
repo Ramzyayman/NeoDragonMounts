@@ -6,6 +6,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.util.RandomSource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,7 +26,7 @@ public enum BreathParticleProvider implements ParticleProvider<BreathParticleOpt
     }
 
     @Override
-    public @Nullable Particle createParticle(BreathParticleOption option, @NotNull ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+    public @Nullable Particle createParticle(BreathParticleOption option, @NotNull ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, @NotNull RandomSource random) {
         return option.variant().appearance.createBreathParticle(option, this.getAtlas(), level, x, y, z, xSpeed, ySpeed, zSpeed);
     }
 }

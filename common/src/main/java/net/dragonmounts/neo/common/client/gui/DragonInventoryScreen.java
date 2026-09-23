@@ -8,6 +8,7 @@ import net.dragonmounts.neo.common.network.c2s.RenameFlutePayload;
 import net.dragonmounts.neo.common.network.c2s.ToggleSittingByIDPayload;
 import net.dragonmounts.neo.common.network.c2s.ToggleTrustPayload;
 import net.dragonmounts.neo.compat.platform.ClientNetworkHandler;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.Minecraft;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -109,12 +110,12 @@ public class DragonInventoryScreen extends AbstractContainerScreen<DragonInvento
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (keyCode == 256) {
+    public boolean keyPressed(KeyEvent event) {
+        if (event.key() == 256) {
             assert this.minecraft != null && this.minecraft.player != null;
             this.minecraft.player.closeContainer();
         }
-        return this.name.keyPressed(keyCode, scanCode, modifiers) || this.name.canConsumeInput() || super.keyPressed(keyCode, scanCode, modifiers);
+        return this.name.keyPressed(event) || this.name.canConsumeInput() || super.keyPressed(event);
     }
 
     public void handleToggleTrust(Button ignored) {

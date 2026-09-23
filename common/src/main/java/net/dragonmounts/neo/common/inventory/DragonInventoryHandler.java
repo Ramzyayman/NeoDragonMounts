@@ -50,7 +50,7 @@ public class DragonInventoryHandler extends AbstractContainerMenu {
         for (int j = 0; j < 9; ++j) {
             this.addSlot(new Slot(playerInventory, j, j * 18 + 156, 200));
         }
-        this.sitting = this.addDataSlot(dragon.level().isClientSide ? DataSlot.standalone() : new SittingState(dragon));
+        this.sitting = this.addDataSlot(dragon.level().isClientSide() ? DataSlot.standalone() : new SittingState(dragon));
     }
 
     @Override

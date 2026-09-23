@@ -191,7 +191,7 @@ public class DragonMounts {
 
     static void onPlayerInteract(PlayerInteractEvent.RightClickBlock event) {
         var level = event.getLevel();
-        if (!level.isClientSide && !level.dimension().equals(Level.END) && ServerConfig.INSTANCE.isEggOverridden.get()) {
+        if (!level.isClientSide() && !level.dimension().equals(Level.END) && ServerConfig.INSTANCE.isEggOverridden.get()) {
             var pos = event.getPos();
             if (level.getBlockState(pos).getBlock() == Blocks.DRAGON_EGG) {
                 event.setUseBlock(TriState.FALSE);

@@ -21,6 +21,7 @@ import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.monster.Shulker;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.ContainerUser;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
@@ -137,7 +138,8 @@ public class DragonCoreBlockEntity extends RandomizableContainerBlockEntity impl
     }
 
     @Override
-    public void startOpen(Player player) {
+    public void startOpen(ContainerUser user) {
+        var player = user.getLivingEntity();
         if (!this.remove && !player.isSpectator()) {
             if (this.openCount < 0) this.openCount = 0;
             var pos = this.worldPosition;
@@ -155,7 +157,8 @@ public class DragonCoreBlockEntity extends RandomizableContainerBlockEntity impl
     }
 
     @Override
-    public void stopOpen(Player player) {
+    public void stopOpen(ContainerUser user) {
+        var player = user.getLivingEntity();
         if (!this.remove && !player.isSpectator()) {
             var pos = this.worldPosition;
             var level = this.level;

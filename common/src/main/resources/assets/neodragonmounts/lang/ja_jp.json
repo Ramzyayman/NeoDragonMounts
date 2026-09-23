@@ -70,7 +70,7 @@
   "itemGroup.neodragonmounts.combat": "DM2：戦闘",
   "itemGroup.neodragonmounts.misc": "DM2：食べ物とその他",
   "itemGroup.neodragonmounts.tools": "DM2：道具と実用品",
-  "key.categories.neodragonmounts": "ドラゴンマウント",
+  "key.category.neodragonmounts.dragon_mounts": "ドラゴンマウント",
   "key.neodragonmounts.breathe": "ドラゴンブレス",
   "key.neodragonmounts.descend": "降下",
   "message.neodragonmounts.dragon.locked": "このドラゴンは所有者によってロックされています",

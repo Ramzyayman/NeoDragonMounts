@@ -1,6 +1,7 @@
 package net.dragonmounts.neo.common.inventory;
 
 import net.dragonmounts.neo.common.capability.FluteHolder;
+import net.minecraft.world.entity.ContainerUser;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
@@ -74,10 +75,13 @@ public class FluteHolderImpl implements FluteHolder {
     }
 
     @Override
-    public void stopOpen(Player player) {
+    public void stopOpen(ContainerUser user) {
         if (this.flute.isEmpty()) return;
-        if (!player.addItem(this.flute)) {
-            player.drop(this.flute, false);
+        // ContainerUser replaced Player here in 1.21.10; only a player has an inventory to give it back to.
+        if (user.getLivingEntity() instanceof Player player) {
+            if (!player.addItem(this.flute)) {
+                player.drop(this.flute, false);
+            }
         }
         this.flute = ItemStack.EMPTY;
     }

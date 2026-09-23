@@ -98,7 +98,7 @@
   "itemGroup.neodragonmounts.combat": "龙骑士：战斗用品",
   "itemGroup.neodragonmounts.misc": "龙骑士：食物与杂项",
   "itemGroup.neodragonmounts.tools": "龙骑士：工具与实用物品",
-  "key.categories.neodragonmounts": "龙骑士2",
+  "key.category.neodragonmounts.dragon_mounts": "龙骑士2",
   "key.neodragonmounts.breathe": "吐息",
   "key.neodragonmounts.descend": "降落",
   "message.neodragonmounts.dragon.locked": "此龙已被主人锁定",

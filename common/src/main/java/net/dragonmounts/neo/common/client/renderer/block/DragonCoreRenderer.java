@@ -1,6 +1,5 @@
 package net.dragonmounts.neo.common.client.renderer.block;
 
-import net.minecraft.world.phys.Vec3;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import com.mojang.serialization.Codec;
@@ -10,18 +9,24 @@ import net.dragonmounts.neo.common.block.entity.DragonCoreBlockEntity;
 import net.dragonmounts.neo.common.client.model.DragonCoreModel;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayers;
-import org.joml.Vector3f;
-import java.util.Set;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.special.NoDataSpecialModelRenderer;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
+import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNullByDefault;
+import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
+
+import java.util.Set;
 
 import static net.dragonmounts.neo.common.DragonMountsShared.makeId;
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING;
@@ -29,13 +34,13 @@ import static net.minecraft.world.level.block.state.properties.BlockStatePropert
 /// @see net.minecraft.client.renderer.blockentity.ShulkerBoxRenderer
 @SuppressWarnings("UnstableApiUsage")
 @NotNullByDefault
-public class DragonCoreRenderer implements BlockEntityRenderer<DragonCoreBlockEntity> {
+public class DragonCoreRenderer implements BlockEntityRenderer<DragonCoreBlockEntity, DragonCoreRenderState> {
     private static final ResourceLocation TEXTURE_LOCATION = makeId("textures/block/dragon_core.png");
     private static final RenderType RENDER_TYPE = RenderType.entityCutoutNoCull(TEXTURE_LOCATION);
-    private final DragonCoreModel model;
+    final DragonCoreModel model;
 
     public DragonCoreRenderer(BlockEntityRendererProvider.Context context) {
-        this(context.getModelSet());
+        this(context.entityModelSet());
     }
 
     public DragonCoreRenderer(EntityModelSet models) {
@@ -43,19 +48,60 @@ public class DragonCoreRenderer implements BlockEntityRenderer<DragonCoreBlockEn
     }
 
     @Override
-    public void render(DragonCoreBlockEntity core, float ticks, PoseStack matrices, MultiBufferSource buffers, int light, int overlay, Vec3 cameraPos) {
-        this.render(matrices, buffers, light, overlay, core.getBlockState().getValueOrElse(HORIZONTAL_FACING, Direction.SOUTH), core.getProgress(ticks));
+    public DragonCoreRenderState createRenderState() {
+        return new DragonCoreRenderState();
     }
 
-    public void render(PoseStack matrices, MultiBufferSource buffers, int light, int overlay, Direction facing, float progress) {
+    /// 1.21.9 split rendering into extract and submit. Everything the submit phase needs is
+    /// copied off the block entity here, because submit no longer sees it.
+    @Override
+    public void extractRenderState(
+            DragonCoreBlockEntity core,
+            DragonCoreRenderState state,
+            float partialTick,
+            Vec3 cameraPosition,
+            @Nullable ModelFeatureRenderer.CrumblingOverlay breakProgress
+    ) {
+        BlockEntityRenderer.super.extractRenderState(core, state, partialTick, cameraPosition, breakProgress);
+        state.facing = core.getBlockState().getValueOrElse(HORIZONTAL_FACING, Direction.SOUTH);
+        state.progress = core.getProgress(partialTick);
+    }
+
+    @Override
+    public void submit(DragonCoreRenderState state, PoseStack matrices, SubmitNodeCollector collector, CameraRenderState camera) {
+        this.submit(matrices, collector, state.lightCoords, OverlayTexture.NO_OVERLAY, state.facing, state.progress, state.breakProgress, 0);
+    }
+
+    /// Shared by the block-entity path and the item (`Special`) path, as before - only the sink
+    /// changed from a MultiBufferSource to a SubmitNodeCollector.
+    public void submit(
+            PoseStack matrices,
+            SubmitNodeCollector collector,
+            int packedLight,
+            int packedOverlay,
+            Direction facing,
+            float progress,
+            @Nullable ModelFeatureRenderer.CrumblingOverlay crumblingOverlay,
+            int outlineColor
+    ) {
         matrices.pushPose();
         matrices.translate(0.5F, 0.5F, 0.5F);
         matrices.scale(0.9995F, 0.9995F, 0.9995F);
         matrices.mulPose(Axis.YP.rotationDegrees(facing.toYRot()));
         matrices.scale(1.0F, -1.0F, -1.0F);
         matrices.translate(0.0F, -1.0F, 0.0F);
-        this.model.animate(progress);
-        this.model.renderToBuffer(matrices, buffers.getBuffer(RENDER_TYPE), light, overlay, -1);
+        collector.submitModel(
+                this.model,
+                progress,
+                matrices,
+                RENDER_TYPE,
+                packedLight,
+                packedOverlay,
+                -1,
+                null,
+                outlineColor,
+                crumblingOverlay
+        );
         matrices.popPose();
     }
 
@@ -65,8 +111,16 @@ public class DragonCoreRenderer implements BlockEntityRenderer<DragonCoreBlockEn
             Direction facing
     ) implements NoDataSpecialModelRenderer {
         @Override
-        public void render(ItemDisplayContext context, PoseStack matrices, MultiBufferSource buffers, int light, int overlay, boolean foil) {
-            this.renderer.render(matrices, buffers, light, overlay, this.facing, this.openness);
+        public void submit(
+                ItemDisplayContext context,
+                PoseStack matrices,
+                SubmitNodeCollector collector,
+                int packedLight,
+                int packedOverlay,
+                boolean hasFoil,
+                int outlineColor
+        ) {
+            this.renderer.submit(matrices, collector, packedLight, packedOverlay, this.facing, this.openness, null, outlineColor);
         }
 
         /// New abstract method in 1.21.6 - reports the model's transformed extents so the GUI
@@ -74,7 +128,7 @@ public class DragonCoreRenderer implements BlockEntityRenderer<DragonCoreBlockEn
         @Override
         public void getExtents(Set<Vector3f> output) {
             var model = this.renderer.model;
-            model.animate(this.openness);
+            model.setupAnim(this.openness);
             model.root().getExtentsForGui(new PoseStack(), output);
         }
     }
@@ -90,10 +144,11 @@ public class DragonCoreRenderer implements BlockEntityRenderer<DragonCoreBlockEn
             return CODEC;
         }
 
+        /// 1.21.9 replaced the bare EntityModelSet parameter with a BakingContext that also
+        /// carries the material set and skin cache.
         @Override
-        public SpecialModelRenderer<?> bake(EntityModelSet models) {
-            return new Special(new DragonCoreRenderer(models), this.openness, this.facing);
+        public SpecialModelRenderer<?> bake(SpecialModelRenderer.BakingContext context) {
+            return new Special(new DragonCoreRenderer(context.entityModelSet()), this.openness, this.facing);
         }
     }
-
 }

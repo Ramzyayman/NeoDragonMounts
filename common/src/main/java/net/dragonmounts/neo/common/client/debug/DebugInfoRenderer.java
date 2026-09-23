@@ -4,12 +4,15 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.debug.DebugRenderer;
+import net.minecraft.util.debug.DebugValueAccess;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
@@ -23,7 +26,7 @@ public enum DebugInfoRenderer implements DebugRenderer.SimpleDebugRenderer {
     private List<VoxelShape> pointShapes = Collections.emptyList();
 
     @Override
-    public void render(@NotNull PoseStack matrices, @NotNull MultiBufferSource buffers, double camX, double camY, double camZ) {
+    public void render(@NotNull PoseStack matrices, @NotNull MultiBufferSource buffers, double camX, double camY, double camZ, @Nullable DebugValueAccess access, @NotNull Frustum frustum) {
         var boxes = DebugInfo.DEBUG_BOXES;
         if (this.boxes != boxes) {
             this.boxes = boxes;

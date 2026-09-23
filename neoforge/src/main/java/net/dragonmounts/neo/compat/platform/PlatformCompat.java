@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class PlatformCompat {
     public static boolean isClientSide() {
-        return FMLLoader.getDist().isClient();
+        return FMLLoader.getCurrent().getDist().isClient();
     }
 
     public static boolean isModLoaded(String identifier) {

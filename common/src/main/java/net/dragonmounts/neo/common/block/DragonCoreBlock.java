@@ -69,7 +69,7 @@ public class DragonCoreBlock extends BaseEntityBlock {
 
     @Override
     public InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
-        if (level.isClientSide) return InteractionResult.SUCCESS;
+        if (level.isClientSide()) return InteractionResult.SUCCESS;
         if (player.isSpectator()) return InteractionResult.CONSUME;
         if (level.getBlockEntity(pos) instanceof DragonCoreBlockEntity core) {
             AnimationStatus status = core.getAnimationStatus();
@@ -133,7 +133,7 @@ public class DragonCoreBlock extends BaseEntityBlock {
     }
 
     @Override
-    protected int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
+    protected int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos, Direction direction) {
         return AbstractContainerMenu.getRedstoneSignalFromBlockEntity(level.getBlockEntity(pos));
     }
 

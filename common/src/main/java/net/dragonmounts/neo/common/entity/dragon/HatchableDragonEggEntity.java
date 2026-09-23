@@ -147,7 +147,7 @@ public class HatchableDragonEggEntity extends LivingEntity implements DynamicAtt
             /// Unlike TameableDragonEntity this path was already null-server safe, so it needs no guard.
             var name = input.getString("Owner");
             if (name.isPresent()) {
-                var server = this.getServer();
+                var server = this.level().getServer();
                 this.owner = server == null
                         ? UUIDUtil.createOfflinePlayerUUID(name.get())
                         : OldUsersConverter.convertMobOwnerIfNecessary(server, name.get());
@@ -210,7 +210,7 @@ public class HatchableDragonEggEntity extends LivingEntity implements DynamicAtt
         if (this.isAlive() && player.isShiftKeyDown()) {
             var block = this.asBlock(null);
             if (block == null) return InteractionResult.FAIL;
-            if (this.level().isClientSide) return InteractionResult.SUCCESS;
+            if (this.level().isClientSide()) return InteractionResult.SUCCESS;
             this.discard();
             this.level().setBlockAndUpdate(this.blockPosition(), block.defaultBlockState());
             return InteractionResult.SUCCESS_SERVER;
@@ -279,7 +279,7 @@ public class HatchableDragonEggEntity extends LivingEntity implements DynamicAtt
         if (!ServerConfig.INSTANCE.isEggPushable.get()) return;
         var box = this.getBoundingBox().inflate(0.125, -0.0625, 0.125);
         var level = this.level();
-        (level.isClientSide
+        (level.isClientSide()
                 ? level.getEntities(EntityTypeTest.forClass(Player.class), box, EntitySelector.pushableBy(this))
                 : level.getEntities(this, box, EntitySelector.pushableBy(this))
         ).forEach(this::doPush);

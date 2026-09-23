@@ -98,7 +98,7 @@
   "itemGroup.neodragonmounts.combat": "DM2: Combat",
   "itemGroup.neodragonmounts.misc": "DM2: Food & Miscellaneous",
   "itemGroup.neodragonmounts.tools": "DM2: Tools & Utilities",
-  "key.categories.neodragonmounts": "Dragon Mounts 2",
+  "key.category.neodragonmounts.dragon_mounts": "Dragon Mounts 2",
   "key.neodragonmounts.breathe": "Breathe",
   "key.neodragonmounts.descend": "Descend",
   "message.neodragonmounts.dragon.locked": "The dragon has been locked by its owner",

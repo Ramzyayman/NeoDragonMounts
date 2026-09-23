@@ -25,7 +25,7 @@ public class FreeCommand {
         }).then(Commands.literal("forced").executes(context ->
                 free(context, EntityArgument.getEntities(context, "targets"), null, true)
         )).then(Commands.literal("owned_by").then(Commands.argument("owner", GameProfileArgument.gameProfile()).executes(context ->
-                free(context, EntityArgument.getEntities(context, "targets"), getSingleProfileOrException(context, "owner").getId(), false)
+                free(context, EntityArgument.getEntities(context, "targets"), getSingleProfileOrException(context, "owner").id(), false)
         ))));
     }
 

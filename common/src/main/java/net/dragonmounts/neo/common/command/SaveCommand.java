@@ -75,7 +75,7 @@ public class SaveCommand {
             var item = SpawnEggItem.byId(type);
             return item == null
                     ? fail(source, target, "commands.neodragonmounts.save.no_spawn_egg")
-                    : give(source, EntityContainer.saveEntityData(item, saveWithId(target, new CompoundTag()), DataComponentPatch.EMPTY));
+                    : give(source, EntityContainer.saveEntityData(item, target, DataComponentPatch.EMPTY));
         }
         return fail(source, target, "commands.neodragonmounts.save.cannot_serialize");
     }
@@ -94,7 +94,7 @@ public class SaveCommand {
             var tag = saveWithId(target, new CompoundTag());
             tag.remove(SERIALIZATION_KEY_FLYING);
             tag.remove("UUID");
-            stack.set(DataComponents.ENTITY_DATA, EntityContainer.simplifyData(tag));
+            stack.set(DataComponents.ENTITY_DATA, EntityContainer.simplifyData(target.getType(), tag));
             return give(source, stack);
         }
         return fail(source, target, "commands.neodragonmounts.save.cannot_serialize");

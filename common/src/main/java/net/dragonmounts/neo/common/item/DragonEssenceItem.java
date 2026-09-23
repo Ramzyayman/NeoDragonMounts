@@ -129,7 +129,7 @@ public class DragonEssenceItem extends Item implements DragonTypified, EntityCon
         tag.remove("LoveCause");
         tag.remove("ShearCooldown");
         tag.remove("Sitting");
-        stack.set(DataComponents.ENTITY_DATA, EntityContainer.simplifyData(tag));
+        stack.set(DataComponents.ENTITY_DATA, EntityContainer.simplifyData(entity.getType(), tag));
         stack.applyComponents(patch);
         return stack;
     }
@@ -146,7 +146,7 @@ public class DragonEssenceItem extends Item implements DragonTypified, EntityCon
     ) {
         return new ServerDragonEntity(world, (level, dragon) -> {
             finalizeSpawn(level, dragon, pos, reason, yOffset, extraOffset);
-            CustomData data = stack.get(DataComponents.ENTITY_DATA);
+            var data = stack.get(DataComponents.ENTITY_DATA);
             if (data != null) {
                 mergeEntityData(dragon, level, player, data);
                 dragon.convertTo(this.type, false);

@@ -31,10 +31,21 @@ import java.util.List;
 import static net.dragonmounts.neo.common.component.ScoreboardInfo.applyScores;
 import static net.dragonmounts.neo.common.entity.dragon.TameableDragonEntity.SERIALIZATION_KEY_FLYING;
 import static net.dragonmounts.neo.common.util.EntityUtil.*;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.MapDecoder;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.world.item.component.TypedEntityData;
 
 public class DragonAmuletItem extends AmuletItem<TameableDragonEntity> implements DragonTypified {
     public static final MapCodec<Component> NAME_CODEC = ComponentSerialization.CODEC.fieldOf("CustomName");
     public static final MapCodec<Float> HEALTH_CODEC = Codec.FLOAT.fieldOf("Health");
+
+    /// 1.21.10 dropped CustomData#read when ENTITY_DATA became a TypedEntityData. Same body as the
+    /// method it replaces, just reading TypedEntityData's tag instead.
+    @SuppressWarnings("deprecation")
+    private static <T> DataResult<T> read(TypedEntityData<?> data, MapDecoder<T> decoder) {
+        return decoder.decode(NbtOps.INSTANCE, NbtOps.INSTANCE.getMap(data.getUnsafe()).getOrThrow());
+    }
     public final DragonType type;
 
     public DragonAmuletItem(DragonType type, Properties props) {
@@ -49,12 +60,12 @@ public class DragonAmuletItem extends AmuletItem<TameableDragonEntity> implement
             tooltips.accept(Component.translatable("tooltip.neodragonmounts.missing").withStyle(ChatFormatting.RED));
         } else {
             tooltips.accept(Component.translatable("tooltip.neodragonmounts.type", this.type.getName()).withStyle(ChatFormatting.GRAY));
-            data.read(HEALTH_CODEC).ifSuccess(health -> tooltips.accept(
+            read(data, HEALTH_CODEC).ifSuccess(health -> tooltips.accept(
                     Component.translatable("tooltip.neodragonmounts.health",
                             Component.literal(Float.toString(health)).withStyle(ChatFormatting.GREEN)
                     ).withStyle(ChatFormatting.GRAY))
             );
-            data.read(NAME_CODEC).ifSuccess(name -> tooltips.accept(
+            read(data, NAME_CODEC).ifSuccess(name -> tooltips.accept(
                     Component.translatable("tooltip.neodragonmounts.custom_name", name).withStyle(ChatFormatting.GRAY))
             );
             var player = stack.get(DMDataComponents.PLAYER_NAME);
@@ -71,7 +82,7 @@ public class DragonAmuletItem extends AmuletItem<TameableDragonEntity> implement
         var tag = saveWithId(entity, new CompoundTag());
         tag.remove(SERIALIZATION_KEY_FLYING);
         tag.remove("UUID");
-        stack.set(DataComponents.ENTITY_DATA, EntityContainer.simplifyData(tag));
+        stack.set(DataComponents.ENTITY_DATA, EntityContainer.simplifyData(entity.getType(), tag));
         LivingEntity owner = entity.getOwner();
         if (owner != null) {
             stack.set(DMDataComponents.PLAYER_NAME, owner.getDisplayName());
@@ -93,7 +104,7 @@ public class DragonAmuletItem extends AmuletItem<TameableDragonEntity> implement
     ) {
         return new ServerDragonEntity(world, (level, dragon) -> {
             finalizeSpawn(level, dragon, pos, reason, yOffset, extraOffset);
-            CustomData data = stack.get(DataComponents.ENTITY_DATA);
+            var data = stack.get(DataComponents.ENTITY_DATA);
             if (data != null) {
                 mergeEntityData(dragon, level, player, data);
                 dragon.convertTo(this.type, false);
