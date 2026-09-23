@@ -3,7 +3,6 @@
   "addition": "#minecraft:netherite_tool_materials",
   "base": "neodragonmounts:diamond_shears",
   "result": {
-    "count": 1,
     "id": "neodragonmounts:netherite_shears"
   },
   "template": "minecraft:netherite_upgrade_smithing_template"

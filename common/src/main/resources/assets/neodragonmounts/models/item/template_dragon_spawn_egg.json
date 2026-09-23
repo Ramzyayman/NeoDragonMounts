@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "neodragonmounts:item/dragon_spawn_egg",
+    "layer1": "neodragonmounts:item/dragon_spawn_egg_overlay"
+  }
+}

@@ -127,9 +127,14 @@ public class DMModelProvider extends FabricModelProvider {
         gen.generateFlatItem(item.get(), ModelTemplates.FLAT_ITEM);
     }
 
+    /// Minecraft 1.21.5 removed the tinted spawn egg system outright: `template_spawn_egg` and its
+    /// `spawn_egg`/`spawn_egg_overlay` textures are gone, and vanilla now ships a bespoke,
+    /// untinted texture for each mob. The mod's 17 eggs are colour pairs over a shared template, so
+    /// they get a mod-owned template instead of 17 hand-drawn textures - the colours below stay the
+    /// single source of truth. layer0 takes tint 0 (primary), layer1 takes tint 1 (secondary).
     public static void generateSpawnEgg(ItemModelGenerators gen, ItemHolder<?> item, int primaryColor, int secondaryColor) {
         gen.itemModelOutput.accept(item.get(), tintedModel(
-                ModelLocationUtils.decorateItemModelLocation("template_spawn_egg"),
+                makeId("item/template_dragon_spawn_egg"),
                 constantTint(primaryColor),
                 constantTint(secondaryColor)
         ));
