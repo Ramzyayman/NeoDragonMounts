@@ -1,8 +1,63 @@
 ![LOGO](neoforge/src/main/resources/neodragonmounts.png)
 
-[![CurseForge Downloads](https://img.shields.io/curseforge/dt/1123549?logo=curseforge&label=CurseForge)](https://www.curseforge.com/minecraft/mc-mods/dragon-mounts-2)
-[![Modrinth Downloads](https://img.shields.io/modrinth/dt/PTfOH4IO?logo=modrinth&label=Modrinth)](https://modrinth.com/mod/dragon-mounts-2)
-[![Discord](https://img.shields.io/discord/1293105990476103720?logo=Discord&logoColor=white&label=Discord&labelColor=%235865F2)](https://discord.gg/Ewm8aTTJ3K)
+# Dragon Mounts 2 — unofficial version port
+
+> **This is an unofficial fork.** It is not built, endorsed, or supported by the
+> [DragonMounts-Team](https://github.com/DragonMounts-Team/NeoDragonMounts). Upstream releases
+> Dragon Mounts 2 for Minecraft 1.21.4; this fork carries that work forward to newer Minecraft
+> versions.
+>
+> **Please do not report problems with these builds to upstream.** Open an issue
+> [here](https://github.com/Ramzyayman/NeoDragonMounts/issues) instead. If you want the official mod,
+> get it from [CurseForge](https://www.curseforge.com/minecraft/mc-mods/dragon-mounts-2) or
+> [Modrinth](https://modrinth.com/mod/dragon-mounts-2).
+
+## Downloads
+
+| Minecraft | NeoForge | Status | NeoForge jar | Fabric jar |
+|---|---|---|---|---|
+| 1.21.5 | 21.5.98 | Playtested | [download](https://github.com/Ramzyayman/NeoDragonMounts/releases/download/v0.1.0-mc1.21.5/DragonMounts2-NeoForge-1.21.5-0.1.0.jar) | [download](https://github.com/Ramzyayman/NeoDragonMounts/releases/download/v0.1.0-mc1.21.5/DragonMounts2-Fabric-1.21.5-0.1.0.jar) |
+| 1.21.8 | 21.8.54 | Playtested | [download](https://github.com/Ramzyayman/NeoDragonMounts/releases/download/v0.1.0-mc1.21.8/DragonMounts2-NeoForge-1.21.8-0.1.0.jar) | [download](https://github.com/Ramzyayman/NeoDragonMounts/releases/download/v0.1.0-mc1.21.8/DragonMounts2-Fabric-1.21.8-0.1.0.jar) |
+| 1.21.10 | 21.10.64 | **Pre-release, untested** | [download](https://github.com/Ramzyayman/NeoDragonMounts/releases/download/v0.1.0-mc1.21.10/DragonMounts2-NeoForge-1.21.10-0.1.0.jar) | [download](https://github.com/Ramzyayman/NeoDragonMounts/releases/download/v0.1.0-mc1.21.10/DragonMounts2-Fabric-1.21.10-0.1.0.jar) |
+
+Each version is also tagged in this repository, so the exact source for any build is available
+under [Releases](https://github.com/Ramzyayman/NeoDragonMounts/releases).
+
+## Known issues
+
+These affect **every** version in the table above:
+
+- **Spawn egg artwork is missing.** Minecraft 1.21.5 deleted the spawn egg template model and its
+  textures, and the mod's 17 dragon spawn eggs were pure colour tints over that template. They
+  currently render untextured. The eggs still work — only the icon is wrong.
+- **The death dissolve effect is disabled.** Dragons used a custom shader to dissolve away on
+  death. The 1.21.5 render pipeline rework removed the hooks it relied on, so it is temporarily
+  stubbed to standard render types. Dragons still die correctly; the animation is plain.
+
+Version-specific:
+
+- **1.21.10 has not been playtested.** It compiles, reaches the main menu with every mixin applied,
+  and runs a dedicated server, but 1.21.9 rewrote Minecraft's entire rendering path and those
+  changes have not been visually verified. Treat it as a preview.
+- **The Fabric jars are unverified at runtime.** They compile and pass Fabric's access-widener
+  validation, but testing has been done on NeoForge. Use them at your own risk.
+
+## Building from source
+
+Requires JDK 21.
+
+```
+./gradlew :neoforge:build
+./gradlew :fabric:build
+```
+
+Jars land in `neoforge/build/libs/` and `fabric/build/libs/`.
+
+## Credits
+
+All original work is by the [DragonMounts-Team](https://github.com/DragonMounts-Team/NeoDragonMounts)
+and the Dragon Mounts authors before them. This fork only updates their mod to run on newer
+Minecraft versions.
 
 ## License
 
