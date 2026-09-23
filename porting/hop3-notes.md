@@ -124,10 +124,13 @@ apply time. Their shadowed members were verified against 1.21.10 sources instead
 `TrialSpawner.FullConfig(normal, ominous, targetCooldownLength, requiredPlayerRange)` and
 `TrialSpawnerStateData#reset` all still exist with the same shapes.
 
-## Still needs in-game testing
+## In-game testing: PASS
 
-Hop 3 is a rendering hop. Building and booting proves nothing about what is drawn, so these
-have to be looked at:
+Played on 1.21.10 / NeoForge 21.10.64, no issues found across the list below. That matters more
+than usual here: the saddle/chest overlay-model rework is the approach hops 4 and 5 build on, so
+it is now confirmed before it gets carried forward rather than after.
+
+Checked:
 
 - **Saddle on a dragon** — the overlay-model rework. If the split is wrong the saddle is
   either invisible or smeared over the whole body in the body pass.
@@ -139,6 +142,8 @@ have to be looked at:
 - **Dragon core** block and its item form — new render state + `submitModel`.
 - **Dragon egg** past the crack threshold — the crumbling decal is now custom geometry.
 - **Breath particles** — `SingleQuadParticle` migration.
-- **Death dissolve** — still stubbed to vanilla render types since hop 1; expected to look
-  wrong until it is rebuilt at 26.1 from `dissolve-effect-spec.md`.
 - **Key bindings** appear under the renamed category in Controls.
+
+Still outstanding, unchanged by this hop and expected: the **death dissolve** remains stubbed to
+vanilla render types (rebuilt at 26.1 from `dissolve-effect-spec.md`), and **spawn egg artwork**
+is still the open decision from hop 1.

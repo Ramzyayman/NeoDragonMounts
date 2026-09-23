@@ -18,7 +18,7 @@
 |---|---|---|---|---|
 | 1.21.5 | 21.5.98 | Playtested | [download](https://github.com/Ramzyayman/NeoDragonMounts/releases/download/v0.1.0-mc1.21.5/DragonMounts2-NeoForge-1.21.5-0.1.0.jar) | [download](https://github.com/Ramzyayman/NeoDragonMounts/releases/download/v0.1.0-mc1.21.5/DragonMounts2-Fabric-1.21.5-0.1.0.jar) |
 | 1.21.8 | 21.8.54 | Playtested | [download](https://github.com/Ramzyayman/NeoDragonMounts/releases/download/v0.1.0-mc1.21.8/DragonMounts2-NeoForge-1.21.8-0.1.0.jar) | [download](https://github.com/Ramzyayman/NeoDragonMounts/releases/download/v0.1.0-mc1.21.8/DragonMounts2-Fabric-1.21.8-0.1.0.jar) |
-| 1.21.10 | 21.10.64 | **Pre-release, untested** | [download](https://github.com/Ramzyayman/NeoDragonMounts/releases/download/v0.1.0-mc1.21.10/DragonMounts2-NeoForge-1.21.10-0.1.0.jar) | [download](https://github.com/Ramzyayman/NeoDragonMounts/releases/download/v0.1.0-mc1.21.10/DragonMounts2-Fabric-1.21.10-0.1.0.jar) |
+| 1.21.10 | 21.10.64 | Playtested | [download](https://github.com/Ramzyayman/NeoDragonMounts/releases/download/v0.1.0-mc1.21.10/DragonMounts2-NeoForge-1.21.10-0.1.0.jar) | [download](https://github.com/Ramzyayman/NeoDragonMounts/releases/download/v0.1.0-mc1.21.10/DragonMounts2-Fabric-1.21.10-0.1.0.jar) |
 
 Each version is also tagged in this repository, so the exact source for any build is available
 under [Releases](https://github.com/Ramzyayman/NeoDragonMounts/releases).
@@ -36,9 +36,6 @@ These affect **every** version in the table above:
 
 Version-specific:
 
-- **1.21.10 has not been playtested.** It compiles, reaches the main menu with every mixin applied,
-  and runs a dedicated server, but 1.21.9 rewrote Minecraft's entire rendering path and those
-  changes have not been visually verified. Treat it as a preview.
 - **The Fabric jars are unverified at runtime.** They compile and pass Fabric's access-widener
   validation, but testing has been done on NeoForge. Use them at your own risk.
 
