@@ -169,8 +169,10 @@ public class DragonInventoryScreen extends AbstractContainerScreen<DragonInvento
     protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
         super.renderLabels(graphics, mouseX, mouseY);
         var font = this.font;
-        graphics.drawString(font, this.armor, 20, 33, 0xE99E0C, false);
-        graphics.drawString(font, this.health, 20, 44, 0xE99E0C, false);
+        // 1.21.8 made GuiGraphics#drawString skip any text whose colour has alpha 0, so this
+        // needs the opaque byte the original literal never carried.
+        graphics.drawString(font, this.armor, 20, 33, 0xFFE99E0C, false);
+        graphics.drawString(font, this.health, 20, 44, 0xFFE99E0C, false);
     }
 
     @Override
