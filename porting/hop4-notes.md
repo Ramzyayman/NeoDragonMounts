@@ -135,6 +135,44 @@ What is **not** known: whether they come from the mod at all. Confirming that ne
 port damage, and do not assume it is harmless — it is simply unmeasured. Worth resolving before
 1.21.11 is released to anyone.
 
+## Caught after the fact: all 15 shields lost their models
+
+1.21.11 now **rejects a model that samples more than one atlas**. `template_shield.json` drew
+`#layer0` from the mod's shield texture (items atlas) and `#metal` from `block/anvil` (blocks
+atlas), which every previous version tolerated:
+
+```
+IllegalStateException: Multiple atlases used in model,
+expected minecraft:textures/atlas/items.png, but also got minecraft:textures/atlas/blocks.png
+        at BlockModelWrapper.detectRenderType
+```
+
+All 15 dragon scale shields failed to bake and rendered as missing-texture placeholders.
+`template_shield_blocking` inherits from `template_shield`, so it broke with it.
+
+Fixed by authoring `neodragonmounts:item/shield_metal`, an original 16x16 metal texture on the
+items atlas, and pointing `#metal` at it. Mojang's anvil texture was not copied. Verified: bake
+failures went 15 -> 0.
+
+A survey of every mod model referencing a `block/` path found no other cross-atlas case. The other
+matches are model *parents* (`minecraft:block/cube_all`, `minecraft:block/dragon_egg`), and
+`dragon_nest`'s `minecraft:block/magma` is inside a block model, so it stays on one atlas.
+
+### Why this was missed
+
+The hop 4 client run **did** log this, 15 times, before I called the hop verified. The startup
+check only grepped for `InvalidInjectionException`, crashes and mixin-apply failures, so a
+`WARN`-level `ModelBakery` / `ModelManager` message sailed past.
+
+**Every future hop's launch check must also grep for:**
+
+```
+Unable to bake item model | No model loaded for default item model | Multiple atlases
+```
+
+Mixins applying cleanly says nothing about whether resources resolved. Both have to be checked,
+and neither implies the other.
+
 ## Still needs in-game testing
 
 Everything hop 3 listed still applies, since hop 4 touched the same rendering surface via the

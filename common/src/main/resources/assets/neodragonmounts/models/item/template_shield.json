@@ -2,7 +2,7 @@
   "credit": "Designed by VinciHD with BDcraft Cubik PRO 0.95 Beta - https://bdcraft.net",
   "ambientocclusion": false,
   "textures": {
-    "metal": "block/anvil",
+    "metal": "neodragonmounts:item/shield_metal",
     "particle": "#layer0"
   },
   "elements": [
