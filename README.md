@@ -16,9 +16,9 @@
 
 | Minecraft | NeoForge | Status | NeoForge jar | Fabric jar |
 |---|---|---|---|---|
-| 1.21.5 | 21.5.98 | Playtested | [download](https://github.com/Ramzyayman/NeoDragonMounts/releases/download/v0.1.0-mc1.21.5/DragonMounts2-NeoForge-1.21.5-0.1.0.jar) | [download](https://github.com/Ramzyayman/NeoDragonMounts/releases/download/v0.1.0-mc1.21.5/DragonMounts2-Fabric-1.21.5-0.1.0.jar) |
-| 1.21.8 | 21.8.54 | Playtested | [download](https://github.com/Ramzyayman/NeoDragonMounts/releases/download/v0.1.0-mc1.21.8/DragonMounts2-NeoForge-1.21.8-0.1.0.jar) | [download](https://github.com/Ramzyayman/NeoDragonMounts/releases/download/v0.1.0-mc1.21.8/DragonMounts2-Fabric-1.21.8-0.1.0.jar) |
-| 1.21.10 | 21.10.64 | Playtested | [download](https://github.com/Ramzyayman/NeoDragonMounts/releases/download/v0.1.0-mc1.21.10/DragonMounts2-NeoForge-1.21.10-0.1.0.jar) | [download](https://github.com/Ramzyayman/NeoDragonMounts/releases/download/v0.1.0-mc1.21.10/DragonMounts2-Fabric-1.21.10-0.1.0.jar) |
+| 1.21.5 | 21.5.98 | Playtested | [download](https://github.com/Ramzyayman/NeoDragonMounts/releases/download/v0.1.1-mc1.21.5/DragonMounts2-NeoForge-1.21.5-0.1.1.jar) | [download](https://github.com/Ramzyayman/NeoDragonMounts/releases/download/v0.1.1-mc1.21.5/DragonMounts2-Fabric-1.21.5-0.1.1.jar) |
+| 1.21.8 | 21.8.54 | Playtested | [download](https://github.com/Ramzyayman/NeoDragonMounts/releases/download/v0.1.1-mc1.21.8/DragonMounts2-NeoForge-1.21.8-0.1.1.jar) | [download](https://github.com/Ramzyayman/NeoDragonMounts/releases/download/v0.1.1-mc1.21.8/DragonMounts2-Fabric-1.21.8-0.1.1.jar) |
+| 1.21.10 | 21.10.64 | Playtested | [download](https://github.com/Ramzyayman/NeoDragonMounts/releases/download/v0.1.1-mc1.21.10/DragonMounts2-NeoForge-1.21.10-0.1.1.jar) | [download](https://github.com/Ramzyayman/NeoDragonMounts/releases/download/v0.1.1-mc1.21.10/DragonMounts2-Fabric-1.21.10-0.1.1.jar) |
 
 Each version is also tagged in this repository, so the exact source for any build is available
 under [Releases](https://github.com/Ramzyayman/NeoDragonMounts/releases).
@@ -27,9 +27,6 @@ under [Releases](https://github.com/Ramzyayman/NeoDragonMounts/releases).
 
 These affect **every** version in the table above:
 
-- **Spawn egg artwork is missing.** Minecraft 1.21.5 deleted the spawn egg template model and its
-  textures, and the mod's 17 dragon spawn eggs were pure colour tints over that template. They
-  currently render untextured. The eggs still work — only the icon is wrong.
 - **The death dissolve effect is disabled.** Dragons used a custom shader to dissolve away on
   death. The 1.21.5 render pipeline rework removed the hooks it relied on, so it is temporarily
   stubbed to standard render types. Dragons still die correctly; the animation is plain.
