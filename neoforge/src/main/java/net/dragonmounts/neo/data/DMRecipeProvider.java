@@ -1,5 +1,7 @@
 package net.dragonmounts.neo.data;
 
+import net.minecraft.world.item.crafting.CookingBookCategory;
+
 import net.dragonmounts.neo.common.block.DragonScaleBlock;
 import net.dragonmounts.neo.common.crafting.DragonArmorUpgradeRecipe;
 import net.dragonmounts.neo.common.init.DMBlocks;
@@ -44,26 +46,26 @@ public class DMRecipeProvider extends RecipeProvider {
     public void buildRecipes() {
         var output = this.output;
         var registry = Registries.RECIPE;
-        smelting(Ingredient.of(DMItems.COPPER_DRAGON_ARMOR), RecipeCategory.MISC, Items.COPPER_INGOT, 0.7F, 200)
+        smelting(Ingredient.of(DMItems.COPPER_DRAGON_ARMOR), RecipeCategory.MISC, CookingBookCategory.MISC, Items.COPPER_INGOT, 0.7F, 200)
                 .unlockedBy("has_armor", has(DMItems.COPPER_DRAGON_ARMOR))
                 .save(output, makeKey(registry, "copper_ingot_form_smelting"));
-        smelting(Ingredient.of(DMItems.IRON_DRAGON_ARMOR), RecipeCategory.MISC, Items.IRON_INGOT, 0.7F, 200)
+        smelting(Ingredient.of(DMItems.IRON_DRAGON_ARMOR), RecipeCategory.MISC, CookingBookCategory.MISC, Items.IRON_INGOT, 0.7F, 200)
                 .unlockedBy("has_armor", has(DMItems.IRON_DRAGON_ARMOR))
                 .save(output, makeKey(registry, "iron_ingot_form_smelting"));
-        smelting(Ingredient.of(DMItems.GOLDEN_DRAGON_ARMOR), RecipeCategory.MISC, Items.GOLD_INGOT, 1.0F, 200)
+        smelting(Ingredient.of(DMItems.GOLDEN_DRAGON_ARMOR), RecipeCategory.MISC, CookingBookCategory.MISC, Items.GOLD_INGOT, 1.0F, 200)
                 .unlockedBy("has_armor", has(DMItems.GOLDEN_DRAGON_ARMOR))
                 .save(output, makeKey(registry, "gold_ingot_form_smelting"));
-        blasting(Ingredient.of(DMItems.COPPER_DRAGON_ARMOR), RecipeCategory.MISC, Items.COPPER_INGOT, 0.7F, 100)
+        blasting(Ingredient.of(DMItems.COPPER_DRAGON_ARMOR), RecipeCategory.MISC, CookingBookCategory.MISC, Items.COPPER_INGOT, 0.7F, 100)
                 .unlockedBy("has_armor", has(DMItems.COPPER_DRAGON_ARMOR))
                 .save(output, makeKey(registry, "copper_ingot_form_blasting"));
-        blasting(Ingredient.of(DMItems.IRON_DRAGON_ARMOR), RecipeCategory.MISC, Items.IRON_INGOT, 0.7F, 100)
+        blasting(Ingredient.of(DMItems.IRON_DRAGON_ARMOR), RecipeCategory.MISC, CookingBookCategory.MISC, Items.IRON_INGOT, 0.7F, 100)
                 .unlockedBy("has_armor", has(DMItems.IRON_DRAGON_ARMOR))
                 .save(output, makeKey(registry, "iron_ingot_form_blasting"));
-        blasting(Ingredient.of(DMItems.GOLDEN_DRAGON_ARMOR), RecipeCategory.MISC, Items.GOLD_INGOT, 1.0F, 100)
+        blasting(Ingredient.of(DMItems.GOLDEN_DRAGON_ARMOR), RecipeCategory.MISC, CookingBookCategory.MISC, Items.GOLD_INGOT, 1.0F, 100)
                 .unlockedBy("has_armor", has(DMItems.GOLDEN_DRAGON_ARMOR))
                 .save(output, makeKey(registry, "gold_ingot_form_blasting"));
         cook(100, (desc, time, method) -> method.cook(
-                Ingredient.of(DMItems.DRAGON_MEAT), RecipeCategory.FOOD, DMItems.COOKED_DRAGON_MEAT, 0.35F, time
+                Ingredient.of(DMItems.DRAGON_MEAT), RecipeCategory.FOOD, CookingBookCategory.FOOD, DMItems.COOKED_DRAGON_MEAT, 0.35F, time
         ).unlockedBy("has_meat", has(DMItems.DRAGON_MEAT)).save(this.output, makeKey(Registries.RECIPE, "cooked_dragon_meat_form_" + desc)));
         this.dragonArmor(Tags.Items.INGOTS_COPPER, Tags.Items.STORAGE_BLOCKS_COPPER, DMItems.COPPER_DRAGON_ARMOR);
         this.dragonArmor(Tags.Items.INGOTS_IRON, Tags.Items.STORAGE_BLOCKS_IRON, DMItems.IRON_DRAGON_ARMOR);
@@ -154,9 +156,11 @@ public class DMRecipeProvider extends RecipeProvider {
     }
 
     public static void cook(int unit, CookingRecipeBuilder builder) {
+        // 26.1 gave smelting and blasting a CookingBookCategory but left smoking and campfire
+        // cooking without one, so the shared interface carries it and these two drop it.
         builder.build("smelting", unit * 2, SimpleCookingRecipeBuilder::smelting);
-        builder.build("smoking", unit, SimpleCookingRecipeBuilder::smoking);
-        builder.build("campfire", unit * 6, SimpleCookingRecipeBuilder::campfireCooking);
+        builder.build("smoking", unit, (ing, cat, book, result, exp, t) -> SimpleCookingRecipeBuilder.smoking(ing, cat, result, exp, t));
+        builder.build("campfire", unit * 6, (ing, cat, book, result, exp, t) -> SimpleCookingRecipeBuilder.campfireCooking(ing, cat, result, exp, t));
     }
 
     void dragonArmor(TagKey<Item> ingot, TagKey<Item> block, ItemLike result) {
@@ -331,7 +335,7 @@ public class DMRecipeProvider extends RecipeProvider {
     }
 
     public interface CookingMethod {
-        RecipeBuilder cook(Ingredient ingredient, RecipeCategory category, ItemLike result, float experience, int time);
+        RecipeBuilder cook(Ingredient ingredient, RecipeCategory category, CookingBookCategory cookingCategory, ItemLike result, float experience, int time);
     }
 
     public interface CookingRecipeBuilder {

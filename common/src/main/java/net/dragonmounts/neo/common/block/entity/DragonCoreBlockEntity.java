@@ -147,7 +147,7 @@ public class DragonCoreBlockEntity extends RandomizableContainerBlockEntity impl
             if (level == null) return;
             level.blockEvent(pos, this.getBlockState().getBlock(), 1, ++this.openCount);
             if (this.openCount == 1) {
-                RandomSource random = level.random;
+                RandomSource random = level.getRandom();
                 level.playSound(null, pos, SoundEvents.ENDER_CHEST_OPEN, SoundSource.BLOCKS, 0.9F, random.nextFloat() * 0.1F + 0.9F);
                 level.playSound(null, pos, SoundEvents.ENDER_DRAGON_AMBIENT, SoundSource.BLOCKS, 0.05F, random.nextFloat() * 0.3F + 0.9F);
                 level.playSound(null, pos, SoundEvents.END_PORTAL_SPAWN, SoundSource.BLOCKS, 0.08F, random.nextFloat() * 0.1F + 0.9F);
@@ -166,7 +166,7 @@ public class DragonCoreBlockEntity extends RandomizableContainerBlockEntity impl
             level.blockEvent(pos, this.getBlockState().getBlock(), 1, --this.openCount);
             if (this.openCount <= 0) {
                 level.gameEvent(player, GameEvent.CONTAINER_CLOSE, pos);
-                level.playSound(null, pos, SoundEvents.ENDER_CHEST_CLOSE, SoundSource.BLOCKS, 0.5F, level.random.nextFloat() * 0.1F + 0.9F);
+                level.playSound(null, pos, SoundEvents.ENDER_CHEST_CLOSE, SoundSource.BLOCKS, 0.5F, level.getRandom().nextFloat() * 0.1F + 0.9F);
             }
         }
     }

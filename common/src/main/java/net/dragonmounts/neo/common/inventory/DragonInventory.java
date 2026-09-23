@@ -36,7 +36,7 @@ public class DragonInventory implements Container, StackedContentsCompatible {
 
     public static boolean isDragonArmor(ItemStack stack) {
         var equippable = stack.get(DataComponents.EQUIPPABLE);
-        return equippable != null && EquipmentSlot.BODY == equippable.slot() && equippable.canBeEquippedBy(DMEntities.TAMEABLE_DRAGON.get());
+        return equippable != null && EquipmentSlot.BODY == equippable.slot() && equippable.canBeEquippedBy(DMEntities.TAMEABLE_DRAGON.get().builtInRegistryHolder());
     }
 
     public static boolean isDragonSaddle(ItemStack stack) {

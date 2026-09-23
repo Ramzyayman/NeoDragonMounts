@@ -9,7 +9,7 @@ import static net.dragonmounts.neo.compat.registry.RegistryHandler.registerRecip
 public interface DMRecipes {
     RecipeSerializer<DragonArmorUpgradeRecipe> DRAGON_ARMOR_UPGRADE = registerRecipe(
             makeId("smithing_special_dragon_armor_upgrade"),
-            new DragonArmorUpgradeRecipe.Serializer()
+            DragonArmorUpgradeRecipe.Serializer.INSTANCE
     );
 
     static void init() {}

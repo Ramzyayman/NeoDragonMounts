@@ -109,7 +109,7 @@ public class TieredShearsItem extends ShearsItem {
                         if (!players.isEmpty()) {
                             for (var bee : bees) {
                                 if (bee.getTarget() == null) {
-                                    bee.setTarget(Util.getRandom(players, level.random));
+                                    bee.setTarget(Util.getRandom(players, level.getRandom()));
                                 }
                             }
                         }
@@ -130,7 +130,7 @@ public class TieredShearsItem extends ShearsItem {
                         new ItemStack(Items.PUMPKIN_SEEDS, 4)
                 );
                 item.setDeltaMovement(
-                        0.05 * direction.getStepX() + level.random.nextDouble() * 0.02, 0.05, 0.05 * direction.getStepZ() + level.random.nextDouble() * 0.02
+                        0.05 * direction.getStepX() + level.getRandom().nextDouble() * 0.02, 0.05, 0.05 * direction.getStepZ() + level.getRandom().nextDouble() * 0.02
                 );
                 level.addFreshEntity(item);
                 stack.hurtAndBreak(1, player, getSlotForHand(context.getHand()));

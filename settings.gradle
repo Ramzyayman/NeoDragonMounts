@@ -29,10 +29,16 @@ pluginManagement {
 }
 
 plugins {
-    id 'org.gradle.toolchains.foojay-resolver-convention' version '0.8.0'
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
 }
 
 rootProject.name = 'DragonMounts-1.21.4'
 include('common')
-include('fabric')
+// Fabric is disabled on 26.1 because its toolchain cannot set up the game yet, not by choice.
+// Minecraft 26.1 ships unobfuscated and Mojang publishes no mapping file for it (26.1.2's manifest
+// lists only `client` and `server`), while Fabric's intermediary and yarn both stop at 1.21.11.
+// Loom 1.18.2 and 1.18-SNAPSHOT both require a mappings artifact and fail without one, so :fabric
+// dies at configuration time and takes the whole build with it. Re-enable this line once Loom
+// supports an unobfuscated Minecraft.
+// include('fabric')
 include('neoforge')

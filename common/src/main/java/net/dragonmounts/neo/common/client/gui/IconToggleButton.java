@@ -1,7 +1,7 @@
 package net.dragonmounts.neo.common.client.gui;
 
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.network.chat.Component;
@@ -24,7 +24,7 @@ public class IconToggleButton extends ToggleButton {
     }
 
     @Override
-    protected void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    protected void extractContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
         Icon icon;
         if (!this.active) {
             icon = this.getState() ? Icon.LOCKED_DISABLED : Icon.UNLOCKED_DISABLED;

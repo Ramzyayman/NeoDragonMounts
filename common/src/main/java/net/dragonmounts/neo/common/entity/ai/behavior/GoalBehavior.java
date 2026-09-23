@@ -1,5 +1,7 @@
 package net.dragonmounts.neo.common.entity.ai.behavior;
 
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
+
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.behavior.Behavior;
@@ -48,5 +50,13 @@ public abstract class GoalBehavior<E extends LivingEntity> implements BehaviorCo
     @Override
     public final String debugString() {
         return this.getClass().getSimpleName();
+    }
+
+    /// New abstract on BehaviorControl in 26.1, part of moving activity declaration onto
+    /// Brain.ActivitySupplier. These behaviours carry no entry conditions of their own - their
+    /// gating is declared on the activity - so the required set is empty.
+    @Override
+    public java.util.Set<MemoryModuleType<?>> getRequiredMemories() {
+        return java.util.Set.of();
     }
 }

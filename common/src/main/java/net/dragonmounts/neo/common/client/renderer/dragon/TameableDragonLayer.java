@@ -12,7 +12,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 
-import static net.minecraft.client.renderer.LightTexture.FULL_BRIGHT;
+import static net.minecraft.util.LightCoordsUtil.FULL_BRIGHT;
 import static net.minecraft.client.renderer.rendertype.RenderTypes.armorCutoutNoCull;
 
 public class TameableDragonLayer extends RenderLayer<DragonRenderState, DragonModel> {
@@ -30,7 +30,9 @@ public class TameableDragonLayer extends RenderLayer<DragonRenderState, DragonMo
         int outline = state.outlineColor;
         if (!state.isInvisible) {
             if (state.deathTime > 0) {
-                int color = ARGB.color(Math.min(Mth.floor(state.deathTime * 255.0F / state.maxDeathTime), 255), -1);
+                // Vanilla's dissolve shader discards where vertexColor.a < mask.a, the opposite of the
+                // mod's original shader, so this alpha counts down as the dragon erodes rather than up.
+                int color = ARGB.color(255 - Math.min(Mth.floor(state.deathTime * 255.0F / state.maxDeathTime), 255), -1);
                 collector.order(1).submitModel(
                         model, state, matrices, appearance.getDecal(state),
                         light, OverlayTexture.pack(0.0F, state.hurtTime > 0), color, null, outline, null

@@ -4,7 +4,7 @@ import net.dragonmounts.neo.common.client.breath.BreathParticle;
 import net.dragonmounts.neo.common.client.breath.BreathParticleFactory;
 import net.dragonmounts.neo.common.entity.breath.BreathParticleOption;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
@@ -17,8 +17,8 @@ public class FlameBreathParticle extends BreathParticle {
     }
 
     @Override
-    public int getLightColor(float partialTick) {
-        return LightTexture.FULL_BLOCK;
+    public int getLightCoords(float partialTick) {
+        return LightCoordsUtil.pack(15, 0);
     }
 
     protected ParticleOptions getChildParticle() {

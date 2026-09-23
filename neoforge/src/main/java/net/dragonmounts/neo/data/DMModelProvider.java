@@ -1,5 +1,8 @@
 package net.dragonmounts.neo.data;
 
+
+import net.minecraft.client.resources.model.sprite.Material;
+
 import net.dragonmounts.neo.common.DragonMountsShared;
 import net.dragonmounts.neo.common.client.renderer.block.DragonCoreRenderer;
 import net.dragonmounts.neo.common.client.renderer.block.DragonHeadRenderer;
@@ -64,7 +67,7 @@ public class DMModelProvider extends ModelProvider {
         generateBlocksWithItem(blocks, BlockModelGenerators::createNonTemplateModelBlock, DMBlocks.BUILTIN_DRAGON_EGGS);
         generateBlocksWithItem(blocks, BlockModelGenerators::createTrivialCube, DMBlocks.BUILTIN_DRAGON_SCALE_BLOCKS);
         {
-            var particle = TextureMapping.particle(makeId("block/dragon_core_break"));
+            var particle = TextureMapping.particle(new Material(makeId("block/dragon_core_break")));
             var block = DMBlocks.DRAGON_CORE.get();
             blocks.blockStateOutput.accept(createSimpleBlock(block, plainVariant(ModelTemplates.PARTICLE_ONLY.create(block, particle, blocks.modelOutput))));
             var item = block.asItem();

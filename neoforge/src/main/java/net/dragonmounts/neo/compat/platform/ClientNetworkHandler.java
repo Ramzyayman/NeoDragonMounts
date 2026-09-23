@@ -1,5 +1,7 @@
 package net.dragonmounts.neo.compat.platform;
 
+import net.minecraft.world.item.ItemStackTemplate;
+
 import net.dragonmounts.neo.common.capability.ArmorEffectManager;
 import net.dragonmounts.neo.common.capability.ArmorEffectManagerImpl;
 import net.dragonmounts.neo.common.client.ClientDragonEntity;
@@ -101,7 +103,7 @@ public class ClientNetworkHandler {
             var particles = food.particles().orElse(stack);
             if (particles.isEmpty()) return;
             var pos = dragon.getHeadRelativeOffset(0.0F, -8.0F, 20.0F);
-            var option = new ItemParticleOption(ParticleTypes.ITEM, particles);
+            var option = new ItemParticleOption(ParticleTypes.ITEM, ItemStackTemplate.fromNonEmptyStack(particles));
             var random = dragon.getRandom();
             float xRot = -dragon.getXRot() * DEG_TO_RAD, yRot = -dragon.getYRot() * DEG_TO_RAD;
             double cosX = Mth.cos(xRot), sinX = Mth.sin(xRot), cosY = Mth.cos(yRot), sinY = Mth.sin(yRot);

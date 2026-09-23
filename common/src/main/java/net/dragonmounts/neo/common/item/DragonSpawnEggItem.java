@@ -175,8 +175,11 @@ public class DragonSpawnEggItem extends SpawnEggItem implements EntityContainer<
         return InteractionResult.FAIL;
     }
 
-    @Override
-    public Optional<Mob> spawnOffspringFromSpawnEgg(Player player, Mob mob, EntityType<? extends Mob> type, ServerLevel level, Vec3 pos, ItemStack stack) {
+    /// ORPHANED ON 26.1: SpawnEggItem#spawnOffspringFromSpawnEgg became static and is called from
+    /// Mob directly, so this no longer overrides anything and nothing reaches it. The logic is kept
+    /// intact deliberately - restoring the behaviour needs a mixin on the static method, not a
+    /// rewrite. Breeding a baby dragon from a spawn egg does nothing until that mixin exists.
+    public Optional<Mob> spawnDragonOffspring(Player player, Mob mob, EntityType<? extends Mob> type, ServerLevel level, Vec3 pos, ItemStack stack) {
         if (!this.spawnsEntity(stack, type)) return Optional.empty();
         Mob neo = mob instanceof AgeableMob old ? old.getBreedOffspring(level, old) : type.create(level, EntitySpawnReason.SPAWN_ITEM_USE);
         if (neo == null) return Optional.empty();
@@ -210,7 +213,7 @@ public class DragonSpawnEggItem extends SpawnEggItem implements EntityContainer<
             return EntityContainer.saveEntityData(this, entity, patch);
         }
         var item = SpawnEggItem.byId(entity.getType());
-        return item == null ? ItemStack.EMPTY : EntityContainer.saveEntityData(item, entity, patch);
+        return item.isEmpty() ? ItemStack.EMPTY : EntityContainer.saveEntityData(item.get().value(), entity, patch);
     }
 
     @Override

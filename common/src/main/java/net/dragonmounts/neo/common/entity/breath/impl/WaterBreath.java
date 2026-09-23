@@ -18,7 +18,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.block.AbstractCandleBlock;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CampfireBlock;
-import net.minecraft.world.level.block.FarmBlock;
+import net.minecraft.world.level.block.FarmlandBlock;
 
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.MOISTURE;
 
@@ -46,7 +46,7 @@ public class WaterBreath extends DragonBreath {
             level.destroyBlock(pos, true, this.dragon);
         } else if (state.hasProperty(MOISTURE)) {
             int moisture = state.getValue(MOISTURE);
-            if (moisture >= FarmBlock.MAX_MOISTURE) return hit;
+            if (moisture >= FarmlandBlock.MAX_MOISTURE) return hit;
             level.setBlock(pos, state.setValue(MOISTURE, moisture + 1), 2);
         }
         return new BreathAffectedBlock(); // reset to zero
@@ -56,7 +56,7 @@ public class WaterBreath extends DragonBreath {
     public void affectEntity(ServerLevel level, LivingEntity target, BreathAffectedEntity hit) {
         float density = hit.getHitDensity();
         float damage = this.damage * hit.getHitDensity();
-        if (target.getType().is(EntityTypeTags.AQUATIC)) damage += 4;
+        if (target.is(EntityTypeTags.AQUATIC)) damage += 4;
         if (target.canBreatheUnderwater() || MobEffectUtil.hasWaterBreathing(target)) damage *= 0.5F;
         if (target.isInPowderSnow) {
             target.setTicksFrozen(Math.min(target.getTicksRequiredToFreeze(), target.getTicksFrozen() + 2));

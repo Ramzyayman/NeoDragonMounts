@@ -206,7 +206,7 @@ public class HatchableDragonEggEntity extends LivingEntity implements DynamicAtt
     public HumanoidArm getMainArm() {return HumanoidArm.RIGHT;}
 
     @Override
-    public InteractionResult interact(Player player, InteractionHand hand) {
+    public InteractionResult interact(Player player, InteractionHand hand, net.minecraft.world.phys.Vec3 location) {
         if (this.isAlive() && player.isShiftKeyDown()) {
             var block = this.asBlock(null);
             if (block == null) return InteractionResult.FAIL;

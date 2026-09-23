@@ -4,25 +4,27 @@ import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
 
-/// ponytail: the masked dissolve pipeline is stubbed out for the duration of the
-/// 1.21.4 -> 26.1 port. Rendering was rewritten in 1.21.5, again in 1.21.11 and again
-/// in 26.1, so implementing it at each hop would mean writing the hardest code in the
-/// mod four times. These fall back to vanilla render types instead: a dying dragon
-/// simply disappears rather than eroding away. Everything else renders normally.
+/// The masked dissolve effect, stubbed out from 1.21.5 through 1.21.11 and rebuilt here once, as
+/// planned. It turned out not to need a custom pipeline at all: 26.1 ships
+/// `RenderTypes.entityCutoutDissolve(texture, mask)`, whose shader does the same mask-alpha
+/// threshold discard the mod's own shader pair used to do.
 ///
-/// Rebuild the real pipeline ONCE, at 26.1. The full behavioural spec — data flow,
-/// shader logic and acceptance criteria — is in porting/dissolve-effect-spec.md.
+/// Two differences from the original, both deliberate:
 ///
-/// The `mask` parameter is deliberately retained and ignored so call sites stay
-/// untouched and the restored signature is already in place.
-public final class RenderStateAccessor {
-    private RenderStateAccessor() {}
-
-    public static RenderType entityCutoutDecal(Identifier texture, Identifier mask) {
-        return RenderTypes.entityCutoutNoCull(texture);
+/// 1. **The comparison is inverted.** The mod's shader discarded where `mask.a < threshold`, so
+///    alpha counted *up* as the dragon eroded. Vanilla discards where `vertexColor.a < mask.a`,
+///    so alpha has to count *down*. `TameableDragonLayer` inverts it; porting the old calculation
+///    unchanged would make dragons assemble instead of dissolve.
+/// 2. **There is no emissive or translucent dissolve variant** - vanilla ships only the cutout one,
+///    and its shader forces `faceVertexColor.a = 1.0` after the discard because "the dissolve
+///    effect entirely replaces translucency". The glow pass therefore uses the same render type and
+///    relies on being submitted at FULL_BRIGHT, which is what made it look emissive anyway.
+public interface RenderStateAccessor {
+    static RenderType entityCutoutDecal(Identifier texture, Identifier mask) {
+        return RenderTypes.entityCutoutDissolve(texture, mask);
     }
 
-    public static RenderType entityTranslucentEmissiveDecal(Identifier texture, Identifier mask) {
-        return RenderTypes.entityTranslucentEmissive(texture);
+    static RenderType entityTranslucentEmissiveDecal(Identifier texture, Identifier mask) {
+        return RenderTypes.entityCutoutDissolve(texture, mask);
     }
 }

@@ -29,15 +29,6 @@ public class DragonScaleShieldItem extends ShieldItem implements DragonTypified 
     /// Values are copied verbatim from vanilla `Items.SHIELD`, because the mixins they replace
     /// made these shields behave exactly like a vanilla shield. Durability and repair material
     /// stay per-dragon-type, as before.
-    private static final BlocksAttacks VANILLA_SHIELD_BLOCKING = new BlocksAttacks(
-            0.25F,
-            1.0F,
-            List.of(new BlocksAttacks.DamageReduction(90.0F, Optional.empty(), 0.0F, 1.0F)),
-            new BlocksAttacks.ItemDamageFunction(3.0F, 1.0F, 1.0F),
-            Optional.of(DamageTypeTags.BYPASSES_SHIELD),
-            Optional.of(SoundEvents.SHIELD_BLOCK),
-            Optional.of(SoundEvents.SHIELD_BREAK)
-    );
 
     public final DragonType type;
 
@@ -46,7 +37,18 @@ public class DragonScaleShieldItem extends ShieldItem implements DragonTypified 
                 .durability(UNIT_DURABILITY * type.material.durability())
                 .repairable(type.material.repairIngredient())
                 .equippableUnswappable(EquipmentSlot.OFFHAND)
-                .component(DataComponents.BLOCKS_ATTACKS, VANILLA_SHIELD_BLOCKING)
+                /// 26.1 made BlocksAttacks#bypassedBy a HolderSet instead of a TagKey, so the tag can
+                /// only be resolved once registries exist - hence delayedComponent, as vanilla's own
+                /// shield now does. Values still copied verbatim from Items.SHIELD.
+                .delayedComponent(DataComponents.BLOCKS_ATTACKS, context -> new BlocksAttacks(
+                        0.25F,
+                        1.0F,
+                        List.of(new BlocksAttacks.DamageReduction(90.0F, Optional.empty(), 0.0F, 1.0F)),
+                        new BlocksAttacks.ItemDamageFunction(3.0F, 1.0F, 1.0F),
+                        Optional.of(context.getOrThrow(DamageTypeTags.BYPASSES_SHIELD)),
+                        Optional.of(SoundEvents.SHIELD_BLOCK),
+                        Optional.of(SoundEvents.SHIELD_BREAK)
+                ))
                 .component(DataComponents.BREAK_SOUND, SoundEvents.SHIELD_BREAK)
         );
         this.type = type;

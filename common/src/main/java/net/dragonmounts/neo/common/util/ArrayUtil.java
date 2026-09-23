@@ -29,7 +29,7 @@ public class ArrayUtil {
     }
 
     public static void dropContents(Level level, double x, double y, double z, ItemStack[] stacks, int index) {
-        var random = level.random;
+        var random = level.getRandom();
         double width = EntityType.ITEM.getWidth(), factor = 1.0 - width, half = width / 2.0;
         x += half;
         z += half;

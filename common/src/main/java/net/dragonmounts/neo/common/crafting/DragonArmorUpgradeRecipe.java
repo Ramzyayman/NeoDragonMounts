@@ -1,5 +1,7 @@
 package net.dragonmounts.neo.common.crafting;
 
+import net.minecraft.world.item.ItemStackTemplate;
+
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.*;
 import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
@@ -91,8 +93,20 @@ public class DragonArmorUpgradeRecipe implements SmithingRecipe {
         this.addition = Optional.of(addition);
     }
 
+    /// Recipe#showNotification() became abstract in 26.1 too; this matches the old default.
     @Override
-    public ItemStack assemble(SmithingRecipeInput input, HolderLookup.Provider registries) {
+    public boolean showNotification() {
+        return true;
+    }
+
+    /// Recipe#group() became abstract in 26.1; a special recipe has no group.
+    @Override
+    public String group() {
+        return "";
+    }
+
+    @Override
+    public ItemStack assemble(SmithingRecipeInput input) {
         var stack = input.base();
         var component = stack.getOrDefault(DataComponents.ATTRIBUTE_MODIFIERS, ItemAttributeModifiers.EMPTY);
         boolean found = false;
@@ -163,7 +177,7 @@ public class DragonArmorUpgradeRecipe implements SmithingRecipe {
                 Ingredient.optionalIngredientToDisplay(this.template),
                 this.base.display(),
                 Ingredient.optionalIngredientToDisplay(this.addition),
-                new SlotDisplay.ItemStackSlotDisplay(new ItemStack(DMItems.NETHERITE_DRAGON_ARMOR)),
+                new SlotDisplay.ItemStackSlotDisplay(new ItemStackTemplate(DMItems.NETHERITE_DRAGON_ARMOR.get())),
                 new SlotDisplay.ItemSlotDisplay(Items.SMITHING_TABLE)
         ));
     }
@@ -173,7 +187,9 @@ public class DragonArmorUpgradeRecipe implements SmithingRecipe {
         return true;
     }
 
-    public static class Serializer implements RecipeSerializer<DragonArmorUpgradeRecipe> {
+    /// 26.1 turned RecipeSerializer from an interface into a record carrying the two codecs, so
+    /// this is no longer something to implement - it holds the codecs and hands out the value.
+    public static class Serializer {
         public static final MapCodec<DragonArmorUpgradeRecipe> CODEC = new MapCodec<>() {
             @Override
             public <T> Stream<T> keys(DynamicOps<T> ops) {
@@ -209,14 +225,7 @@ public class DragonArmorUpgradeRecipe implements SmithingRecipe {
             }
         };
 
-        @Override
-        public MapCodec<DragonArmorUpgradeRecipe> codec() {
-            return CODEC;
-        }
-
-        @Override
-        public StreamCodec<RegistryFriendlyByteBuf, DragonArmorUpgradeRecipe> streamCodec() {
-            return STREAM_CODEC;
-        }
+        public static final RecipeSerializer<DragonArmorUpgradeRecipe> INSTANCE =
+                new RecipeSerializer<>(CODEC, STREAM_CODEC);
     }
 }

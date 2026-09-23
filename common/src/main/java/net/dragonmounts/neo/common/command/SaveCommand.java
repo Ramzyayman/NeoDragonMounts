@@ -72,17 +72,18 @@ public class SaveCommand {
         }
         var type = target.getType();
         if (type.canSerialize()) {
+            // 26.1: byId returns Optional<Holder<Item>> instead of a nullable SpawnEggItem.
             var item = SpawnEggItem.byId(type);
-            return item == null
+            return item.isEmpty()
                     ? fail(source, target, "commands.neodragonmounts.save.no_spawn_egg")
-                    : give(source, EntityContainer.saveEntityData(item, target, DataComponentPatch.EMPTY));
+                    : give(source, EntityContainer.saveEntityData(item.get().value(), target, DataComponentPatch.EMPTY));
         }
         return fail(source, target, "commands.neodragonmounts.save.cannot_serialize");
     }
 
     public static int save(CommandContext<CommandSourceStack> context, ItemInput input, Entity target) throws CommandSyntaxException {
         var source = context.getSource();
-        var item = input.getItem();
+        var item = input.item().value();
         if (item instanceof EntityContainer<?>) {
             var stack = saveContainer((EntityContainer<?>) item, input, target);
             if (stack != null) return stack.isEmpty()
@@ -90,7 +91,7 @@ public class SaveCommand {
                     : give(source, stack);
         }
         if (target.getType().canSerialize()) {
-            var stack = input.createItemStack(1, false);
+            var stack = input.createItemStack(1);
             var tag = saveWithId(target, new CompoundTag());
             tag.remove(SERIALIZATION_KEY_FLYING);
             tag.remove("UUID");
@@ -104,7 +105,7 @@ public class SaveCommand {
         var clazz = container.getContentType();
         return clazz.isInstance(target) ? container.saveEntity(
                 clazz.cast(target),
-                input.createItemStack(1, false).getComponentsPatch()
+                input.createItemStack(1).getComponentsPatch()
         ) : null;
     }
 

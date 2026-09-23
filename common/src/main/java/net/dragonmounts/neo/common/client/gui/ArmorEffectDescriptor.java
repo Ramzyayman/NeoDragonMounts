@@ -2,7 +2,7 @@ package net.dragonmounts.neo.common.client.gui;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import org.apache.commons.lang3.function.Suppliers;
@@ -63,7 +63,7 @@ public class ArmorEffectDescriptor {
         return height;
     }
 
-    public int render(Font font, int x, int y, int width, GuiGraphics graphics) {
+    public int render(Font font, int x, int y, int width, GuiGraphicsExtractor graphics) {
         if (this.trigger != null) {
             y = drawString(font, x, y + 1, width, graphics, this.trigger);
         }
@@ -74,11 +74,11 @@ public class ArmorEffectDescriptor {
         return y;
     }
 
-    public static int drawString(Font font, int x, int y, int width, GuiGraphics graphics, Component component) {
+    public static int drawString(Font font, int x, int y, int width, GuiGraphicsExtractor graphics, Component component) {
         int line = font.lineHeight;
         for (var text : font.split(component, width)) {
             y += line;
-            graphics.drawString(font, text, x, y, -1, true);
+            graphics.text(font, text, x, y, -1, true);
         }
         return y;
     }

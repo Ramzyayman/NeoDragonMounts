@@ -11,13 +11,13 @@ import net.dragonmounts.neo.common.init.DragonVariants;
 import net.dragonmounts.neo.common.item.DragonHeadItem;
 import net.dragonmounts.neo.compat.registry.DragonVariant;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -60,7 +60,7 @@ public enum DragonHeadRenderer
         matrices.scale(-1.0F, -1.0F, 1.0F);
         collector.submitModelPart(head, matrices, appearance.getBase(null), light, overlay, null, false, false, -1, crumblingOverlay, outlineColor);
         collector.submitModelPart(
-                head, matrices, appearance.getGlow(null), LightTexture.FULL_BLOCK, OverlayTexture.NO_OVERLAY,
+                head, matrices, appearance.getGlow(null), LightCoordsUtil.pack(15, 0), OverlayTexture.NO_OVERLAY,
                 null, false, false, -1, crumblingOverlay, outlineColor
         );
         matrices.popPose();
@@ -138,7 +138,6 @@ public enum DragonHeadRenderer
         @Override
         public void submit(
                 @Nullable DragonVariant variant,
-                ItemDisplayContext context,
                 PoseStack matrices,
                 SubmitNodeCollector collector,
                 int packedLight,
@@ -162,7 +161,7 @@ public enum DragonHeadRenderer
         }
     }
 
-    public record Unbaked(DragonVariant variant, float animation) implements SpecialModelRenderer.Unbaked {
+    public record Unbaked(DragonVariant variant, float animation) implements SpecialModelRenderer.Unbaked<DragonVariant> {
         public static final MapCodec<Unbaked> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
                 DragonVariant.CODEC.optionalFieldOf("variant", DragonVariants.ENDER_FEMALE).forGetter(Unbaked::variant),
                 Codec.FLOAT.optionalFieldOf("animation", 0.0F).forGetter(Unbaked::animation)
@@ -174,7 +173,7 @@ public enum DragonHeadRenderer
         }
 
         @Override
-        public SpecialModelRenderer<?> bake(SpecialModelRenderer.BakingContext context) {
+        public SpecialModelRenderer<DragonVariant> bake(SpecialModelRenderer.BakingContext context) {
             return new Special(this.animation, this.variant);
         }
     }

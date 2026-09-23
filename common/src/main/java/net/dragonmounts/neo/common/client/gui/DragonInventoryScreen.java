@@ -12,7 +12,7 @@ import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.Minecraft;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -55,9 +55,8 @@ public class DragonInventoryScreen extends AbstractContainerScreen<DragonInvento
     private @UnknownNullability String armor;
 
     public DragonInventoryScreen(DragonInventoryHandler handler, Inventory inventory, Component title) {
-        super(handler, inventory, title);
-        this.imageHeight = 224;
-        this.imageWidth = 324;
+        // 26.1 made imageWidth/imageHeight final; they come from the constructor now.
+        super(handler, inventory, title, 324, 224);
         this.inventoryLabelX = this.titleLabelX = 156;
         this.inventoryLabelY = 131;// 224 - 94 + 1
     }
@@ -160,26 +159,26 @@ public class DragonInventoryScreen extends AbstractContainerScreen<DragonInvento
     }
 
     @Override
-    public void render(GuiGraphics graphics, int x, int y, float ticks) {
-        super.render(graphics, x, y, ticks);
-        this.name.render(graphics, x, y, ticks);
-        this.trustToggle.render(graphics, x, y, ticks);
-        this.sittingToggle.render(graphics, x, y, ticks);
-        this.renderTooltip(graphics, x, y);
+    public void extractRenderState(GuiGraphicsExtractor graphics, int x, int y, float ticks) {
+        super.extractRenderState(graphics, x, y, ticks);
+        this.name.extractRenderState(graphics, x, y, ticks);
+        this.trustToggle.extractRenderState(graphics, x, y, ticks);
+        this.sittingToggle.extractRenderState(graphics, x, y, ticks);
+        this.extractTooltip(graphics, x, y);
     }
 
     @Override
-    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
-        super.renderLabels(graphics, mouseX, mouseY);
+    protected void extractLabels(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
+        super.extractLabels(graphics, mouseX, mouseY);
         var font = this.font;
-        // 1.21.8 made GuiGraphics#drawString skip any text whose colour has alpha 0, so this
+        // 1.21.8 made GuiGraphicsExtractor#drawString skip any text whose colour has alpha 0, so this
         // needs the opaque byte the original literal never carried.
-        graphics.drawString(font, this.armor, 20, 33, 0xFFE99E0C, false);
-        graphics.drawString(font, this.health, 20, 44, 0xFFE99E0C, false);
+        graphics.text(font, this.armor, 20, 33, 0xFFE99E0C, false);
+        graphics.text(font, this.health, 20, 44, 0xFFE99E0C, false);
     }
 
     @Override
-    protected void renderBg(GuiGraphics graphics, float ticks, int x, int y) {
+    public void extractContents(GuiGraphicsExtractor graphics, int x, int y, float ticks) {
         int left = this.leftPos, top = this.topPos;
         RenderPipeline renderer = RenderPipelines.GUI_TEXTURED;
         graphics.blit(renderer, INVENTORY, left + 148, top, 0, 0, 176, this.imageHeight, 256, 256);
@@ -195,7 +194,8 @@ public class DragonInventoryScreen extends AbstractContainerScreen<DragonInvento
         graphics.blitSprite(renderer, ARMOR_SPRITE, left, top + 32, 9, 9);
         graphics.blitSprite(renderer, HEALTH_SPRITE, left, top + 43, 9, 9);
         dragon.animator.renderCrystalBeams = false;
-        InventoryScreen.renderEntityInInventoryFollowsMouse(graphics, left + 164, top + 18, left + 270, top + 70, 10, 0.25F, x, y, dragon);
+        InventoryScreen.extractEntityInInventoryFollowsMouse(graphics, left + 164, top + 18, left + 270, top + 70, 10, 0.25F, x, y, dragon);
         dragon.animator.renderCrystalBeams = true;
+        super.extractContents(graphics, x, y, ticks);
     }
 }

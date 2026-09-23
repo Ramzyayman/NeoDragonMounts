@@ -17,7 +17,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.special.NoDataSpecialModelRenderer;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
@@ -39,7 +39,7 @@ import static net.minecraft.world.level.block.state.properties.BlockStatePropert
 @NotNullByDefault
 public class DragonCoreRenderer implements BlockEntityRenderer<DragonCoreBlockEntity, DragonCoreRenderState> {
     private static final Identifier TEXTURE_LOCATION = makeId("textures/block/dragon_core.png");
-    private static final RenderType RENDER_TYPE = RenderTypes.entityCutoutNoCull(TEXTURE_LOCATION);
+    private static final RenderType RENDER_TYPE = RenderTypes.entityCutout(TEXTURE_LOCATION);
     final DragonCoreModel model;
 
     public DragonCoreRenderer(BlockEntityRendererProvider.Context context) {
@@ -115,7 +115,6 @@ public class DragonCoreRenderer implements BlockEntityRenderer<DragonCoreBlockEn
     ) implements NoDataSpecialModelRenderer {
         @Override
         public void submit(
-                ItemDisplayContext context,
                 PoseStack matrices,
                 SubmitNodeCollector collector,
                 int packedLight,
@@ -136,7 +135,7 @@ public class DragonCoreRenderer implements BlockEntityRenderer<DragonCoreBlockEn
         }
     }
 
-    public record Unbaked(float openness, Direction facing) implements SpecialModelRenderer.Unbaked {
+    public record Unbaked(float openness, Direction facing) implements NoDataSpecialModelRenderer.Unbaked {
         public static final MapCodec<Unbaked> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
                 Codec.FLOAT.optionalFieldOf("openness", 0.0F).forGetter(Unbaked::openness),
                 Direction.CODEC.optionalFieldOf("facing", Direction.UP).forGetter(Unbaked::facing)
@@ -150,7 +149,7 @@ public class DragonCoreRenderer implements BlockEntityRenderer<DragonCoreBlockEn
         /// 1.21.9 replaced the bare EntityModelSet parameter with a BakingContext that also
         /// carries the material set and skin cache.
         @Override
-        public SpecialModelRenderer<?> bake(SpecialModelRenderer.BakingContext context) {
+        public SpecialModelRenderer<Void> bake(SpecialModelRenderer.BakingContext context) {
             return new Special(new DragonCoreRenderer(context.entityModelSet()), this.openness, this.facing);
         }
     }

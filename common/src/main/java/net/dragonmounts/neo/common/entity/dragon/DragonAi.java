@@ -1,5 +1,9 @@
 package net.dragonmounts.neo.common.entity.dragon;
 
+import net.minecraft.world.entity.ai.behavior.BehaviorControl;
+
+import java.util.HashSet;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.datafixers.util.Pair;
@@ -68,15 +72,48 @@ public class DragonAi {
             Activity.IDLE
     );
 
+    /// 26.1 moved activity declaration onto Brain.ActivitySupplier and deleted the imperative
+    /// convenience overloads; only the four-argument addActivity survives. These two rebuild exactly
+    /// what the removed overloads did - ascending priorities from `start`, and for the single-memory
+    /// variant a VALUE_PRESENT condition plus erasing that memory when the activity stops.
+    private static ImmutableList<? extends Pair<Integer, ? extends BehaviorControl<? super ServerDragonEntity>>> priorities(
+            int start, ImmutableList<? extends BehaviorControl<? super ServerDragonEntity>> tasks
+    ) {
+        var builder = ImmutableList.<Pair<Integer, ? extends BehaviorControl<? super ServerDragonEntity>>>builder();
+        int priority = start;
+        for (var task : tasks) {
+            builder.add(Pair.of(priority++, task));
+        }
+        return builder.build();
+    }
+
+    private static void addActivity(
+            Brain<ServerDragonEntity> brain, Activity activity, int start,
+            ImmutableList<? extends BehaviorControl<? super ServerDragonEntity>> tasks
+    ) {
+        brain.addActivity(activity, priorities(start, tasks), ImmutableSet.of(), new HashSet<>());
+    }
+
+    private static void addActivityAndRemoveMemoryWhenStopped(
+            Brain<ServerDragonEntity> brain, Activity activity, int start,
+            ImmutableList<? extends BehaviorControl<? super ServerDragonEntity>> tasks,
+            MemoryModuleType<?> memory
+    ) {
+        brain.addActivity(
+                activity, priorities(start, tasks),
+                ImmutableSet.of(Pair.of(memory, MemoryStatus.VALUE_PRESENT)), ImmutableSet.of(memory)
+        );
+    }
+
     static void initCoreActivity(Brain<ServerDragonEntity> brain) {
-        brain.addActivity(Activity.CORE, 0, ImmutableList.of(
+        addActivity(brain, Activity.CORE, 0, ImmutableList.of(
                 new LookAtTargetSink(45, 90),
                 new MoveToTargetSink()
         ));
     }
 
     static void initIdleActivity(Brain<ServerDragonEntity> brain) {
-        brain.addActivity(Activity.IDLE, 10, ImmutableList.of(
+        addActivity(brain, Activity.IDLE, 10, ImmutableList.of(
                 new Swim<>(0.8F),
                 new AnimalMakeLoveEx(DMEntities.TAMEABLE_DRAGON.get(), 1.0F, 4, 6),
                 new FollowTemptation(entity -> 1.25F, entity -> 3.0),
@@ -100,7 +137,7 @@ public class DragonAi {
     }
 
     static void initFightActivity(Brain<ServerDragonEntity> brain) {
-        brain.addActivityAndRemoveMemoryWhenStopped(Activity.FIGHT, 10, ImmutableList.of(
+        addActivityAndRemoveMemoryWhenStopped(brain, Activity.FIGHT, 10, ImmutableList.of(
                 SetWalkTargetFromAttackTargetIfTargetOutOfReach.create(1.0F),
                 MeleeAttack.create(40),
                 StopAttackingIfTargetInvalid.create(),
@@ -109,7 +146,8 @@ public class DragonAi {
     }
 
     static void initControlledActivity(Brain<ServerDragonEntity> brain) {
-        brain.addActivityAndRemoveMemoryWhenStopped(
+        addActivityAndRemoveMemoryWhenStopped(
+                brain,
                 DMActivities.CONTROLLED,
                 0,
                 ImmutableList.of(new ControlledByPlayer()),
@@ -118,7 +156,7 @@ public class DragonAi {
     }
 
     static void initSittingActivity(Brain<ServerDragonEntity> brain) {
-        brain.addActivityAndRemoveMemoriesWhenStopped(DMActivities.SITTING, ImmutableList.of(Pair.of(0, BrainUtil.dispatch(
+        brain.addActivity(DMActivities.SITTING, ImmutableList.of(Pair.of(0, BrainUtil.dispatch(
                 new SitWhenOrderedTo(),
                 new TryFindGround<>(32, 48, 0.75F, dragon -> {
                     if (dragon.isOrderedToSit()) return false;
@@ -130,7 +168,9 @@ public class DragonAi {
     }
 
     public static Brain.Provider<ServerDragonEntity> brainProvider() {
-        return Brain.provider(MEMORY_TYPES, SENSOR_TYPES);
+        // 26.1 added a declarative ActivitySupplier to provider(); this mod still wires activities
+        // imperatively in makeBrain, so it supplies none here.
+        return Brain.provider(MEMORY_TYPES, SENSOR_TYPES, body -> java.util.List.of());
     }
 
     public static Brain<ServerDragonEntity> makeBrain(Brain<ServerDragonEntity> brain) {

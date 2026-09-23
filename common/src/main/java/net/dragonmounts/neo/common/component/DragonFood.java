@@ -85,7 +85,19 @@ public record DragonFood(
         FALLBACKS.put(item, fallback);
     }
 
+    /// 26.1 binds item components later than any mod lifecycle event that can safely build an
+    /// ItemStack - building this table in a static block, and later from commonSetup, both threw
+    /// "Components not bound yet". It is populated on first use instead, which cannot be too early.
+    private static volatile boolean fallbacksReady;
+
+    private static synchronized void ensureFallbacks() {
+        if (fallbacksReady) return;
+        populateFallbacks();
+        fallbacksReady = true;
+    }
+
     public static boolean isDragonFood(ItemStack stack) {
+        if (!fallbacksReady) ensureFallbacks();
         if (stack.getComponents().has(DMDataComponents.DRAGON_FOOD)) return true;
         var item = stack.getItem();
         if (FALLBACKS.containsKey(item)) return true;
@@ -96,6 +108,7 @@ public record DragonFood(
     }
 
     public static @Nullable DragonFood getInstance(ItemStack stack) {
+        if (!fallbacksReady) ensureFallbacks();
         var instance = stack.get(DMDataComponents.DRAGON_FOOD);
         if (instance != null) return instance;
         var item = stack.getItem();
@@ -108,7 +121,10 @@ public record DragonFood(
         return null;
     }
 
-    static {
+    /// 26.1 made ItemStack's constructor read the item holder's components, which are not bound
+    /// during class initialisation - building the fallback table in a static block threw
+    /// "Components not bound yet" and killed mod construction. It is populated from commonSetup now.
+    private static void populateFallbacks() {
         var minorDrink = Optional.<Holder<SoundEvent>>of(SoundEvents.GENERIC_DRINK);
         var emptyEffects = Collections.<ConsumeEffect>emptyList();
         setFallback(Items.HONEY_BOTTLE, new DragonFood(

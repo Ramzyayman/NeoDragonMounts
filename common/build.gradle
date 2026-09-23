@@ -9,10 +9,6 @@ neoForge {
             project(':neoforge').file('src/main/resources/META-INF/accesstransformer.cfg').absolutePath,
             file('src/main/builtin/accesstransformer.cfg').absolutePath
     )
-    parchment {
-        minecraftVersion = parchment_minecraft
-        mappingsVersion = parchment_version
-    }
 }
 
 dependencies {

@@ -5,7 +5,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 import net.dragonmounts.neo.common.api.DescribedArmorEffect;
 import net.dragonmounts.neo.common.capability.ArmorEffectManagerImpl;
 import net.dragonmounts.neo.common.item.DragonScaleArmorItem;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Debug;
@@ -13,10 +13,10 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 @Debug(export = true)
-@Mixin(GuiGraphics.class)
+@Mixin(GuiGraphicsExtractor.class)
 public abstract class GuiGraphicsMixin {
     @ModifyExpressionValue(
-            method = "renderItemCooldown",
+            method = "itemCooldown",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemCooldowns;getCooldownPercent(Lnet/minecraft/world/item/ItemStack;F)F")
     )
     public float getCooldown(float original, @Local(argsOnly = true) ItemStack stack) {

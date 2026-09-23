@@ -5,7 +5,7 @@ import net.dragonmounts.neo.common.client.ClientDragonEntity;
 import net.dragonmounts.neo.common.client.model.dragon.BuiltinFactory;
 import net.dragonmounts.neo.common.client.model.dragon.DragonModel;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;

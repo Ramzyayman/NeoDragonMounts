@@ -22,10 +22,4 @@ public class DMLootProvider extends LootTableProvider {
         ), registries);
     }
 
-    @Override
-    protected void validate(
-            WritableRegistry<LootTable> registry,
-            ValidationContext context,
-            ProblemReporter.Collector collector
-    ) {/* just shut up */}
 }

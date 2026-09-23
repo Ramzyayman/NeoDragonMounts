@@ -1,5 +1,9 @@
 package net.dragonmounts.neo.client;
 
+import net.dragonmounts.neo.common.client.renderer.block.SpecialBlockModel;
+
+import net.neoforged.neoforge.client.event.RegisterBlockModelsEvent;
+
 
 import net.dragonmounts.neo.common.DragonMountsShared;
 import net.dragonmounts.neo.common.client.ClientDragonEntity;
@@ -126,13 +130,15 @@ public class DragonMountsClient {
         event.register(makeId("dragon_head"), DragonHeadRenderer.Unbaked.CODEC);
     }
 
-    public static void registerSpecialRenderers(RegisterSpecialBlockModelRendererEvent event) {
-        event.register(DMBlocks.DRAGON_CORE.get(), new DragonCoreRenderer.Unbaked(0.0F, Direction.SOUTH));
+    /// Per-block special models moved to RegisterBlockModelsEvent in 26.1 - a different event from
+    /// the codec registration above, and its register() takes (model, block), not (block, model).
+    public static void registerSpecialRenderers(RegisterBlockModelsEvent event) {
+        event.register(new SpecialBlockModel<>(new DragonCoreRenderer.Unbaked(0.0F, Direction.SOUTH)), DMBlocks.DRAGON_CORE.get());
         for (var variant : DragonVariants.BUILTIN_VALUES) {
             var head = variant.head;
-            var renderer = new DragonHeadRenderer.Unbaked(variant, 0.0F);
-            event.register(head.standing.get(), renderer);
-            event.register(head.wall.get(), renderer);
+            var model = new SpecialBlockModel<>(new DragonHeadRenderer.Unbaked(variant, 0.0F));
+            event.register(model, head.standing.get());
+            event.register(model, head.wall.get());
         }
     }
 

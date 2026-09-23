@@ -1,5 +1,6 @@
 package net.dragonmounts.neo;
 
+
 import net.dragonmounts.neo.common.DragonMountsShared;
 import net.dragonmounts.neo.common.capability.ArmorEffectManager;
 import net.dragonmounts.neo.common.capability.ArmorEffectManagerImpl;

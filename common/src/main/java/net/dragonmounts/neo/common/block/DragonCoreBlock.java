@@ -105,8 +105,8 @@ public class DragonCoreBlock extends BaseEntityBlock {
     /// when the block actually changed.
     @Override
     protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
-        level.playSound(null, pos, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.BLOCKS, 0.3F, level.random.nextFloat() * 0.1F + 0.3F);
-        level.playSound(null, pos, SoundEvents.ENDER_EYE_DEATH, SoundSource.BLOCKS, 2.0F, level.random.nextFloat() * 0.1F + 0.3F);
+        level.playSound(null, pos, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.BLOCKS, 0.3F, level.getRandom().nextFloat() * 0.1F + 0.3F);
+        level.playSound(null, pos, SoundEvents.ENDER_EYE_DEATH, SoundSource.BLOCKS, 2.0F, level.getRandom().nextFloat() * 0.1F + 0.3F);
         Containers.updateNeighboursAfterDestroy(state, level, pos);
     }
 

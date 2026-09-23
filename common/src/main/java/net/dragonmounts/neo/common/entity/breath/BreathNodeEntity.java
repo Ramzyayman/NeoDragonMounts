@@ -54,7 +54,7 @@ public class BreathNodeEntity extends Entity implements BreathNodeHost {
     public NodeLineSegment update(Long2ObjectMap<BreathAffectedBlock> hitDensity) {
         Vec3 prevPos = this.position();
         this.refreshDimensions();
-        this.updateInWaterStateAndDoFluidPushing();
+        this.updateFluidInteraction();
         EntityUtil.moveAndCollide(this, this.getDeltaMovement(), this.collisions);
         this.collided = this.horizontalCollision || this.verticalCollision;
         if (this.node.updateAge(this)) {

@@ -1,5 +1,7 @@
 package net.dragonmounts.neo.common.entity.ai.behavior;
 
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
+
 import net.dragonmounts.neo.common.util.BrainUtil;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
@@ -76,5 +78,13 @@ public class DispatchBehavior<E extends LivingEntity> implements BehaviorControl
         return this.impl == null
                 ? "DispatchBehavior"
                 : "DispatchBehavior[" + this.impl.debugString() + "]";
+    }
+
+    /// New abstract on BehaviorControl in 26.1, part of moving activity declaration onto
+    /// Brain.ActivitySupplier. These behaviours carry no entry conditions of their own - their
+    /// gating is declared on the activity - so the required set is empty.
+    @Override
+    public java.util.Set<MemoryModuleType<?>> getRequiredMemories() {
+        return java.util.Set.of();
     }
 }

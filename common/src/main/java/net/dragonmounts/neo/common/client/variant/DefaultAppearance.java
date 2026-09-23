@@ -63,12 +63,12 @@ public class DefaultAppearance implements VariantAppearance {
         this.breath = breath;
         this.armors = armors;
         this.body = body;
-        this.base = RenderTypes.entityCutoutNoCull(body);
+        this.base = RenderTypes.entityCutout(body);
         this.decal = RenderStateAccessor.entityCutoutDecal(body, DEFAULT_DISSOLVE);
         this.glow = RenderTypes.entityTranslucentEmissive(glow);
         this.glowDecal = RenderStateAccessor.entityTranslucentEmissiveDecal(glow, DEFAULT_DISSOLVE);
-        this.chest = RenderTypes.entityCutoutNoCull(DEFAULT_CHEST);
-        this.saddle = RenderTypes.entityCutoutNoCull(DEFAULT_SADDLE);
+        this.chest = RenderTypes.entityCutout(DEFAULT_CHEST);
+        this.saddle = RenderTypes.entityCutout(DEFAULT_SADDLE);
     }
 
     @Override

@@ -12,7 +12,7 @@ public class DragonCoreModel extends Model<Float> {
     public final ModelPart lid;
 
     public DragonCoreModel(ModelPart root) {
-        super(root, RenderTypes::entityCutoutNoCull);
+        super(root, RenderTypes::entityCutout);
         this.lid = root.getChild("lid");
     }
 

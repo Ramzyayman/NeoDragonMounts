@@ -56,4 +56,12 @@ public class FollowOwner extends OneShot<TamableAnimal> {
         ));
         return true;
     }
+
+    /// New abstract on BehaviorControl in 26.1, part of moving activity declaration onto
+    /// Brain.ActivitySupplier. These behaviours carry no entry conditions of their own - their
+    /// gating is declared on the activity - so the required set is empty.
+    @Override
+    public java.util.Set<MemoryModuleType<?>> getRequiredMemories() {
+        return java.util.Set.of();
+    }
 }

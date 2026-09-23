@@ -165,11 +165,11 @@ public class DragonNodeEvaluator extends WalkNodeEvaluator {
         if (type == PathType.OPEN && y >= context.level().getMinY() + 1) {
             switch (context.getPathTypeFromState(x, y - 1, z)) {
                 case WALKABLE, OPEN, WATER -> type = PathType.WALKABLE;
-                case DANGER_FIRE, LAVA -> {
-                    return PathType.DAMAGE_FIRE;
+                case FIRE_IN_NEIGHBOR, LAVA -> {
+                    return PathType.FIRE;
                 }
-                case DAMAGE_OTHER -> {
-                    return PathType.DAMAGE_OTHER;
+                case DAMAGING -> {
+                    return PathType.DAMAGING;
                 }
                 case COCOA -> {
                     return PathType.COCOA;

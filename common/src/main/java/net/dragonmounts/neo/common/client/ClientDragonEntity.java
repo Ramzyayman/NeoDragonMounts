@@ -129,7 +129,7 @@ public class ClientDragonEntity extends TameableDragonEntity {
                     return InteractionResult.FAIL;
                 }
                 if (food.requiresOwner() && Relation.OWNER != relation) {
-                    player.displayClientMessage(DragonMountsShared.REQUIRES_OWNER, true);
+                    player.sendSystemMessage(DragonMountsShared.REQUIRES_OWNER);
                     return InteractionResult.FAIL;
                 }
                 return this.shouldRefuseFood(food) ? InteractionResult.PASS : InteractionResult.SUCCESS;

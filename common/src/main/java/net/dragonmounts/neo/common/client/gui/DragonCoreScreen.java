@@ -2,7 +2,7 @@ package net.dragonmounts.neo.common.client.gui;
 
 import net.dragonmounts.neo.common.inventory.DragonCoreHandler;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.network.chat.Component;
@@ -20,13 +20,14 @@ public class DragonCoreScreen extends AbstractContainerScreen<DragonCoreHandler>
     }
 
     @Override
-    public void render(GuiGraphics graphics, int x, int y, float ticks) {
-        super.render(graphics, x, y, ticks);
-        this.renderTooltip(graphics, x, y);
+    public void extractRenderState(GuiGraphicsExtractor graphics, int x, int y, float ticks) {
+        super.extractRenderState(graphics, x, y, ticks);
+        this.extractTooltip(graphics, x, y);
     }
 
     @Override
-    protected void renderBg(GuiGraphics graphics, float ticks, int x, int y) {
+    public void extractContents(GuiGraphicsExtractor graphics, int x, int y, float ticks) {
         graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE_LOCATION, this.leftPos, this.topPos, 0.0F, 0.0F, this.imageWidth, this.imageHeight, 256, 256);
+        super.extractContents(graphics, x, y, ticks);
     }
 }

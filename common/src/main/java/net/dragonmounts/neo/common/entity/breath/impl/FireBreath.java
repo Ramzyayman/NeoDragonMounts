@@ -44,7 +44,7 @@ public class FireBreath extends DragonBreath {
         boolean disableIgniting = !ServerConfig.INSTANCE.ignitingBreath.get();
         boolean enableSmelting = ServerConfig.INSTANCE.smeltingBreath.get();
         if (enableSmelting || !disableIgniting) {
-            var random = level.random;
+            var random = level.getRandom();
             float max = 0.0F;
             for (var facing : Direction.values()) {
                 float density = hit.getHitDensity(facing);
@@ -101,7 +101,7 @@ public class FireBreath extends DragonBreath {
         if (state.isAir()) return;
         var input = new SingleRecipeInput(state.getCloneItemStack(level, pos, true));
         level.recipeAccess().getRecipeFor(RecipeType.SMELTING, input, level).ifPresent(holder -> {
-            var stack = holder.value().assemble(input, level.registryAccess());
+            var stack = holder.value().assemble(input);
             if (stack.isEmpty()) return;
             if (stack.getItem() instanceof BlockItem item && item != Items.AIR) {
                 level.setBlockAndUpdate(pos, item.getBlock().defaultBlockState());

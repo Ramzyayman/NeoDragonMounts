@@ -22,7 +22,7 @@ public class WitherBreath extends DragonBreath {
     public BreathAffectedBlock affectBlock(ServerLevel level, long location, BreathAffectedBlock hit) {
         var pos = BlockPos.of(location);
         var state = level.getBlockState(pos);
-        if (!state.isAir() && level.random.nextFloat() < 0.002F) {
+        if (!state.isAir() && level.getRandom().nextFloat() < 0.002F) {
             var cloud = new AreaEffectCloud(level, pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
             cloud.setOwner(this.dragon);
             cloud.setCustomParticle(ParticleTypes.SMOKE);

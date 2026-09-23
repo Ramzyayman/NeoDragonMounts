@@ -31,7 +31,7 @@ public enum Relation {
         if (this.reason == null) {
             LOGGER.warn("Logical Error: {} should not be denied!", player.getName());
         } else {
-            player.displayClientMessage(this.reason, true);
+            player.sendSystemMessage(this.reason);
         }
     }
 
@@ -52,7 +52,7 @@ public enum Relation {
     /// @return if the player is denied
     public static boolean denyIfNotOwner(TameableDragonEntity dragon, Player player) {
         if (isOwner(dragon, player)) return false;
-        player.displayClientMessage(DragonMountsShared.REQUIRES_OWNER, true);
+        player.sendSystemMessage(DragonMountsShared.REQUIRES_OWNER);
         return true;
     }
 }

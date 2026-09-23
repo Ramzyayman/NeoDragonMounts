@@ -159,14 +159,13 @@ public class ServerDragonEntity extends TameableDragonEntity {
         this.lastType = type;
     }
 
-    @Override
-    protected Brain.Provider<ServerDragonEntity> brainProvider() {
-        return DragonAi.brainProvider();
-    }
+    /// 26.1 dropped Mob#brainProvider() and reshaped makeBrain: it takes a Brain.Packed now and the
+    /// provider is held per-mob, the way vanilla's own mobs do it.
+    private static final Brain.Provider<ServerDragonEntity> BRAIN_PROVIDER = DragonAi.brainProvider();
 
     @Override
-    protected Brain<ServerDragonEntity> makeBrain(Dynamic<?> dynamic) {
-        return DragonAi.makeBrain(this.brainProvider().makeBrain(dynamic));
+    protected Brain<ServerDragonEntity> makeBrain(Brain.Packed packed) {
+        return DragonAi.makeBrain(BRAIN_PROVIDER.makeBrain(this, packed));
     }
 
     @Override
@@ -213,12 +212,10 @@ public class ServerDragonEntity extends TameableDragonEntity {
         } else {
             ++this.flightTicks;
         }
-        this.setFlying(++this.flightTicks > LIFTOFF_THRESHOLD && !this.isBaby() && (
-                this.fluidHeight.isEmpty() || DoubleIterators.all(
-                        this.fluidHeight.values().doubleIterator(),
-                        value -> value == 0.0
-                ) || this.isRiddenByPlayer()
-        ));
+        // 26.1 removed Entity.fluidHeight; isInLiquid() covers the same WATER/LAVA tags the old
+        // map was keyed on, so "in no fluid at all" becomes a single negated call.
+        this.setFlying(++this.flightTicks > LIFTOFF_THRESHOLD && !this.isBaby()
+                && (!this.isInLiquid() || this.isRiddenByPlayer()));
     }
 
     @Override

@@ -59,7 +59,7 @@ public abstract class EntityUtil extends /*to access protected methods*/ EntityT
         } else {
             offset = 0.0D;
         }
-        entity.snapTo(x, y + offset, z, Mth.wrapDegrees(level.random.nextFloat() * 360.0F), 0.0F);
+        entity.snapTo(x, y + offset, z, Mth.wrapDegrees(level.getRandom().nextFloat() * 360.0F), 0.0F);
         if (entity instanceof Mob mob) {
             mob.yHeadRot = mob.getYRot();
             mob.yBodyRot = mob.getYRot();

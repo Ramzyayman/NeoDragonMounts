@@ -29,7 +29,7 @@ public class NetherBreath extends FireBreath {
         boolean disableIgniting = !ServerConfig.INSTANCE.ignitingBreath.get();
         boolean enableSmelting = ServerConfig.INSTANCE.smeltingBreath.get();
         if (enableSmelting || !disableIgniting) {
-            var random = level.random;
+            var random = level.getRandom();
             float max = 0.0F;
             for (var facing : Direction.values()) {
                 float density = hit.getHitDensity(facing);

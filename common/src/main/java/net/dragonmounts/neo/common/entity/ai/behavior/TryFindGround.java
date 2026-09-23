@@ -1,5 +1,7 @@
 package net.dragonmounts.neo.common.entity.ai.behavior;
 
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -75,5 +77,13 @@ public class TryFindGround<E extends PathfinderMob & FlyingAnimal> extends OneSh
         brain.setMemory(LOOK_TARGET, target);
         brain.setMemory(WALK_TARGET, new WalkTarget(target, this.speedModifier, 8));
         return true;
+    }
+
+    /// New abstract on BehaviorControl in 26.1, part of moving activity declaration onto
+    /// Brain.ActivitySupplier. These behaviours carry no entry conditions of their own - their
+    /// gating is declared on the activity - so the required set is empty.
+    @Override
+    public java.util.Set<MemoryModuleType<?>> getRequiredMemories() {
+        return java.util.Set.of();
     }
 }

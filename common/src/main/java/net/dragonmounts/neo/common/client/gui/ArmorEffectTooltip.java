@@ -2,7 +2,7 @@ package net.dragonmounts.neo.common.client.gui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
@@ -41,12 +41,12 @@ public class ArmorEffectTooltip implements ClientTooltipComponent {
         return this.heightCache;
     }
 
-    /// @see GuiGraphics#drawWordWrap(Font, FormattedText, int, int, int, int, boolean)
+    /// @see GuiGraphicsExtractor#extractWordWrap(Font, FormattedText, int, int, int, int, boolean)
     @Override
-    public void renderImage(Font font, int x, int y, int width, int height, GuiGraphics graphics) {
+    public void extractImage(Font font, int x, int y, int width, int height, GuiGraphicsExtractor graphics) {
         int line = font.lineHeight;
         for (var text : font.split(this.title, width)) {
-            graphics.drawString(font, text, x, y, -1, true);
+            graphics.text(font, text, x, y, -1, true);
             y += line;
         }
         for (var entry : this.entries) {

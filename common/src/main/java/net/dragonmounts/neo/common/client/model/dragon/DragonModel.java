@@ -78,14 +78,14 @@ public class DragonModel extends EntityModel<DragonRenderState> implements Heade
         (this.chest = body.getChild("chest")).visible = false;
         (this.saddle = body.getChild("saddle")).visible = false;
         this.back = body.getChild("back");
-        this.saddleOverlay = new Model<>(this.root, RenderTypes::entityCutoutNoCull) {
+        this.saddleOverlay = new Model<>(this.root, RenderTypes::entityCutout) {
             @Override
             public void setupAnim(DragonRenderState state) {
                 DragonModel.this.setupAnim(state);
                 DragonModel.this.saddle.visible = true;
             }
         };
-        this.chestOverlay = new Model<>(this.chest, RenderTypes::entityCutoutNoCull) {
+        this.chestOverlay = new Model<>(this.chest, RenderTypes::entityCutout) {
             @Override
             public void setupAnim(DragonRenderState state) {
                 DragonModel.this.setupAnim(state);
