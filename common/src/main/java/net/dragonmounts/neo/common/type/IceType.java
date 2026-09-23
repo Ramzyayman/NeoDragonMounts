@@ -5,10 +5,10 @@ import net.dragonmounts.neo.common.entity.breath.impl.IceBreath;
 import net.dragonmounts.neo.common.entity.dragon.TameableDragonEntity;
 import net.dragonmounts.neo.compat.registry.DragonType;
 import net.dragonmounts.neo.compat.registry.DragonTypeBuilder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class IceType extends DragonType {
-    public IceType(ResourceLocation identifier, DragonTypeBuilder builder) {
+    public IceType(Identifier identifier, DragonTypeBuilder builder) {
         super(identifier, builder);
     }
 

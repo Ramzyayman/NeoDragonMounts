@@ -1,64 +1,43 @@
 package net.dragonmounts.neo.common.client.debug;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.debug.DebugRenderer;
+import net.minecraft.gizmos.GizmoStyle;
+import net.minecraft.gizmos.Gizmos;
 import net.minecraft.util.debug.DebugValueAccess;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.shapes.Shapes;
-import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.Collections;
-import java.util.List;
-
+/// 1.21.11 replaced immediate debug drawing with gizmos: SimpleDebugRenderer#render became
+/// #emitGizmos, which gets no PoseStack and no MultiBufferSource - shapes are submitted in world
+/// space and the gizmo system draws them. That removes the whole VoxelShape conversion and the
+/// cached shape lists this class used to keep, since Gizmos takes an AABB and a Vec3 directly.
 public enum DebugInfoRenderer implements DebugRenderer.SimpleDebugRenderer {
     INSTANCE;
 
-    private List<AABB> boxes;
-    private List<Vec3> points;
-    private List<VoxelShape> boxShapes = Collections.emptyList();
-    private List<VoxelShape> pointShapes = Collections.emptyList();
+    private static final GizmoStyle BOX_STYLE = GizmoStyle.stroke(-1);
+    private static final int POINT_COLOR = -1;
+    private static final float POINT_SIZE = 0.2F;
 
     @Override
-    public void render(@NotNull PoseStack matrices, @NotNull MultiBufferSource buffers, double camX, double camY, double camZ, @Nullable DebugValueAccess access, @NotNull Frustum frustum) {
+    public void emitGizmos(
+            double camX,
+            double camY,
+            double camZ,
+            DebugValueAccess access,
+            @NotNull Frustum frustum,
+            float partialTick
+    ) {
         var boxes = DebugInfo.DEBUG_BOXES;
-        if (this.boxes != boxes) {
-            this.boxes = boxes;
-            if (boxes == null) {
-                this.boxShapes = Collections.emptyList();
-            } else {
-                var list = new ObjectArrayList<VoxelShape>(boxes.size());
-                for (var box : boxes) {
-                    list.add(Shapes.create(box));
-                }
-                this.boxShapes = list;
+        if (boxes != null) {
+            for (var box : boxes) {
+                Gizmos.cuboid(box, BOX_STYLE);
             }
         }
         var points = DebugInfo.DEBUG_POINTS;
-        if (this.points != points) {
-            this.points = points;
-            if (points == null) {
-                this.pointShapes = Collections.emptyList();
-            } else {
-                var list = new ObjectArrayList<VoxelShape>(points.size());
-                for (var point : points) {
-                    list.add(Shapes.create(point.x - 0.1, point.y - 0.1, point.z - 0.1, point.x + 0.1, point.y + 0.1, point.z + 0.1));
-                }
-                this.pointShapes = list;
+        if (points != null) {
+            for (var point : points) {
+                Gizmos.point(point, POINT_COLOR, POINT_SIZE);
             }
-        }
-        var buffer = buffers.getBuffer(RenderType.lines());
-        for (var shape : this.boxShapes) {
-            DebugRenderer.renderVoxelShape(matrices, buffer, shape, -camX, -camY, -camZ, 1.0F, 1.0F, 1.0F, 1.0F, true);
-        }
-        for (var shape : this.pointShapes) {
-            DebugRenderer.renderVoxelShape(matrices, buffer, shape, -camX, -camY, -camZ, 1.0F, 1.0F, 1.0F, 1.0F, true);
         }
     }
 }

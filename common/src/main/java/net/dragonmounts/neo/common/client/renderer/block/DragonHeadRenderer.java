@@ -25,8 +25,10 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNullByDefault;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
+import org.joml.Vector3fc;
 
 import java.util.Set;
+import java.util.function.Consumer;
 
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING;
 
@@ -126,7 +128,7 @@ public enum DragonHeadRenderer
         /// New abstract method in 1.21.6. There is no variant argument here, so the extents are
         /// taken from the fallback variant's head - the same model submit() falls back to.
         @Override
-        public void getExtents(Set<Vector3f> output) {
+        public void getExtents(Consumer<Vector3fc> output) {
             var model = this.fallback.appearance.getModel(null);
             if (model == null) return;
             model.setupBlock(this.animation, 180.0F, 0.75F);

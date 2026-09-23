@@ -2,7 +2,7 @@ package net.dragonmounts.neo.common.inventory;
 
 import net.dragonmounts.neo.compat.platform.DMScreenHandlers;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -18,7 +18,7 @@ import static net.dragonmounts.neo.common.DragonMountsShared.makeId;
  * @see net.minecraft.world.inventory.ShulkerBoxMenu
  */
 public class DragonCoreHandler extends AbstractContainerMenu {
-    public static final ResourceLocation ESSENCE_ICON = makeId("slot/essence");
+    public static final Identifier ESSENCE_ICON = makeId("slot/essence");
     public final Container container;
 
     public DragonCoreHandler(int id, Inventory inventory, @Nullable BlockPos pos) {
@@ -35,7 +35,7 @@ public class DragonCoreHandler extends AbstractContainerMenu {
             }
 
             @Override
-            public ResourceLocation getNoItemIcon() {
+            public Identifier getNoItemIcon() {
                 return ESSENCE_ICON;
             }
         });

@@ -3,7 +3,7 @@ package net.dragonmounts.neo.common.inventory;
 import net.dragonmounts.neo.common.entity.dragon.TameableDragonEntity;
 import net.dragonmounts.neo.common.init.DMDataComponents;
 import net.dragonmounts.neo.compat.platform.DMScreenHandlers;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.Entity;
@@ -108,7 +108,7 @@ public class DragonInventoryHandler extends AbstractContainerMenu {
     }
 
     public static class SaddleSlot extends Slot {
-        public static final ResourceLocation ICON = ResourceLocation.withDefaultNamespace("container/slot/saddle");
+        public static final Identifier ICON = Identifier.withDefaultNamespace("container/slot/saddle");
         public final TameableDragonEntity dragon;
 
         public SaddleSlot(DragonInventory inventory, int slot, int x, int y) {
@@ -132,13 +132,13 @@ public class DragonInventoryHandler extends AbstractContainerMenu {
         }
 
         @Override
-        public ResourceLocation getNoItemIcon() {
+        public Identifier getNoItemIcon() {
             return ICON;
         }
     }
 
     public static class ArmorSlot extends Slot {
-        public static final ResourceLocation ICON = makeId("slot/dragon_armor");
+        public static final Identifier ICON = makeId("slot/dragon_armor");
 
         public ArmorSlot(DragonInventory inventory, int slot, int x, int y) {
             super(inventory, slot, x, y);
@@ -161,13 +161,13 @@ public class DragonInventoryHandler extends AbstractContainerMenu {
         }
 
         @Override
-        public ResourceLocation getNoItemIcon() {
+        public Identifier getNoItemIcon() {
             return ICON;
         }
     }
 
     public static class ChestSlot extends Slot {
-        public static final ResourceLocation ICON = makeId("slot/chest");
+        public static final Identifier ICON = makeId("slot/chest");
 
         public ChestSlot(DragonInventory inventory, int slot, int x, int y) {
             super(inventory, slot, x, y);
@@ -184,7 +184,7 @@ public class DragonInventoryHandler extends AbstractContainerMenu {
         }
 
         @Override
-        public ResourceLocation getNoItemIcon() {
+        public Identifier getNoItemIcon() {
             return ICON;
         }
     }

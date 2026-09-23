@@ -209,7 +209,7 @@ public class ClientDragonEntity extends TameableDragonEntity {
             this.pendingJumpPower = 0.0F;
             if (power > 0.0F) {
                 var motion = this.getDeltaMovement();
-                this.hasImpulse = true;
+                this.needsSync = true;
                 if (input.z > 0.0) {
                     float facing = this.getYRot() * DEG_TO_RAD;
                     this.setDeltaMovement(

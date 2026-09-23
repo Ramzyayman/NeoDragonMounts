@@ -9,7 +9,7 @@ import net.minecraft.core.Registry;
 import static net.dragonmounts.neo.common.DragonMountsShared.ARMOR_EFFECT_SOURCE;
 import static net.dragonmounts.neo.common.DragonMountsShared.makeId;
 import static net.dragonmounts.neo.compat.registry.RegistryHandler.makeDefaultedRegistry;
-import static net.minecraft.resources.ResourceLocation.withDefaultNamespace;
+import static net.minecraft.resources.Identifier.withDefaultNamespace;
 
 public record ArmorEffectSourceType<T extends ArmorEffectSource>(MapCodec<T> codec) {
     public static final MappedRegistry<ArmorEffectSourceType<?>> REGISTRY;

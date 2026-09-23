@@ -1,5 +1,7 @@
 package net.dragonmounts.neo.common.client.gui;
 
+import net.minecraft.client.gui.GuiGraphics;
+
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -7,6 +9,14 @@ import net.minecraft.network.chat.MutableComponent;
 import java.util.function.Function;
 
 public abstract class ToggleButton extends Button {
+    /// 1.21.11 made Button abstract and final-ised renderWidget; the default sprite+label
+    /// draw that Button used to provide now has to be supplied by the subclass.
+    @Override
+    protected void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        this.renderDefaultSprite(guiGraphics);
+        this.renderDefaultLabel(guiGraphics.textRendererForWidget(this, GuiGraphics.HoveredTextEffects.NONE));
+    }
+
     protected final Function<ToggleButton, MutableComponent> narration;
     private boolean state;
 

@@ -13,24 +13,25 @@ import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.equipment.EquipmentAsset;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
 public class DefaultAppearance implements VariantAppearance {
-    private static final Object2ObjectOpenHashMap<String, Map<ResourceKey<EquipmentAsset>, ResourceLocation>> ARMOR_TEXTURES = new Object2ObjectOpenHashMap<>();
-    private static final Map<ResourceKey<EquipmentAsset>, ResourceLocation> DEFAULT_ARMOR_TEXTURES = getTextures(null);
+    private static final Object2ObjectOpenHashMap<String, Map<ResourceKey<EquipmentAsset>, Identifier>> ARMOR_TEXTURES = new Object2ObjectOpenHashMap<>();
+    private static final Map<ResourceKey<EquipmentAsset>, Identifier> DEFAULT_ARMOR_TEXTURES = getTextures(null);
 
-    synchronized static Map<ResourceKey<EquipmentAsset>, ResourceLocation> getTextures(@Nullable String category) {
+    synchronized static Map<ResourceKey<EquipmentAsset>, Identifier> getTextures(@Nullable String category) {
         return ARMOR_TEXTURES.computeIfAbsent(category, $ -> new Reference2ObjectOpenHashMap<>());
     }
 
-    public synchronized static void registerArmorTexture(@Nullable String category, ResourceKey<EquipmentAsset> asset, ResourceLocation texture) {
+    public synchronized static void registerArmorTexture(@Nullable String category, ResourceKey<EquipmentAsset> asset, Identifier texture) {
         if (getTextures(category).put(asset, texture) != null) {
             throw new IllegalStateException("Duplicate asset: " + asset);
         }
@@ -38,8 +39,8 @@ public class DefaultAppearance implements VariantAppearance {
 
     public final ModelLayerLocation modelLocation;
     public final BreathParticleFactory factory;
-    public final ResourceLocation breath;
-    public final ResourceLocation body;
+    public final Identifier breath;
+    public final Identifier body;
     public final RenderType base;
     public final RenderType decal;
     public final RenderType glow;
@@ -47,14 +48,14 @@ public class DefaultAppearance implements VariantAppearance {
     public final RenderType chest;
     public final RenderType saddle;
     private DragonModel model;
-    final Map<ResourceKey<EquipmentAsset>, ResourceLocation> armors;
+    final Map<ResourceKey<EquipmentAsset>, Identifier> armors;
 
     public DefaultAppearance(
             ModelLayerLocation modelLocation,
-            ResourceLocation body,
-            ResourceLocation glow,
-            ResourceLocation breath,
-            Map<ResourceKey<EquipmentAsset>, ResourceLocation> armors,
+            Identifier body,
+            Identifier glow,
+            Identifier breath,
+            Map<ResourceKey<EquipmentAsset>, Identifier> armors,
             BreathParticleFactory factory
     ) {
         this.modelLocation = modelLocation;
@@ -62,12 +63,12 @@ public class DefaultAppearance implements VariantAppearance {
         this.breath = breath;
         this.armors = armors;
         this.body = body;
-        this.base = RenderType.entityCutoutNoCull(body);
+        this.base = RenderTypes.entityCutoutNoCull(body);
         this.decal = RenderStateAccessor.entityCutoutDecal(body, DEFAULT_DISSOLVE);
-        this.glow = RenderType.entityTranslucentEmissive(glow);
+        this.glow = RenderTypes.entityTranslucentEmissive(glow);
         this.glowDecal = RenderStateAccessor.entityTranslucentEmissiveDecal(glow, DEFAULT_DISSOLVE);
-        this.chest = RenderType.entityCutoutNoCull(DEFAULT_CHEST);
-        this.saddle = RenderType.entityCutoutNoCull(DEFAULT_SADDLE);
+        this.chest = RenderTypes.entityCutoutNoCull(DEFAULT_CHEST);
+        this.saddle = RenderTypes.entityCutoutNoCull(DEFAULT_SADDLE);
     }
 
     @Override
@@ -81,7 +82,7 @@ public class DefaultAppearance implements VariantAppearance {
     }
 
     @Override
-    public ResourceLocation getBodyTexture(DragonRenderState state) {
+    public Identifier getBodyTexture(DragonRenderState state) {
         return this.body;
     }
 
@@ -116,7 +117,7 @@ public class DefaultAppearance implements VariantAppearance {
     }
 
     @Override
-    public @Nullable ResourceLocation getArmorTexture(ResourceKey<EquipmentAsset> asset) {
+    public @Nullable Identifier getArmorTexture(ResourceKey<EquipmentAsset> asset) {
         var override = this.armors.get(asset);
         return override == null ? DEFAULT_ARMOR_TEXTURES.get(asset) : override;
     }
@@ -129,8 +130,8 @@ public class DefaultAppearance implements VariantAppearance {
     public static class Builder {
         public final ModelLayerLocation model;
         public BreathParticleFactory factory = FlameBreathParticle.FACTORY;
-        public ResourceLocation breath = DMParticleSprites.FLAME_BREATH;
-        Map<ResourceKey<EquipmentAsset>, ResourceLocation> armors = DEFAULT_ARMOR_TEXTURES;
+        public Identifier breath = DMParticleSprites.FLAME_BREATH;
+        Map<ResourceKey<EquipmentAsset>, Identifier> armors = DEFAULT_ARMOR_TEXTURES;
 
         public Builder(ModelLayerLocation model) {
             this.model = model;
@@ -141,17 +142,17 @@ public class DefaultAppearance implements VariantAppearance {
             return this;
         }
 
-        public Builder withBreath(ResourceLocation breath) {
+        public Builder withBreath(Identifier breath) {
             this.breath = breath;
             return this;
         }
 
-        public Builder withBreath(ResourceLocation breath, BreathParticleFactory factory) {
+        public Builder withBreath(Identifier breath, BreathParticleFactory factory) {
             this.factory = factory;
             return this.withBreath(breath);
         }
 
-        public DefaultAppearance build(ResourceLocation folder) {
+        public DefaultAppearance build(Identifier folder) {
             String path = folder.getPath();
             return this.build(
                     folder.withPath(TEXTURES_ROOT + path + "/body.png"),
@@ -159,7 +160,7 @@ public class DefaultAppearance implements VariantAppearance {
             );
         }
 
-        public DefaultAppearance build(ResourceLocation body, ResourceLocation glow) {
+        public DefaultAppearance build(Identifier body, Identifier glow) {
             return new DefaultAppearance(this.model, body, glow, this.breath, this.armors, this.factory);
         }
     }

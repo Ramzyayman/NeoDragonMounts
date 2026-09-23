@@ -10,7 +10,7 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import java.util.function.BiConsumer;
 
 import static net.dragonmounts.neo.common.DragonMountsShared.makeKey;
-import static net.minecraft.resources.ResourceLocation.withDefaultNamespace;
+import static net.minecraft.resources.Identifier.withDefaultNamespace;
 import static net.minecraft.world.level.storage.loot.LootPool.lootPool;
 import static net.minecraft.world.level.storage.loot.LootTable.lootTable;
 import static net.minecraft.world.level.storage.loot.entries.LootItem.lootTableItem;

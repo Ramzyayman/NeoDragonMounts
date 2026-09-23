@@ -9,7 +9,8 @@ import net.dragonmounts.neo.common.block.entity.DragonCoreBlockEntity;
 import net.dragonmounts.neo.common.client.model.DragonCoreModel;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayers;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -19,14 +20,16 @@ import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNullByDefault;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
+import org.joml.Vector3fc;
 
 import java.util.Set;
+import java.util.function.Consumer;
 
 import static net.dragonmounts.neo.common.DragonMountsShared.makeId;
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING;
@@ -35,8 +38,8 @@ import static net.minecraft.world.level.block.state.properties.BlockStatePropert
 @SuppressWarnings("UnstableApiUsage")
 @NotNullByDefault
 public class DragonCoreRenderer implements BlockEntityRenderer<DragonCoreBlockEntity, DragonCoreRenderState> {
-    private static final ResourceLocation TEXTURE_LOCATION = makeId("textures/block/dragon_core.png");
-    private static final RenderType RENDER_TYPE = RenderType.entityCutoutNoCull(TEXTURE_LOCATION);
+    private static final Identifier TEXTURE_LOCATION = makeId("textures/block/dragon_core.png");
+    private static final RenderType RENDER_TYPE = RenderTypes.entityCutoutNoCull(TEXTURE_LOCATION);
     final DragonCoreModel model;
 
     public DragonCoreRenderer(BlockEntityRendererProvider.Context context) {
@@ -126,7 +129,7 @@ public class DragonCoreRenderer implements BlockEntityRenderer<DragonCoreBlockEn
         /// New abstract method in 1.21.6 - reports the model's transformed extents so the GUI
         /// can size the item. Mirrors vanilla ChestSpecialRenderer: pose the model, then collect.
         @Override
-        public void getExtents(Set<Vector3f> output) {
+        public void getExtents(Consumer<Vector3fc> output) {
             var model = this.renderer.model;
             model.setupAnim(this.openness);
             model.root().getExtentsForGui(new PoseStack(), output);

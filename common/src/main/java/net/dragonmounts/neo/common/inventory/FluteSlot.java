@@ -6,7 +6,7 @@ import net.dragonmounts.neo.common.init.DMItems;
 import net.dragonmounts.neo.compat.platform.DMAttachments;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.StringUtil;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
@@ -16,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import static net.dragonmounts.neo.common.DragonMountsShared.makeId;
 
 public class FluteSlot extends Slot {
-    public static final ResourceLocation ICON = makeId("slot/flute");
+    public static final Identifier ICON = makeId("slot/flute");
     public final FluteHolder holder;
     public final DragonInventoryHandler inventory;
     public @Nullable SlotListener<? super FluteSlot> listener;
@@ -96,7 +96,7 @@ public class FluteSlot extends Slot {
     }
 
     @Override
-    public ResourceLocation getNoItemIcon() {
+    public Identifier getNoItemIcon() {
         return ICON;
     }
 

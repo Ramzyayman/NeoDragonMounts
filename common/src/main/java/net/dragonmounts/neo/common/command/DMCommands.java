@@ -24,7 +24,7 @@ import static net.minecraft.network.chat.HoverEvent.Action.SHOW_ENTITY;
 
 public class DMCommands {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext context, Commands.CommandSelection ignored) {
-        Predicate<CommandSourceStack> hasPermissionLevel2 = source -> source.hasPermission(2);
+        Predicate<CommandSourceStack> hasPermissionLevel2 = Commands.hasPermission(Commands.LEVEL_GAMEMASTERS);
         var root = dispatcher.register(Commands.literal(DragonMountsShared.NAMESPACE)
                 .then(CooldownCommand.register(context, hasPermissionLevel2))
                 .then(FreeCommand.register(hasPermissionLevel2))
@@ -33,7 +33,7 @@ public class DMCommands {
                 .then(TameCommand.register(hasPermissionLevel2))
                 .then(TypeCommand.register(context, hasPermissionLevel2))
                 .then(ServerConfig.INSTANCE.appendCommands(
-                        Commands.literal("config").requires(source -> source.hasPermission(3))
+                        Commands.literal("config").requires(Commands.hasPermission(Commands.LEVEL_ADMINS))
                 ))
         );
         if (PlatformCompat.isModLoaded("dragonmounts")) return;

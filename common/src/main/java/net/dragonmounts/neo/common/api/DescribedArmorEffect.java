@@ -6,10 +6,10 @@ import net.dragonmounts.neo.common.client.gui.ArmorEffectDescriptor;
 import net.dragonmounts.neo.common.client.gui.ArmorEffectTooltip;
 import net.dragonmounts.neo.compat.registry.ArmorEffect;
 import net.dragonmounts.neo.compat.registry.CooldownCategory;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import org.jetbrains.annotations.Nullable;
@@ -31,7 +31,7 @@ public interface DescribedArmorEffect extends ArmorEffect, TooltipComponent {
         public final int cooldown;
         protected ArmorEffectTooltip tooltip;
 
-        public Advanced(ResourceLocation identifier, Component title, int cooldown, @Nullable MutableComponent trigger) {
+        public Advanced(Identifier identifier, Component title, int cooldown, @Nullable MutableComponent trigger) {
             super(identifier);
             this.title = title;
             this.cooldown = cooldown;

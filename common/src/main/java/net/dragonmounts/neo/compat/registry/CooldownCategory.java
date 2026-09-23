@@ -2,14 +2,14 @@ package net.dragonmounts.neo.compat.registry;
 
 import net.dragonmounts.neo.compat.Dummy;
 import net.minecraft.core.MappedRegistry;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class CooldownCategory {
     public static final MappedRegistry<CooldownCategory> REGISTRY = Dummy.get();
 
-    public final ResourceLocation identifier;
+    public final Identifier identifier;
 
-    public CooldownCategory(ResourceLocation identifier) {
+    public CooldownCategory(Identifier identifier) {
         this.identifier = identifier;
     }
 

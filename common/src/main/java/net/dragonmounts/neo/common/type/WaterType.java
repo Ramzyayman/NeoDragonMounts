@@ -8,13 +8,13 @@ import net.dragonmounts.neo.common.init.DMSounds;
 import net.dragonmounts.neo.common.init.DragonTypes;
 import net.dragonmounts.neo.compat.registry.DragonType;
 import net.dragonmounts.neo.compat.registry.DragonTypeBuilder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
 
 public class WaterType extends DragonType {
-    public WaterType(ResourceLocation identifier, DragonTypeBuilder builder) {
+    public WaterType(Identifier identifier, DragonTypeBuilder builder) {
         super(identifier, builder);
     }
 

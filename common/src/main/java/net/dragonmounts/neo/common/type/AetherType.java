@@ -5,11 +5,11 @@ import net.dragonmounts.neo.common.entity.breath.impl.AetherBreath;
 import net.dragonmounts.neo.common.entity.dragon.TameableDragonEntity;
 import net.dragonmounts.neo.compat.registry.DragonType;
 import net.dragonmounts.neo.compat.registry.DragonTypeBuilder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 
 public class AetherType extends DragonType {
-    public AetherType(ResourceLocation identifier, DragonTypeBuilder builder) {
+    public AetherType(Identifier identifier, DragonTypeBuilder builder) {
         super(identifier, builder);
     }
 

@@ -1,7 +1,8 @@
 package net.dragonmounts.neo.common.client.renderer;
 
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.resources.Identifier;
 
 /// ponytail: the masked dissolve pipeline is stubbed out for the duration of the
 /// 1.21.4 -> 26.1 port. Rendering was rewritten in 1.21.5, again in 1.21.11 and again
@@ -17,11 +18,11 @@ import net.minecraft.resources.ResourceLocation;
 public final class RenderStateAccessor {
     private RenderStateAccessor() {}
 
-    public static RenderType entityCutoutDecal(ResourceLocation texture, ResourceLocation mask) {
-        return RenderType.entityCutoutNoCull(texture);
+    public static RenderType entityCutoutDecal(Identifier texture, Identifier mask) {
+        return RenderTypes.entityCutoutNoCull(texture);
     }
 
-    public static RenderType entityTranslucentEmissiveDecal(ResourceLocation texture, ResourceLocation mask) {
-        return RenderType.entityTranslucentEmissive(texture);
+    public static RenderType entityTranslucentEmissiveDecal(Identifier texture, Identifier mask) {
+        return RenderTypes.entityTranslucentEmissive(texture);
     }
 }

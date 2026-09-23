@@ -10,7 +10,7 @@ import net.dragonmounts.neo.compat.registry.DragonScaleArmorSuit;
 import net.dragonmounts.neo.compat.registry.DragonType;
 import net.minecraft.advancements.AdvancementRequirements;
 import net.minecraft.advancements.AdvancementRewards;
-import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
+import net.minecraft.advancements.criterion.RecipeUnlockedTrigger;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -149,7 +149,7 @@ public class DMRecipeProvider extends RecipeProvider {
                 .rewards(AdvancementRewards.Builder.recipe(dragonArmorUpgrade))
                 .requirements(AdvancementRequirements.Strategy.OR)
                 .addCriterion("has_netherite_ingot", unlock)
-                .build(dragonArmorUpgrade.location().withPrefix("recipes/" + RecipeCategory.TOOLS.getFolderName() + "/"))
+                .build(dragonArmorUpgrade.identifier().withPrefix("recipes/" + RecipeCategory.TOOLS.getFolderName() + "/"))
         );
     }
 

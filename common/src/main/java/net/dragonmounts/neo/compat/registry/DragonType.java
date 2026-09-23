@@ -20,7 +20,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LightningBolt;
@@ -50,14 +50,14 @@ import static net.dragonmounts.neo.common.DragonMountsShared.makeId;
 @SuppressWarnings("unused")
 public class DragonType implements TooltipProvider, DragonTypified {
     public static final String SERIALIZATION_KEY = "DragonType";
-    public static final ResourceLocation DEFAULT_KEY = makeId("ender");
+    public static final Identifier DEFAULT_KEY = makeId("ender");
     public static final DefaultedMappedRegistry<DragonType> REGISTRY = Dummy.get();
     public static final Codec<DragonType> CODEC = REGISTRY.byNameCodec();
     public static final StreamCodec<RegistryFriendlyByteBuf, DragonType> STREAM_CODEC = ByteBufCodecs.registry(DRAGON_TYPE);
     public static final EntityDataSerializer<DragonType> SERIALIZER = EntityDataSerializer.forValueType(STREAM_CODEC);
     public final int color;
     public final boolean convertible;
-    public final ResourceLocation identifier;
+    public final Identifier identifier;
     public final ImmutableMultimap<Holder<Attribute>, AttributeModifier> attributes;
     public final ParticleOptions sneezeParticle;
     public final ParticleOptions eggParticle;
@@ -67,7 +67,7 @@ public class DragonType implements TooltipProvider, DragonTypified {
     public final ArmorMaterial material;
     public final ToolMaterial tier;
 
-    public DragonType(ResourceLocation identifier, DragonTypeBuilder builder) {
+    public DragonType(Identifier identifier, DragonTypeBuilder builder) {
         this.identifier = identifier;
         this.color = Dummy.get();
         this.convertible = Dummy.get();
@@ -80,7 +80,7 @@ public class DragonType implements TooltipProvider, DragonTypified {
         this.tier = Dummy.get();
     }
 
-    public final ResourceLocation getId() {
+    public final Identifier getId() {
         return Dummy.get();
     }
 
@@ -88,7 +88,7 @@ public class DragonType implements TooltipProvider, DragonTypified {
         return Dummy.get();
     }
 
-    protected ResourceLocation makeLootLocation() {
+    protected Identifier makeLootLocation() {
         return Dummy.get();
     }
 

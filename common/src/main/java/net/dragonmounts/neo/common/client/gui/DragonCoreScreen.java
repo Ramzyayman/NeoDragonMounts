@@ -4,16 +4,16 @@ import net.dragonmounts.neo.common.inventory.DragonCoreHandler;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 
 import static net.dragonmounts.neo.common.DragonMountsShared.makeId;
 
 /// @see net.minecraft.client.gui.screens.inventory.ShulkerBoxScreen
 public class DragonCoreScreen extends AbstractContainerScreen<DragonCoreHandler> {
-    private static final ResourceLocation TEXTURE_LOCATION = makeId("textures/gui/dragon_core.png");
+    private static final Identifier TEXTURE_LOCATION = makeId("textures/gui/dragon_core.png");
 
     public DragonCoreScreen(DragonCoreHandler handler, Inventory inventory, Component title) {
         super(handler, inventory, title);

@@ -94,7 +94,7 @@ public class DragonInventory implements Container, StackedContentsCompatible {
 
     public SlotAccess access(int slot) {
         final int index = slot - 500;
-        if (index < 0 || index >= this.stacks.length) return SlotAccess.NULL;
+        if (index < 0 || index >= this.stacks.length) return null;
         return switch (index) {
             case SLOT_ARMOR_INDEX -> this.armor;
             case SLOT_CHEST_INDEX -> this.chest;
@@ -202,7 +202,7 @@ public class DragonInventory implements Container, StackedContentsCompatible {
 
     @Override
     public boolean stillValid(Player player) {
-        return this.dragon.isAlive() && player.canInteractWithEntity(this.dragon, 8.0);
+        return this.dragon.isAlive() && player.isWithinEntityInteractionRange(this.dragon, 8.0);
     }
 
     @Override

@@ -92,7 +92,7 @@ public class DragonSpawnEggItem extends SpawnEggItem implements EntityContainer<
     }
 
     protected void writeDragonSpec(CompoundTag root) {
-        root.putString("id", DMEntities.HATCHABLE_DRAGON_EGG.key.location().toString());
+        root.putString("id", DMEntities.HATCHABLE_DRAGON_EGG.key.identifier().toString());
         root.putString(DragonType.SERIALIZATION_KEY, this.type.identifier.toString());
         root.putBoolean(HatchableDragonEggEntity.SERIALIZATION_KEY_SPAWNER, true);
     }

@@ -10,7 +10,7 @@ import net.minecraft.world.item.equipment.EquipmentAssets;
 
 import java.util.EnumMap;
 
-import static net.minecraft.resources.ResourceLocation.withDefaultNamespace;
+import static net.minecraft.resources.Identifier.withDefaultNamespace;
 
 public class DragonArmorMaterials {
     public static final ArmorMaterial COPPER;

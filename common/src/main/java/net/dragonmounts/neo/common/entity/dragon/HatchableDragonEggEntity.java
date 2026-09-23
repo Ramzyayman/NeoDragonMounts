@@ -48,7 +48,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -59,7 +59,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collections;
 import java.util.UUID;
 
-import static net.minecraft.resources.ResourceLocation.tryParse;
+import static net.minecraft.resources.Identifier.tryParse;
 import static net.minecraft.util.Mth.DEG_TO_RAD;
 
 public class HatchableDragonEggEntity extends LivingEntity implements DynamicAttributeEntity, DragonTypified.Mutable {
@@ -167,7 +167,7 @@ public class HatchableDragonEggEntity extends LivingEntity implements DynamicAtt
     protected void spawnScales(ServerLevel level, int amount) {
         if (amount > 0) {
             var scales = this.getDragonType().getInstance(DragonScalesItem.class, null);
-            if (scales != null && level.getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT)) {
+            if (scales != null && level.getGameRules().get(GameRules.MOB_DROPS)) {
                 this.spawnAtLocation(level, new ItemStack(scales, amount), 1.25F);
             }
         }

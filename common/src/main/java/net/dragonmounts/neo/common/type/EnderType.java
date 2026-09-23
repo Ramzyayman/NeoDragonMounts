@@ -6,12 +6,12 @@ import net.dragonmounts.neo.common.entity.dragon.TameableDragonEntity;
 import net.dragonmounts.neo.common.init.DMSounds;
 import net.dragonmounts.neo.compat.registry.DragonType;
 import net.dragonmounts.neo.compat.registry.DragonTypeBuilder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 
 public class EnderType extends DragonType {
-    public EnderType(ResourceLocation identifier, DragonTypeBuilder builder) {
+    public EnderType(Identifier identifier, DragonTypeBuilder builder) {
         super(identifier, builder);
     }
 

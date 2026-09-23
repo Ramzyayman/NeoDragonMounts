@@ -11,7 +11,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.neoforged.neoforge.registries.RegistryBuilder;
 import net.neoforged.neoforge.registries.callback.AddCallback;
@@ -28,7 +28,7 @@ import static net.dragonmounts.neo.common.DragonMountsShared.makeId;
 
 public class DragonVariant implements DragonTypified {
     public static final String SERIALIZATION_KEY = "Variant";
-    public static final ResourceLocation DEFAULT_KEY = makeId("ender_female");
+    public static final Identifier DEFAULT_KEY = makeId("ender_female");
     public static final DefaultedMappedRegistry<DragonVariant> REGISTRY;
     public static final Codec<DragonVariant> CODEC;
     public static final StreamCodec<RegistryFriendlyByteBuf, DragonVariant> STREAM_CODEC;
@@ -36,13 +36,13 @@ public class DragonVariant implements DragonTypified {
 
     int index = -1;// non-private to simplify nested class access
     public final DragonType type;
-    public final ResourceLocation identifier;
+    public final Identifier identifier;
     public final VariantAppearance appearance;
     public final DragonHead head;
 
     public DragonVariant(
             DragonType type,
-            ResourceLocation identifier,
+            Identifier identifier,
             VariantAppearance appearance,
             Function<DragonVariant, DragonHead> factory
     ) {

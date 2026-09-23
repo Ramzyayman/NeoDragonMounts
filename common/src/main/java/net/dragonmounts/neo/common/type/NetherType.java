@@ -6,11 +6,11 @@ import net.dragonmounts.neo.common.entity.dragon.TameableDragonEntity;
 import net.dragonmounts.neo.common.init.DMSounds;
 import net.dragonmounts.neo.compat.registry.DragonType;
 import net.dragonmounts.neo.compat.registry.DragonTypeBuilder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 
 public class NetherType extends DragonType {
-    public NetherType(ResourceLocation identifier, DragonTypeBuilder builder) {
+    public NetherType(Identifier identifier, DragonTypeBuilder builder) {
         super(identifier, builder);
     }
 

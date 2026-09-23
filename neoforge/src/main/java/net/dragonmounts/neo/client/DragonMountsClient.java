@@ -22,7 +22,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackSource;
@@ -44,7 +44,7 @@ import static net.dragonmounts.neo.common.DragonMountsShared.makeId;
 
 @Mod(value = DragonMountsShared.NAMESPACE, dist = Dist.CLIENT)
 public class DragonMountsClient {
-    public static final ResourceLocation MODEL_RELOADER = makeId("model_reloader");
+    public static final Identifier MODEL_RELOADER = makeId("model_reloader");
 
     public DragonMountsClient(IEventBus modbus, ModContainer container) {
         ClientConfig.INSTANCE.register(container);

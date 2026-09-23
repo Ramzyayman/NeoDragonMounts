@@ -7,12 +7,12 @@ import net.dragonmounts.neo.common.entity.dragon.TameableDragonEntity;
 import net.dragonmounts.neo.common.init.DragonTypes;
 import net.dragonmounts.neo.compat.registry.DragonType;
 import net.dragonmounts.neo.compat.registry.DragonTypeBuilder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
 
 public class MoonlightType extends DragonType {
-    public MoonlightType(ResourceLocation identifier, DragonTypeBuilder builder) {
+    public MoonlightType(Identifier identifier, DragonTypeBuilder builder) {
         super(identifier, builder);
     }
 

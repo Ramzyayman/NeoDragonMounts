@@ -2,7 +2,8 @@ package net.dragonmounts.neo.common.client.model;
 
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 
 /// 1.21.9 made `Model` generic over its render state and moved `setupAnim` onto it, so the
 /// old bespoke `animate(float)` becomes `setupAnim(Float)`. Mirrors vanilla
@@ -11,7 +12,7 @@ public class DragonCoreModel extends Model<Float> {
     public final ModelPart lid;
 
     public DragonCoreModel(ModelPart root) {
-        super(root, RenderType::entityCutoutNoCull);
+        super(root, RenderTypes::entityCutoutNoCull);
         this.lid = root.getChild("lid");
     }
 

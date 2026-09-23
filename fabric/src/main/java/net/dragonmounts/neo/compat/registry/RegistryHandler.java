@@ -18,7 +18,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Unit;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
@@ -46,7 +46,7 @@ public class RegistryHandler {
         return Registry.register(BuiltInRegistries.ACTIVITY, makeId(name), new Activity(name));
     }
 
-    public static <T extends ArmorEffect> T registerArmorEffect(ResourceLocation identifier, T effect) {
+    public static <T extends ArmorEffect> T registerArmorEffect(Identifier identifier, T effect) {
         return Registry.register(ArmorEffect.REGISTRY, identifier, effect);
     }
 
@@ -80,7 +80,7 @@ public class RegistryHandler {
         return Registry.register(BuiltInRegistries.PARTICLE_TYPE, makeId(name), FabricParticleTypes.complex(overrideLimiter, codec, packetCodec));
     }
 
-    public static <S extends RecipeSerializer<T>, T extends Recipe<?>> S registerRecipe(ResourceLocation identifier, S serializer) {
+    public static <S extends RecipeSerializer<T>, T extends Recipe<?>> S registerRecipe(Identifier identifier, S serializer) {
         return Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, identifier, serializer);
     }
 
@@ -88,7 +88,7 @@ public class RegistryHandler {
         return Registry.register(BuiltInRegistries.SENSOR_TYPE, makeId(name), new SensorType<>(factory));
     }
 
-    public static <T extends SoundEvent> T registerSound(ResourceLocation identifier, T sound) {
+    public static <T extends SoundEvent> T registerSound(Identifier identifier, T sound) {
         return Registry.register(BuiltInRegistries.SOUND_EVENT, identifier, sound);
     }
 
@@ -100,7 +100,7 @@ public class RegistryHandler {
         return Registry.register(BuiltInRegistries.STRUCTURE_PIECE, makeId(name), piece);
     }
 
-    public static <T extends ArmorEffect> T registerArmorEffect(String name, Function<ResourceLocation, T> factory) {
+    public static <T extends ArmorEffect> T registerArmorEffect(String name, Function<Identifier, T> factory) {
         var identifier = makeId(name);
         return registerArmorEffect(identifier, factory.apply(identifier));
     }
@@ -125,7 +125,7 @@ public class RegistryHandler {
         return FabricRegistryBuilder.createSimple(key).buildAndRegister();
     }
 
-    public static <T> DefaultedMappedRegistry<T> makeDefaultedRegistry(ResourceKey<Registry<T>> key, ResourceLocation fallback) {
+    public static <T> DefaultedMappedRegistry<T> makeDefaultedRegistry(ResourceKey<Registry<T>> key, Identifier fallback) {
         return FabricRegistryBuilder.createDefaulted(key, fallback).buildAndRegister();
     }
 }

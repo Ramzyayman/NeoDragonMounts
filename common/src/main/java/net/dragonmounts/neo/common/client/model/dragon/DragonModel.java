@@ -3,7 +3,8 @@ package net.dragonmounts.neo.common.client.model.dragon;
 import net.dragonmounts.neo.common.client.renderer.dragon.DragonRenderState;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.Model;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.model.HeadedModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.util.Mth;
@@ -77,14 +78,14 @@ public class DragonModel extends EntityModel<DragonRenderState> implements Heade
         (this.chest = body.getChild("chest")).visible = false;
         (this.saddle = body.getChild("saddle")).visible = false;
         this.back = body.getChild("back");
-        this.saddleOverlay = new Model<>(this.root, RenderType::entityCutoutNoCull) {
+        this.saddleOverlay = new Model<>(this.root, RenderTypes::entityCutoutNoCull) {
             @Override
             public void setupAnim(DragonRenderState state) {
                 DragonModel.this.setupAnim(state);
                 DragonModel.this.saddle.visible = true;
             }
         };
-        this.chestOverlay = new Model<>(this.chest, RenderType::entityCutoutNoCull) {
+        this.chestOverlay = new Model<>(this.chest, RenderTypes::entityCutoutNoCull) {
             @Override
             public void setupAnim(DragonRenderState state) {
                 DragonModel.this.setupAnim(state);

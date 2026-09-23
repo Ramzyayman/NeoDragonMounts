@@ -10,7 +10,7 @@ import net.dragonmounts.neo.compat.registry.DragonScaleArmorSuit;
 import net.dragonmounts.neo.compat.registry.DragonType;
 import net.dragonmounts.neo.compat.registry.ItemHolder;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -35,10 +35,10 @@ import java.util.function.Function;
 import static net.dragonmounts.neo.common.init.DMItemGroups.*;
 import static net.dragonmounts.neo.compat.registry.DragonScaleArmorSuit.makeSuit;
 import static net.dragonmounts.neo.compat.registry.ItemHolder.registerItem;
-import static net.minecraft.resources.ResourceLocation.withDefaultNamespace;
+import static net.minecraft.resources.Identifier.withDefaultNamespace;
 
 public class DMItems {
-    public static final ResourceLocation DRAGON_ARMOR_MODIFIER_NAME = withDefaultNamespace("armor." + ArmorType.BODY.getName());
+    public static final Identifier DRAGON_ARMOR_MODIFIER_NAME = withDefaultNamespace("armor." + ArmorType.BODY.getName());
     public static final BlockItemHolder<DragonCoreBlock, ?> DRAGON_CORE = BlockItemHolder.registerItem(
             DMBlocks.DRAGON_CORE,
             (block, props) -> new BlockItem(block, props.rarity(Rarity.RARE))

@@ -4,7 +4,7 @@ import net.dragonmounts.neo.common.entity.dragon.HatchableDragonEggEntity;
 import net.dragonmounts.neo.common.entity.dragon.ServerDragonEntity;
 import net.minecraft.server.level.ServerPlayer;
 
-/// @see net.minecraft.advancements.critereon.BredAnimalsTrigger
+/// @see net.minecraft.advancements.criterion.BredAnimalsTrigger
 public interface BredDragonsTrigger {
     default void neodragonmounts$trigger(
             ServerPlayer player,

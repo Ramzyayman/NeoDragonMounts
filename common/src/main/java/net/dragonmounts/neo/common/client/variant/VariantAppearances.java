@@ -4,7 +4,7 @@ import net.dragonmounts.neo.common.client.DMParticleSprites;
 import net.dragonmounts.neo.common.client.breath.impl.*;
 import net.dragonmounts.neo.common.client.model.dragon.BuiltinFactory;
 import net.dragonmounts.neo.common.init.DragonArmorMaterials;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.NoSuchElementException;
@@ -18,7 +18,7 @@ public class VariantAppearances {
         return new DefaultAppearance.Builder(model.location);
     }
 
-    public static void registerArmorTextures(@Nullable String category, ResourceLocation folder) {
+    public static void registerArmorTextures(@Nullable String category, Identifier folder) {
         registerArmorTexture(category, DragonArmorMaterials.COPPER.assetId(), folder.withSuffix("/copper.png"));
         registerArmorTexture(category, DragonArmorMaterials.IRON.assetId(), folder.withSuffix("/iron.png"));
         registerArmorTexture(category, DragonArmorMaterials.GOLD.assetId(), folder.withSuffix("/gold.png"));

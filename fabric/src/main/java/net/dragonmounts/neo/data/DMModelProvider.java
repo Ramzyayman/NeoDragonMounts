@@ -17,7 +17,7 @@ import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.model.*;
 import net.minecraft.client.renderer.item.properties.numeric.UseDuration;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.Nullable;
@@ -35,11 +35,11 @@ import static net.minecraft.client.data.models.model.ItemModelUtils.*;
 import static net.minecraft.client.data.models.model.ModelLocationUtils.getModelLocation;
 import static net.minecraft.client.data.models.model.TextureMapping.getItemTexture;
 import static net.minecraft.client.data.models.model.TextureMapping.layer0;
-import static net.minecraft.resources.ResourceLocation.withDefaultNamespace;
+import static net.minecraft.resources.Identifier.withDefaultNamespace;
 
 public class DMModelProvider extends FabricModelProvider {
-    public static final ResourceLocation VANILLA_SKULL = withDefaultNamespace("block/skull");
-    public static final ResourceLocation VANILLA_DRAGON_HEAD = withDefaultNamespace("item/dragon_head");
+    public static final Identifier VANILLA_SKULL = withDefaultNamespace("block/skull");
+    public static final Identifier VANILLA_DRAGON_HEAD = withDefaultNamespace("item/dragon_head");
     public static final ModelTemplate DRAGON_SCALE_SHIELD = new ModelTemplate(
             Optional.of(makeId("item/template_shield")),
             Optional.empty(),
@@ -87,7 +87,7 @@ public class DMModelProvider extends FabricModelProvider {
         generateFlatItem(gen, DMItems.NETHERITE_SHEARS);
         gen.itemModelOutput.accept(
                 DMItems.VARIATION_ORB.get(),
-                plainModel(DMItems.VARIATION_ORB.key.location().withPrefix("item/"))
+                plainModel(DMItems.VARIATION_ORB.key.identifier().withPrefix("item/"))
         );
         generateFlatItem(gen, DMItems.DRAGON_MEAT);
         generateFlatItem(gen, DMItems.COOKED_DRAGON_MEAT);

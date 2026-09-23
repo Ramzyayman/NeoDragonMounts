@@ -9,7 +9,7 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.damagesource.DamageTypes;
@@ -27,7 +27,7 @@ import java.util.function.BiFunction;
 import static net.dragonmounts.neo.common.DragonMountsShared.makeId;
 
 public final class DragonTypeBuilder {
-    public static final ResourceLocation BONUS_ID = makeId("dragon_type_bonus");
+    public static final Identifier BONUS_ID = makeId("dragon_type_bonus");
     public final int color;
     public final ImmutableMultimap.Builder<Holder<Attribute>, AttributeModifier> attributes = ImmutableMultimap.builder();
     public final ImmutableSet.Builder<ResourceKey<DamageType>> immunities = ImmutableSet.builder();
@@ -60,7 +60,7 @@ public final class DragonTypeBuilder {
         return this;
     }
 
-    public DragonTypeBuilder putAttributeModifier(Holder<Attribute> attribute, ResourceLocation identifier, double value, AttributeModifier.Operation operation) {
+    public DragonTypeBuilder putAttributeModifier(Holder<Attribute> attribute, Identifier identifier, double value, AttributeModifier.Operation operation) {
         this.attributes.put(attribute, new AttributeModifier(identifier, value, operation));
         return this;
     }
@@ -101,8 +101,8 @@ public final class DragonTypeBuilder {
     }
 
     public <T extends DragonType> T register(
-            BiFunction<ResourceLocation, DragonTypeBuilder, T> factory,
-            ResourceLocation identifier
+            BiFunction<Identifier, DragonTypeBuilder, T> factory,
+            Identifier identifier
     ) {
         return factory.apply(identifier, this);
     }

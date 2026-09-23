@@ -2,7 +2,8 @@ package net.dragonmounts.neo.common.client.renderer.dragon;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.dragonmounts.neo.common.client.model.dragon.DragonModel;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
@@ -12,7 +13,7 @@ import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 
 import static net.minecraft.client.renderer.LightTexture.FULL_BRIGHT;
-import static net.minecraft.client.renderer.RenderType.armorCutoutNoCull;
+import static net.minecraft.client.renderer.rendertype.RenderTypes.armorCutoutNoCull;
 
 public class TameableDragonLayer extends RenderLayer<DragonRenderState, DragonModel> {
     public TameableDragonLayer(RenderLayerParent<DragonRenderState, DragonModel> parent) {
@@ -79,7 +80,7 @@ public class TameableDragonLayer extends RenderLayer<DragonRenderState, DragonMo
         /// RenderType#armorEntityGlint, the way vanilla's EquipmentLayerRenderer does.
         if (state.armor.hasFoil()) {
             collector.order(5).submitModel(
-                    model, state, matrices, RenderType.armorEntityGlint(),
+                    model, state, matrices, RenderTypes.armorEntityGlint(),
                     light, OverlayTexture.NO_OVERLAY, -1, null, outline, null
             );
         }

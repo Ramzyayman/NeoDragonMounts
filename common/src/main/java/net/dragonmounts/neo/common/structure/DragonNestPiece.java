@@ -5,7 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntitySpawnReason;
@@ -29,7 +29,7 @@ import org.jetbrains.annotations.NotNullByDefault;
 @SuppressWarnings("UnstableApiUsage")
 @NotNullByDefault
 public class DragonNestPiece extends TemplateStructurePiece {
-    private static StructurePlaceSettings makeSettings(StructureTemplateManager manager, CompoundTag tag, ResourceLocation structure) {
+    private static StructurePlaceSettings makeSettings(StructureTemplateManager manager, CompoundTag tag, Identifier structure) {
         return makeSettings(
                 Mirror.valueOf(tag.getStringOr("Mirror", "")),
                 Rotation.valueOf(tag.getStringOr("Rotation", "")),
@@ -57,7 +57,7 @@ public class DragonNestPiece extends TemplateStructurePiece {
     public DragonNestPiece(
             StructureTemplateManager manager,
             BlockPos pos,
-            ResourceLocation template,
+            Identifier template,
             Rotation rotation,
             Mirror mirror,
             BlockPos pivot

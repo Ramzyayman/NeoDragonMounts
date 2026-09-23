@@ -5,7 +5,7 @@ import net.dragonmounts.neo.common.capability.ArmorEffectManager;
 import net.dragonmounts.neo.common.capability.ArmorEffectManagerImpl;
 import net.dragonmounts.neo.common.client.gui.ArmorEffectDescriptor;
 import net.dragonmounts.neo.common.client.gui.ArmorEffectTooltip;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;

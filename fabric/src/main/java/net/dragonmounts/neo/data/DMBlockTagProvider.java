@@ -18,7 +18,7 @@ import net.minecraft.world.level.block.Blocks;
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 
-import static net.minecraft.resources.ResourceLocation.fromNamespaceAndPath;
+import static net.minecraft.resources.Identifier.fromNamespaceAndPath;
 
 public class DMBlockTagProvider extends FabricTagProvider.BlockTagProvider {
     public static final TagKey<Block> TORCHES = TagKey.create(Registries.BLOCK, fromNamespaceAndPath("c", "torches"));

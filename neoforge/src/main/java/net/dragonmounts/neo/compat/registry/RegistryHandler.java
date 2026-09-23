@@ -17,7 +17,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Unit;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
@@ -43,14 +43,14 @@ import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 import static net.dragonmounts.neo.common.DragonMountsShared.makeId;
-import static net.minecraft.resources.ResourceLocation.withDefaultNamespace;
+import static net.minecraft.resources.Identifier.withDefaultNamespace;
 
 public class RegistryHandler {
     public static Activity registerActivity(String name) {
         return register(ACTIVITIES, makeId(name), new Activity(name));
     }
 
-    public static <T extends ArmorEffect> T registerArmorEffect(ResourceLocation identifier, T effect) {
+    public static <T extends ArmorEffect> T registerArmorEffect(Identifier identifier, T effect) {
         if (effect instanceof CooldownCategory category) {
             COOLDOWN_CATEGORIES.add(category);
         }
@@ -88,7 +88,7 @@ public class RegistryHandler {
         });
     }
 
-    public static <S extends RecipeSerializer<T>, T extends Recipe<?>> S registerRecipe(ResourceLocation identifier, S serializer) {
+    public static <S extends RecipeSerializer<T>, T extends Recipe<?>> S registerRecipe(Identifier identifier, S serializer) {
         return register(RECIPES, identifier, serializer);
     }
 
@@ -96,7 +96,7 @@ public class RegistryHandler {
         return register(SENSORS, makeId(name), new SensorType<>(factory));
     }
 
-    public static <T extends SoundEvent> T registerSound(ResourceLocation identifier, T sound) {
+    public static <T extends SoundEvent> T registerSound(Identifier identifier, T sound) {
         return register(SOUNDS, identifier, sound);
     }
 
@@ -108,7 +108,7 @@ public class RegistryHandler {
         return register(STRUCTURE_PIECES, makeId(name), piece);
     }
 
-    public static <T extends ArmorEffect> T registerArmorEffect(String name, Function<ResourceLocation, T> factory) {
+    public static <T extends ArmorEffect> T registerArmorEffect(String name, Function<Identifier, T> factory) {
         var identifier = makeId(name);
         return registerArmorEffect(identifier, factory.apply(identifier));
     }
@@ -135,7 +135,7 @@ public class RegistryHandler {
     private static final ObjectArrayList<Consumer<RegisterEvent.RegisterHelper<StructurePieceType>>> STRUCTURE_PIECES = new ObjectArrayList<>();
     private static final ObjectArrayList<CooldownCategory> COOLDOWN_CATEGORIES = new ObjectArrayList<>();
 
-    private static <T, V extends T> V register(List<Consumer<RegisterEvent.RegisterHelper<T>>> holder, ResourceLocation key, V value) {
+    private static <T, V extends T> V register(List<Consumer<RegisterEvent.RegisterHelper<T>>> holder, Identifier key, V value) {
         holder.add(registry -> registry.register(key, value));
         return value;
     }

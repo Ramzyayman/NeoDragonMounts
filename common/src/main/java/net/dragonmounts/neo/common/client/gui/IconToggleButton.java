@@ -3,14 +3,14 @@ package net.dragonmounts.neo.common.client.gui;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.function.Function;
 
-import static net.minecraft.resources.ResourceLocation.withDefaultNamespace;
+import static net.minecraft.resources.Identifier.withDefaultNamespace;
 
 public class IconToggleButton extends ToggleButton {
     public IconToggleButton(
@@ -24,7 +24,7 @@ public class IconToggleButton extends ToggleButton {
     }
 
     @Override
-    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    protected void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         Icon icon;
         if (!this.active) {
             icon = this.getState() ? Icon.LOCKED_DISABLED : Icon.UNLOCKED_DISABLED;
@@ -44,7 +44,7 @@ public class IconToggleButton extends ToggleButton {
         UNLOCKED_HOVER("widget/unlocked_button_highlighted"),
         UNLOCKED_DISABLED("widget/unlocked_button_disabled");
 
-        final ResourceLocation sprite;
+        final Identifier sprite;
 
         Icon(String sprite) {
             this.sprite = withDefaultNamespace(sprite);

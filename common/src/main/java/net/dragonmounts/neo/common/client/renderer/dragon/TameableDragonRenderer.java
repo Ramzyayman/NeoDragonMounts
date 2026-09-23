@@ -7,10 +7,10 @@ import net.dragonmounts.neo.common.client.model.dragon.DragonModel;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 import static net.minecraft.client.renderer.entity.EnderDragonRenderer.submitCrystalBeams;
@@ -60,7 +60,7 @@ public class TameableDragonRenderer extends MobRenderer<ClientDragonEntity, Drag
     }
 
     @Override
-    public ResourceLocation getTextureLocation(DragonRenderState state) {
+    public Identifier getTextureLocation(DragonRenderState state) {
         return state.variant.appearance.getBodyTexture(state);
     }
 

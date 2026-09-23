@@ -26,7 +26,7 @@ public record DMEquipmentAssetProvider(PackOutput.PathProvider path) implements 
             var material = type.material;
             if (material == ArmorMaterials.ARMADILLO_SCUTE) continue;
             var key = material.assetId();
-            if (assets.putIfAbsent(key, EquipmentClientInfo.builder().addHumanoidLayers(key.location()).build()) != null) {
+            if (assets.putIfAbsent(key, EquipmentClientInfo.builder().addHumanoidLayers(key.identifier()).build()) != null) {
                 throw new IllegalStateException("Tried to register equipment asset twice for id: " + key);
             }
         }

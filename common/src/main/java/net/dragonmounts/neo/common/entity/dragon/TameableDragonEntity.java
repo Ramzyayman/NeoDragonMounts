@@ -26,7 +26,7 @@ import net.dragonmounts.neo.compat.registry.DragonType;
 import net.dragonmounts.neo.compat.registry.DragonVariant;
 import net.dragonmounts.neo.config.ServerConfig;
 import net.dragonmounts.neo.mixin.MobAccessor;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
@@ -55,9 +55,9 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.BodyRotationControl;
 import net.minecraft.world.entity.animal.FlyingAnimal;
-import net.minecraft.world.entity.animal.horse.AbstractHorse;
-import net.minecraft.world.entity.animal.horse.Horse;
-import net.minecraft.world.entity.animal.horse.Mule;
+import net.minecraft.world.entity.animal.equine.AbstractHorse;
+import net.minecraft.world.entity.animal.equine.Horse;
+import net.minecraft.world.entity.animal.equine.Mule;
 import net.minecraft.world.entity.boss.enderdragon.EndCrystal;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Inventory;
@@ -80,7 +80,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.function.BiConsumer;
 
-import static net.minecraft.resources.ResourceLocation.tryParse;
+import static net.minecraft.resources.Identifier.tryParse;
 import static net.minecraft.util.Mth.DEG_TO_RAD;
 
 /**
@@ -454,7 +454,7 @@ public abstract class TameableDragonEntity extends TamableAnimal implements
             case 499 -> this.inventory.chest;
             default -> {
                 var access = this.inventory.access(slot);
-                yield access == SlotAccess.NULL ? super.getSlot(slot) : access;
+                yield access == null ? super.getSlot(slot) : access;
             }
         };
     }

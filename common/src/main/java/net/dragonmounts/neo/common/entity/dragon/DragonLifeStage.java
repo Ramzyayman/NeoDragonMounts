@@ -6,7 +6,7 @@ import net.dragonmounts.neo.config.ServerConfig;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.Mth;
 import net.minecraft.util.StringRepresentable;
@@ -24,7 +24,7 @@ public enum DragonLifeStage implements StringRepresentable {
     JUVENILE(BreathPower.MEDIUM, 0.61F, 0.99F, ServerConfig.INSTANCE.juvenileStageDuration),
     ADULT(BreathPower.LARGE, 1.00F, 1.00F, () -> 0);
     private static final IntFunction<DragonLifeStage> BY_ID = ByIdMap.continuous(DragonLifeStage::ordinal, values(), ByIdMap.OutOfBoundsStrategy.CLAMP);
-    public static final ResourceLocation MODIFIER_ID = makeId("life_stage_bonus");
+    public static final Identifier MODIFIER_ID = makeId("life_stage_bonus");
     public static final @SuppressWarnings("deprecation") EnumCodec<DragonLifeStage> CODEC = StringRepresentable.fromEnum(DragonLifeStage::values);
     public static final StreamCodec<ByteBuf, DragonLifeStage> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, DragonLifeStage::ordinal);
     public static final String SERIALIZATION_KEY = "LifeStage";

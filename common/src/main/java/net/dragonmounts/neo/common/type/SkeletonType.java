@@ -7,14 +7,14 @@ import net.dragonmounts.neo.common.init.DMSounds;
 import net.dragonmounts.neo.common.init.DragonTypes;
 import net.dragonmounts.neo.compat.registry.DragonType;
 import net.dragonmounts.neo.compat.registry.DragonTypeBuilder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.Nullable;
 
 public class SkeletonType extends DragonType {
-    public SkeletonType(ResourceLocation identifier, DragonTypeBuilder builder) {
+    public SkeletonType(Identifier identifier, DragonTypeBuilder builder) {
         super(identifier, builder);
     }
 

@@ -29,7 +29,7 @@ public class BlockItemHolder<B extends Block, I extends Item> extends DeferredHo
     public final BlockHolder<B> block;
 
     public BlockItemHolder(BlockHolder<B> block, BiFunction<B, Item.Properties, I> factory) {
-        super(ResourceKey.create(Registries.ITEM, block.key.location()));
+        super(ResourceKey.create(Registries.ITEM, block.key.identifier()));
         this.factory = factory;
         this.block = block;
     }

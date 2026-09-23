@@ -11,7 +11,7 @@ import static net.dragonmounts.neo.common.DragonMountsShared.makeId;
 
 public class DMKeyMappings {
     /// 1.21.10 replaced the free-form category string with a registered KeyMapping.Category keyed by
-    /// a ResourceLocation; the label key is derived from it, so it moved from
+    /// a Identifier; the label key is derived from it, so it moved from
     /// "key.categories.neodragonmounts" to "key.category.neodragonmounts.dragon_mounts".
     public static final KeyMapping.Category CATEGORY = KeyMapping.Category.register(makeId("dragon_mounts"));
     public static final ToggleKeyMapping DESCEND = new ToggleKeyMapping(

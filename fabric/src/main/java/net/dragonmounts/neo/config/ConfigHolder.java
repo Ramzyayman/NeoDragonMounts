@@ -4,7 +4,7 @@ import com.google.common.base.Charsets;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.logging.LogUtils;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.SnbtPrinterTagVisitor;
 import net.minecraft.nbt.Tag;

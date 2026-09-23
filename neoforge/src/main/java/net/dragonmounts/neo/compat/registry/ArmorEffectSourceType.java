@@ -4,14 +4,14 @@ import com.mojang.serialization.MapCodec;
 import net.dragonmounts.neo.common.api.ArmorEffectSource;
 import net.dragonmounts.neo.common.component.ListBasedArmorEffectSource;
 import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.registries.RegistryBuilder;
 
 import static net.dragonmounts.neo.common.DragonMountsShared.ARMOR_EFFECT_SOURCE;
-import static net.minecraft.resources.ResourceLocation.withDefaultNamespace;
+import static net.minecraft.resources.Identifier.withDefaultNamespace;
 
 public record ArmorEffectSourceType<T extends ArmorEffectSource>(MapCodec<T> codec) {
-    public static final ResourceLocation DEFAULT = withDefaultNamespace("component");
+    public static final Identifier DEFAULT = withDefaultNamespace("component");
     public static final Registry<ArmorEffectSourceType<?>> REGISTRY
             = new RegistryBuilder<>(ARMOR_EFFECT_SOURCE).sync(true).defaultKey(DEFAULT).create();
     public static final ArmorEffectSourceType<ListBasedArmorEffectSource> COMPONENT =

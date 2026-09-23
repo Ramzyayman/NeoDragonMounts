@@ -41,7 +41,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.special.SpecialModelRenderers;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
@@ -57,7 +57,7 @@ public class DragonMountsClient implements
         TooltipComponentCallback,
         ClientTickEvents.StartTick,
         SimpleSynchronousResourceReloadListener {
-    public static final ResourceLocation MODEL_RELOADER = makeId("model_reloader");
+    public static final Identifier MODEL_RELOADER = makeId("model_reloader");
 
     static void registerResourcePacks(ModContainer mod) {
         registerBuiltinResourcePack(makeId("classic_amulet"), mod, Component.translatable("resourcePack.neodragonmounts.classic_amulet.name"), ResourcePackActivationType.NORMAL);
@@ -125,7 +125,7 @@ public class DragonMountsClient implements
     }
 
     @Override
-    public ResourceLocation getFabricId() {
+    public Identifier getFabricId() {
         return MODEL_RELOADER;
     }
 

@@ -17,11 +17,11 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
@@ -37,12 +37,12 @@ import static net.minecraft.client.gui.components.AbstractWidget.wrapDefaultNarr
  * @see net.minecraft.client.gui.screens.inventory.HorseInventoryScreen
  */
 public class DragonInventoryScreen extends AbstractContainerScreen<DragonInventoryHandler> implements SlotListener<FluteSlot> {
-    private static final ResourceLocation TEXT_FIELD_SPRITE = ResourceLocation.withDefaultNamespace("container/anvil/text_field");
-    private static final ResourceLocation INVENTORY = makeId("textures/gui/dragon_inventory.png");
-    private static final ResourceLocation PANEL = makeId("textures/gui/dragon_panel.png");
-    private static final ResourceLocation ARMOR_SPRITE = makeId("dragon_panel/armor");
-    private static final ResourceLocation HEALTH_SPRITE = makeId("dragon_panel/health");
-    private static final ResourceLocation FOOD_SPRITE = makeId("dragon_panel/food");
+    private static final Identifier TEXT_FIELD_SPRITE = Identifier.withDefaultNamespace("container/anvil/text_field");
+    private static final Identifier INVENTORY = makeId("textures/gui/dragon_inventory.png");
+    private static final Identifier PANEL = makeId("textures/gui/dragon_panel.png");
+    private static final Identifier ARMOR_SPRITE = makeId("dragon_panel/armor");
+    private static final Identifier HEALTH_SPRITE = makeId("dragon_panel/health");
+    private static final Identifier FOOD_SPRITE = makeId("dragon_panel/food");
     private static final Component TRUST_STATE = Component.translatable("button.neodragonmounts.trust_state");
     private static final Component SITTING_STATE = Component.translatable("button.neodragonmounts.sitting_state");
     private static final Component ORDER_TO_SIT = Component.translatable("button.neodragonmounts.order_to_sit");
@@ -103,9 +103,9 @@ public class DragonInventoryScreen extends AbstractContainerScreen<DragonInvento
     }
 
     @Override
-    public void resize(Minecraft minecraft, int width, int height) {
+    public void resize(int width, int height) {
         String string = this.name.getValue();
-        this.init(minecraft, width, height);
+        super.resize(width, height);
         this.name.setValue(string);
     }
 

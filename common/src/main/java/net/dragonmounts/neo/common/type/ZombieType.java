@@ -6,11 +6,11 @@ import net.dragonmounts.neo.common.entity.dragon.TameableDragonEntity;
 import net.dragonmounts.neo.common.init.DMSounds;
 import net.dragonmounts.neo.compat.registry.DragonType;
 import net.dragonmounts.neo.compat.registry.DragonTypeBuilder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 
 public class ZombieType extends DragonType {
-    public ZombieType(ResourceLocation identifier, DragonTypeBuilder builder) {
+    public ZombieType(Identifier identifier, DragonTypeBuilder builder) {
         super(identifier, builder);
     }
 

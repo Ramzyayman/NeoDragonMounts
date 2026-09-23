@@ -23,3 +23,7 @@ run
 runs
 
 */src/main/generated/.cache/
+# porting worktrees and extracted Minecraft sources (local only)
+.baseline-*/
+.hop*/
+.mcsrc/
