@@ -81,3 +81,44 @@ worth reading even when the NeoForge build is green.**
 
 Hop 2 rewrote persistence, so the failure mode is silent data loss rather than visible
 misbehaviour. See the save/load round trip in the testing section of the README/notes.
+
+---
+
+# Verification (in-game, 1.21.8, NeoForge 21.8.54)
+
+| Behaviour | Result |
+|---|---|
+| Client reaches main menu, no mixin failures | PASS (after two fixes below) |
+| Saddle persists across save/reload | **PASS** |
+| Chest persists across save/reload | **PASS** |
+| Name tag renames a dragon | PASS (needs anvil-naming first, as in vanilla) |
+
+The saddle/chest result is the one that mattered: it proves the `ItemStackWithSlot.CODEC`
+migration round-trips correctly, which was the main risk of the whole hop.
+
+## Two runtime-only breakages a clean build did not catch
+
+Both compiled with zero errors and zero warnings.
+
+1. **PlayerEntityMixin handler signatures.** `Player#addAdditionalSaveData` and
+   `#readAdditionalSaveData` now take `ValueOutput`/`ValueInput`. The bodies were migrated
+   but the handler parameters were still `CompoundTag`. javac never checks a mixin handler
+   against its target, so this died at class-load with `InvalidInjectionException`.
+
+2. **CameraMixin injection point.** NeoForge's
+   `ClientHooks#getDetachedCameraDistance` gained two parameters in 1.21.8
+   (`vehicleEntityScale`, `vehicleDistance`), so the `@At` descriptor matched nothing -
+   "Scanned 0 target(s)". The method still exists; only its shape changed.
+
+**Lesson for later hops:** a name-based mixin audit is not enough - it passes (2) happily.
+An attempt to audit `@At` descriptors with `javap` produced 19 false positives (too narrow
+a classpath, no superclass walking) and was discarded. Launching the client is currently
+the only reliable check, and it must be done every hop, not just at the end.
+
+## Pre-existing upstream bug, deliberately not changed
+
+Fabric's `PlayerEntityMixin` writes armor-effect cooldowns to `"ForgeCaps"` but reads them
+from `SERIALIZATION_KEY`, so they never persist on Fabric. Identical on `dev` at 1.21.4, so
+it is not port damage. Both keys were preserved exactly rather than silently changing
+behaviour inside a port commit. Worth reporting upstream alongside the sunlight.nbt
+corruption.

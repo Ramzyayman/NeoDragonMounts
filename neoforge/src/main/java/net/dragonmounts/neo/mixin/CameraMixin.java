@@ -20,7 +20,7 @@ public abstract class CameraMixin {
     @Shadow
     protected abstract void move(float x, float y, float z);
 
-    @ModifyExpressionValue(method = "setup", at = @At(value = "INVOKE", target = "Lnet/neoforged/neoforge/client/ClientHooks;getDetachedCameraDistance(Lnet/minecraft/client/Camera;ZFF)F"))
+    @ModifyExpressionValue(method = "setup", at = @At(value = "INVOKE", target = "Lnet/neoforged/neoforge/client/ClientHooks;getDetachedCameraDistance(Lnet/minecraft/client/Camera;ZFFFF)F"))
     public float detachedCameraOffset(float original, @Local(argsOnly = true) Entity host, @Cancellable CallbackInfo info) {
         if (host.getVehicle() instanceof TameableDragonEntity) {
             this.move(-this.getMaxZoom(ClientConfig.INSTANCE.cameraDistance.getAsFloat()), 0.0F, -ClientConfig.INSTANCE.cameraOffset.getAsFloat());

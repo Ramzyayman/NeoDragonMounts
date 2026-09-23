@@ -11,6 +11,8 @@ import net.dragonmounts.neo.common.network.s2c.ArmorRipostePayload;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -49,15 +51,21 @@ public abstract class PlayerEntityMixin extends LivingEntity implements Provider
     }
 
     @Inject(method = "addAdditionalSaveData", at = @At("TAIL"))
-    public void saveCooldown(CompoundTag tag, CallbackInfo info) {
+    /// 1.21.6 changed Player#addAdditionalSaveData to take a ValueOutput. A mixin handler
+    /// signature is not checked by javac, so this compiled clean and failed at class-load with
+    /// InvalidInjectionException. The manager still speaks CompoundTag, so it goes through
+    /// CompoundTag.CODEC.
+    public void saveCooldown(ValueOutput output, CallbackInfo info) {
         var data = this.neodragonmounts$manager.saveNBT();
         if (data.isEmpty()) return;
-        tag.put("ForgeCaps", data);
+        output.store("ForgeCaps", CompoundTag.CODEC, data);
     }
 
     @Inject(method = "readAdditionalSaveData", at = @At("TAIL"))
-    public void readCooldown(CompoundTag tag, CallbackInfo info) {
-        this.neodragonmounts$manager.readNBT(tag.getCompoundOrEmpty(SERIALIZATION_KEY));
+    public void readCooldown(ValueInput input, CallbackInfo info) {
+        this.neodragonmounts$manager.readNBT(
+                input.read(SERIALIZATION_KEY, CompoundTag.CODEC).orElseGet(CompoundTag::new)
+        );
     }
 
     @Inject(method = "hurtServer", at = @At(
