@@ -124,7 +124,9 @@ Two differences from the original, both deliberate:
    translucency"). The glow pass uses the same render type and relies on being submitted at
    `FULL_BRIGHT`, which is what made it read as emissive in the first place.
 
-Verify against the reference frames in `porting/reference/` before calling this done.
+26.1.2 is playtested and released. The dissolve *direction* was never reported back separately, so
+if dragons ever look like they assemble rather than erode, invert the alpha in
+`TameableDragonLayer` and check against the reference frames in `porting/reference/`.
 
 ## A runtime-only failure that compiling could never catch
 
